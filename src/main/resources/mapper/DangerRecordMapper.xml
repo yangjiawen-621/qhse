@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wlhse.dao.DangerRecordDao">
+    <sql id="key">
+        <trim suffixOverrides=",">
+            <if test="id != null and id  != ''">
+                ID,
+            </if>
+            <if test="checkId != null and checkId  != ''">
+                CheckId,
+            </if>
+            <if test="safeStaff_ID != null and safeStaff_ID  != ''">
+                SafeStaff_ID,SafeStaff_Name,
+            </if>
+            <if test="workItem != null and workItem  != ''">
+                WorkItem,
+            </if>
+            <if test="companyId != null and companyId  != ''">
+                CompanyID,CompanyName,
+            </if>
+            <if test="supervisionDate != null and supervisionDate  != ''">
+                SupervisionDate,
+            </if>
+            <if test="type != null and type  != ''">
+                Type,
+            </if>
+            <if test="description != null and description  != ''">
+                Description,
+            </if>
+            <if test="status != null and status  != ''">
+                Status,
+            </if>
+            <if test="solution != null and solution  != ''">
+                Solution,
+            </if>
+            <if test="reformPersonID != null and reformPersonID  != ''">
+                ReformPersonID,ReformPerson,
+            </if>
+            <if test="limitDate != null and limitDate  != ''">
+                LimitDate,
+            </if>
+            <if test="receptionDate != null and receptionDate  != ''">
+                ReceptionDate,
+            </if>
+            <if test="reformCase != null and reformCase  != ''">
+                ReformCase,
+            </if>
+            <if test="reason != null and reason  != ''">
+                Reason,
+            </if>
+            <if test="approve != null and approve  != ''">
+                Approve,
+            </if>
+            <if test="ok != null and ok  != ''">
+                Ok,
+            </if>
+            <if test="consequenceID != null and consequenceID  != ''">
+                ConsequenceID,
+            </if>
+            <if test="checkType != null and checkType  != ''">
+                CheckType,
+            </if>
+            <if test="affix != null and affix  != ''">
+                Affix,
+            </if>
+            <if test="affixName != null and affixName  != ''">
+                AffixName,
+            </if>
+            <if test="checkName != null and checkName  != ''">
+                CheckName,
+            </if>
+            <if test="updateTime != null and updateTime  != ''">
+                UpdateTime,
+            </if>
+            <if test="dataStatus != null and dataStatus  != ''">
+                DataStatus,
+            </if>
+            <if test="recordDate != null and recordDate  != ''">
+                RecordDate,
+            </if>
+            <if test="rank != null and rank  != ''">
+                Rank,
+            </if>
+            <if test="factorSource != null and factorSource  != ''">
+                FactorSource,
+            </if>
+            <if test="profession != null and profession  != ''">
+                Profession,
+            </if>
+            <if test="factorHSE != null and factorHSE  != ''">
+                FactorHSE,
+            </if>
+            <if test="factorDepartment != null and factorDepartment  != ''">
+                FactorDepartment,
+            </if>
+            <if test="consequence != null and consequence  != ''">
+                Consequence,
+            </if>
+            <if test="location != null and location  != ''">
+                Location,
+            </if>
+            <if test="affix1 != null and affix1  != ''">
+                Affix1,
+            </if>
+            <if test="affix2 != null and affix2  != ''">
+                Affix2,
+            </if>
+            <if test="affix3 != null and affix3  != ''">
+                Affix3,
+            </if>
+            <if test="affix4 != null and affix4  != ''">
+                Affix4,
+            </if>
+            <if test="isUpload != null and isUpload  != ''">
+                IsUpload,
+            </if>
+            <if test="keyID != null and keyID  != ''">
+                KeyID,
+            </if>
+            <if test="qHSE_CheckType != null and qHSE_CheckType  != ''">
+                QHSE_CheckType,
+            </if>
+            <if test="qHSE_CheckCategory != null and qHSE_CheckCategory  != ''">
+                QHSE_CheckCategory,
+            </if>
+            <if test="qHSE_FileAudit_ID != null and qHSE_FileAudit_ID  != ''">
+                QHSE_FileAudit_ID,
+            </if>
+            <if test="qHSE_FileAuditRecord_ID != null and qHSE_FileAuditRecord_ID  != ''">
+                QHSE_FileAuditRecord_ID,
+            </if>
+            <if test="code != null and code  != ''">
+                Code,
+            </if>
+            <if test="dangerSource != null and dangerSource  != ''">
+                DangerSource,
+            </if>
+        </trim>
+    </sql>
+
+    <sql id="value">
+        <trim suffixOverrides=",">
+            <if test="id != null and id  != ''">
+                #{id},
+            </if>
+            <if test="checkId != null and checkId  != ''">
+                #{checkId},
+            </if>
+            <if test="safeStaff_ID != null and safeStaff_ID  != ''">
+                #{safeStaff_ID},(select Name from employee where EmployeeID=#{safeStaff_ID}),
+            </if>
+            <if test="workItem != null and workItem  != ''">
+                #{workItem},
+            </if>
+            <if test="companyId != null and companyId  != ''">
+                #{companyId},(select name from sys_company where CompanyCode=#{companyId}),
+            </if>
+            <if test="supervisionDate != null and supervisionDate  != ''">
+                #{supervisionDate},
+            </if>
+            <if test="type != null and type  != ''">
+                #{type},
+            </if>
+            <if test="description != null and description  != ''">
+                #{description},
+            </if>
+            <if test="status != null and status  != ''">
+                #{status},
+            </if>
+            <if test="solution != null and solution  != ''">
+                #{solution},
+            </if>
+            <if test="reformPersonID != null and reformPersonID  != ''">
+                #{reformPersonID},(select Name from employee where EmployeeID=#{reformPersonID}),
+            </if>
+            <if test="limitDate != null and limitDate  != ''">
+                #{limitDate},
+            </if>
+            <if test="receptionDate != null and receptionDate  != ''">
+                #{receptionDate},
+            </if>
+            <if test="reformCase != null and reformCase  != ''">
+                #{reformCase},
+            </if>
+            <if test="reason != null and reason  != ''">
+                #{reason},
+            </if>
+            <if test="approve != null and approve  != ''">
+                #{approve},
+            </if>
+            <if test="ok != null and ok  != ''">
+                #{ok},
+            </if>
+            <if test="consequenceID != null and consequenceID  != ''">
+                #{consequenceID},
+            </if>
+            <if test="checkType != null and checkType  != ''">
+                #{checkType},
+            </if>
+            <if test="affix != null and affix  != ''">
+                #{affix},
+            </if>
+            <if test="affixName != null and affixName  != ''">
+                #{affixName},
+            </if>
+            <if test="checkName != null and checkName  != ''">
+                #{checkName},
+            </if>
+            <if test="updateTime != null and updateTime  != ''">
+                #{updateTime},
+            </if>
+            <if test="dataStatus != null and dataStatus  != ''">
+                #{dataStatus},
+            </if>
+            <if test="recordDate != null and recordDate  != ''">
+                #{recordDate},
+            </if>
+            <if test="rank != null and rank  != ''">
+                #{rank},
+            </if>
+            <if test="factorSource != null and factorSource  != ''">
+                #{factorSource},
+            </if>
+            <if test="profession != null and profession  != ''">
+                #{profession},
+            </if>
+            <if test="factorHSE != null and factorHSE  != ''">
+                #{factorHSE},
+            </if>
+            <if test="factorDepartment != null and factorDepartment  != ''">
+                #{factorDepartment},
+            </if>
+            <if test="consequence != null and consequence  != ''">
+                #{consequence},
+            </if>
+            <if test="location != null and location  != ''">
+                #{location},
+            </if>
+            <if test="affix1 != null and affix1  != ''">
+                #{affix1},
+            </if>
+            <if test="affix2 != null and affix2  != ''">
+                #{affix2},
+            </if>
+            <if test="affix3 != null and affix3  != ''">
+                #{affix3},
+            </if>
+            <if test="affix4 != null and affix4  != ''">
+                #{affix4},
+            </if>
+            <if test="isUpload != null and isUpload  != ''">
+                #{isUpload},
+            </if>
+            <if test="keyID != null and keyID  != ''">
+                #{keyID},
+            </if>
+            <if test="qHSE_CheckType != null and qHSE_CheckType  != ''">
+                #{qHSE_CheckType},
+            </if>
+            <if test="qHSE_CheckCategory != null and qHSE_CheckCategory  != ''">
+                #{qHSE_CheckCategory},
+            </if>
+            <if test="qHSE_FileAudit_ID != null and qHSE_FileAudit_ID  != ''">
+                #{qHSE_FileAudit_ID},
+            </if>
+            <if test="qHSE_FileAuditRecord_ID != null and qHSE_FileAuditRecord_ID  != ''">
+                #{qHSE_FileAuditRecord_ID},
+            </if>
+            <if test="code != null and code  != ''">
+                #{code},
+            </if>
+            <if test="dangerSource != null and dangerSource  != ''">
+                #{dangerSource},
+            </if>
+        </trim>
+    </sql>
+
+    <insert id="addDangerRecord" parameterType="com.wlhse.dto.DangerRecordDto">
+        insert into dangerrecord
+        (<include refid="key"/>)
+        values
+        (<include refid="value"/>)
+    </insert>
+
+    <delete id="deleteDangerRecord">
+        delete from dangerrecord
+        <where>
+            <if test="qHSE_FileAudit_ID != null and qHSE_FileAudit_ID  != ''">
+                AND QHSE_FileAudit_ID=#{qHSE_FileAudit_ID}
+            </if>
+            <if test="code != null and code  != ''">
+                AND Code=#{code}
+            </if>
+        </where>
+    </delete>
+
+    <sql id="value1">
+        <trim prefix="set" suffixOverrides=",">
+            <if test="checkId != null and checkId  != ''">
+                checkId=#{checkId},
+            </if>
+            <if test="safeStaff_ID != null and safeStaff_ID  != ''">
+                safeStaff_ID=#{safeStaff_ID},safeStaff_Name=(select Name from employee where
+                EmployeeID=#{safeStaff_ID}),
+            </if>
+            <if test="workItem != null and workItem  != ''">
+                workItem=#{workItem},
+            </if>
+            <if test="companyId != null and companyId  != ''">
+                companyId=#{companyId},companyName=(select name from sys_company where CompanyCode=#{companyId}),
+            </if>
+            <if test="supervisionDate != null and supervisionDate  != ''">
+                supervisionDate=#{supervisionDate},
+            </if>
+            <if test="type != null and type  != ''">
+                type=#{type},
+            </if>
+            <if test="description != null and description  != ''">
+                description=#{description},
+            </if>
+            <if test="status != null and status  != ''">
+                status=#{status},
+            </if>
+            <if test="solution != null and solution  != ''">
+                solution=#{solution},
+            </if>
+            <if test="reformPersonID != null and reformPersonID  != ''">
+                reformPersonID=#{reformPersonID},reformPerson=(select Name from employee where
+                EmployeeID=#{reformPersonID}),
+            </if>
+            <if test="limitDate != null and limitDate  != ''">
+                limitDate=#{limitDate},
+            </if>
+            <if test="receptionDate != null and receptionDate  != ''">
+                receptionDate=#{receptionDate},
+            </if>
+            <if test="reformCase != null and reformCase  != ''">
+                reformCase=#{reformCase},
+            </if>
+            <if test="reason != null and reason  != ''">
+                reason=#{reason},
+            </if>
+            <if test="approve != null and approve  != ''">
+                approve=#{approve},
+            </if>
+            <if test="ok != null and ok  != ''">
+                ok=#{ok},
+            </if>
+            <if test="consequenceID != null and consequenceID  != ''">
+                consequenceID=#{consequenceID},
+            </if>
+            <if test="checkType != null and checkType  != ''">
+                checkType=#{checkType},
+            </if>
+            <if test="affix != null and affix  != ''">
+                affix=#{affix},
+            </if>
+            <if test="affixName != null and affixName  != ''">
+                affixName=#{affixName},
+            </if>
+            <if test="checkName != null and checkName  != ''">
+                checkName=#{checkName},
+            </if>
+            <if test="updateTime != null and updateTime  != ''">
+                updateTime=#{updateTime},
+            </if>
+            <if test="dataStatus != null and dataStatus  != ''">
+                dataStatus=#{dataStatus},
+            </if>
+            <if test="recordDate != null and recordDate  != ''">
+                recordDate=#{recordDate},
+            </if>
+            <if test="rank != null and rank  != ''">
+                rank=#{rank},
+            </if>
+            <if test="factorSource != null and factorSource  != ''">
+                factorSource=#{factorSource},
+            </if>
+            <if test="profession != null and profession  != ''">
+                profession=#{profession},
+            </if>
+            <if test="factorHSE != null and factorHSE  != ''">
+                factorHSE=#{factorHSE},
+            </if>
+            <if test="factorDepartment != null and factorDepartment  != ''">
+                factorDepartment=#{factorDepartment},
+            </if>
+            <if test="consequence != null and consequence  != ''">
+                consequence=#{consequence},
+            </if>
+            <if test="location != null and location  != ''">
+                location=#{location},
+            </if>
+            <if test="affix1 != null and affix1  != ''">
+                affix1=#{affix1},
+            </if>
+            <if test="affix2 != null and affix2  != ''">
+                affix2=#{affix2},
+            </if>
+            <if test="affix3 != null and affix3  != ''">
+                affix3=#{affix3},
+            </if>
+            <if test="affix4 != null and affix4  != ''">
+                affix4=#{affix4},
+            </if>
+            <if test="isUpload != null and isUpload  != ''">
+                isUpload=#{isUpload},
+            </if>
+            <if test="keyID != null and keyID  != ''">
+                keyID=#{keyID},
+            </if>
+            <if test="qHSE_CheckType != null and qHSE_CheckType  != ''">
+                qHSE_CheckType=#{qHSE_CheckType},
+            </if>
+            <if test="qHSE_CheckCategory != null and qHSE_CheckCategory  != ''">
+                qHSE_CheckCategory=#{qHSE_CheckCategory},
+            </if>
+            <if test="qHSE_FileAudit_ID != null and qHSE_FileAudit_ID  != ''">
+                qHSE_FileAudit_ID=#{qHSE_FileAudit_ID},
+            </if>
+            <if test="qHSE_FileAuditRecord_ID != null and qHSE_FileAuditRecord_ID  != ''">
+                qHSE_FileAuditRecord_ID=#{qHSE_FileAuditRecord_ID},
+            </if>
+            <if test="code != null and code  != ''">
+                code=#{code},
+            </if>
+        </trim>
+    </sql>
+
+    <update id="updateDangerRecord">
+        update dangerrecord
+        <include refid="value1"/>
+        where ID = #{id}
+    </update>
+
+    <select id="queryDangerRecordById" resultType="com.wlhse.dto.DangerRecordDto">
+        select * from dangerrecord
+        where ID=#{id}
+    </select>
+
+    <select id="queryTotal" resultType="java.lang.Integer">
+        select count(*)
+        from dangerrecord
+        <where>
+            <if test="safeStaff_ID != null and safeStaff_ID  != ''">
+                AND safeStaff_ID=#{safeStaff_ID}
+            </if>
+            <if test="safeStaff_Name != null and safeStaff_Name  != ''">
+                AND safeStaff_Name=#{safeStaff_Name}
+            </if>
+            <if test="companyId != null and companyId  != ''">
+                AND companyId=#{companyId}
+            </if>
+            <if test="companyName != null and companyName  != ''">
+                AND companyName=#{companyName}
+            </if>
+            <if test="startDate != null and startDate  != ''">
+                AND supervisionDate >= #{startDate}
+            </if>
+            <if test="endDate != null and endDate  != ''">
+                AND #{endDate} >= supervisionDate
+            </if>
+            <if test="reformPerson != null and reformPerson  != ''">
+                AND reformPerson=#{reformPerson}
+            </if>
+            <if test="profession != null and profession  != ''">
+                AND profession=#{profession}
+            </if>
+            <if test="location != null and location  != ''">
+                AND location LIKE CONCAT(CONCAT('%',#{location},'%'))
+            </if>
+        </where>
+    </select>
+
+    <select id="queryDangerRecord" resultType="com.wlhse.dto.DangerRecordDto">
+        select *
+        from dangerrecord
+        <where>
+            <if test="safeStaff_ID != null and safeStaff_ID  != ''">
+                AND safeStaff_ID=#{safeStaff_ID}
+            </if>
+            <if test="safeStaff_Name != null and safeStaff_Name  != ''">
+                AND safeStaff_Name=#{safeStaff_Name}
+            </if>
+            <if test="companyId != null and companyId  != ''">
+                AND companyId=#{companyId}
+            </if>
+            <if test="companyName != null and companyName  != ''">
+                AND companyName=#{companyName}
+            </if>
+            <if test="startDate != null and startDate  != ''">
+                AND supervisionDate >= #{startDate}
+            </if>
+            <if test="endDate != null and endDate  != ''">
+                AND #{endDate} >= supervisionDate
+            </if>
+            <if test="reformPerson != null and reformPerson  != ''">
+                AND reformPerson=#{reformPerson}
+            </if>
+            <if test="profession != null and profession  != ''">
+                AND profession=#{profession}
+            </if>
+            <if test="location != null and location  != ''">
+                AND location LIKE CONCAT(CONCAT('%',#{location},'%'))
+            </if>
+        </where>
+    </select>
+
+    <sql id="value2">
+        <trim prefix="set" suffixOverrides=",">
+            <if test="receptionDate != null and receptionDate  != ''">
+                ReceptionDate=#{receptionDate},
+            </if>
+            <if test="reformCase != null and reformCase  != ''">
+                reformCase=#{reformCase},
+            </if>
+            <if test="status != null and status  != ''">
+                status=#{status},
+            </if>
+            <if test="refuseReason != null and refuseReason  != ''">
+                refuseReason=#{refuseReason},
+            </if>
+            <if test="passReason != null and passReason  != ''">
+                passReason=#{passReason},
+            </if>
+        </trim>
+    </sql>
+
+    <update id="problemVerification">
+        update dangerrecord
+        <include refid="value2"/>
+        where ID = #{id}
+    </update>
+
+    <resultMap id="dangerRecordCountMap" type="com.wlhse.dto.RecordCountDto">
+
+    </resultMap>
+
+    <!--查：最多隐患项的前5家公司-->
+    <select id="queryMostDangerRecord" resultMap="dangerRecordCountMap">
+        SELECT companyName,COUNT(companyName) AS nums
+        FROM dangerrecord
+        <where>
+            <if test="startDate!=null and startDate!=''">
+                recordDate >= #{startDate}
+            </if>
+            <if test="endDate!=null and endDate!=''">
+                AND #{endDate} >= recordDate
+            </if>
+        </where>
+        GROUP BY CompanyName ORDER BY nums DESC LIMIT 5
+    </select>
+
+</mapper>

@@ -1,0 +1,762 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.QualityCheckDao">
+
+    <insert id="addQualityCheck" parameterType="com.wlhse.dto.QualityCheckDto" useGeneratedKeys="true"
+            keyProperty="qualityCheckID">
+        insert into quality_check
+        (
+        <trim suffixOverrides=",">
+            <if test="checkCategory != null and checkCategory != ''">
+                CheckCategory,
+            </if>
+            <if test="checkListCode != null and checkListCode != ''">
+                CheckListCode,
+            </if>
+            <if test="checkedCompanyName != null and checkedCompanyName != ''">
+                CheckedCompanyName,
+            </if>
+            <if test="checkedCompanyCode != null and checkedCompanyCode != ''">
+                CheckedCompanyCode,
+            </if>
+            <if test="group != null and group != ''">
+                `Group`,
+            </if>
+            <if test="checkedPersonID != null and checkedPersonID != ''">
+                CheckedPersonID,
+            </if>
+            <if test="checkedPersonName != null and checkedPersonName != ''">
+                CheckedPersonName,
+            </if>
+            <if test="groupLeaderID != null and groupLeaderID != ''">
+                GroupLeaderID,
+            </if>
+            <if test="groupLeaderName != null and groupLeaderName != ''">
+                GroupLeaderName,
+            </if>
+            <if test="responsiCompanyName != null and responsiCompanyName != ''">
+                ResponsiCompanyName,
+            </if>
+            <if test="responsiCompanyCode != null and responsiCompanyCode != ''">
+                ResponsiCompanyCode,
+            </if>
+            <if test="responsePersonID != null and responsePersonID != ''">
+                ResponsePersonID,
+            </if>
+            <if test="responsePersonName != null and responsePersonName != ''">
+                ResponsePersonName,
+            </if>
+            <if test="checkDate != null and checkDate != ''">
+                CheckDate,
+            </if>
+            <if test="checkPersonID != null and checkPersonID != ''">
+                CheckPersonID,
+            </if>
+            <if test="checkPerson != null and checkPerson != ''">
+                CheckPerson,
+            </if>
+            <if test="checkBasis != null and checkBasis != ''">
+                CheckBasis,
+            </if>
+            <if test="contractor != null and contractor != ''">
+                Contractor,
+            </if>
+            <if test="owner != null and owner != ''">
+                Owner,
+            </if>
+            <if test="projectName != null and projectName != ''">
+                ProjectName,
+            </if>
+            <if test="projectLeaderID != null and projectLeaderID != ''">
+                ProjectLeaderID,
+            </if>
+            <if test="projectLeaderName != null and projectLeaderName != ''">
+                ProjectLeaderName,
+            </if>
+            <if test="checkProject != null and checkProject != ''">
+                CheckProject,
+            </if>
+            <if test="execStd != null and execStd != ''">
+                ExecStd,
+            </if>
+            <if test="isPush != null and isPush != ''">
+                IsPush,
+            </if>
+            <if test="checkListName != null and checkListName != ''">
+                CheckListName,
+            </if>
+            <if test="issued != null and issued != ''">
+                Issued,
+            </if>
+            <if test="checkMethod != null and checkMethod != ''">
+                CheckMethod,
+            </if>
+            <if test="qualityCheckName != null and qualityCheckName != ''">
+                QualityCheckName,
+            </if>
+            <if test="workerNumber != null and workerNumber != ''">
+                WorkerNumber,
+            </if>
+            <if test="ERPNumber != null and ERPNumber != ''">
+                ERPNumber,
+            </if>
+            <if test="externalNumber != null and externalNumber != ''">
+                ExternalNumber,
+            </if>
+            <if test="workPlace != null and workPlace != ''">
+                WorkPlace,
+            </if>
+            <if test="contractorNumber != null and contractorNumber != ''">
+                ContractorNumber,
+            </if>
+            <if test="progress != null and progress != ''">
+                Progress,
+            </if>
+            <if test="finishDate != null and finishDate != ''">
+                FinishDate,
+            </if>
+            <if test="checkEndDate != null and checkEndDate != ''">
+                CheckEndDate
+            </if>
+        </trim>
+        )
+        values
+        (
+        <trim suffixOverrides=",">
+            <if test="checkCategory != null and checkCategory != ''">
+                #{checkCategory},
+            </if>
+            <if test="checkListCode != null and checkListCode != ''">
+                #{checkListCode},
+            </if>
+            <if test="checkedCompanyName != null and checkedCompanyName != ''">
+                #{checkedCompanyName},
+            </if>
+            <if test="checkedCompanyCode != null and checkedCompanyCode != ''">
+                #{checkedCompanyCode},
+            </if>
+            <if test="group != null and group != ''">
+                #{group},
+            </if>
+            <if test="checkedPersonID != null and checkedPersonID != ''">
+                #{checkedPersonID},
+            </if>
+            <if test="checkedPersonName != null and checkedPersonName != ''">
+                #{checkedPersonName},
+            </if>
+            <if test="groupLeaderID != null and groupLeaderID != ''">
+                #{groupLeaderID},
+            </if>
+            <if test="groupLeaderName != null and groupLeaderName != ''">
+                #{groupLeaderName},
+            </if>
+            <if test="responsiCompanyName != null and responsiCompanyName != ''">
+                #{responsiCompanyName},
+            </if>
+            <if test="responsiCompanyCode != null and responsiCompanyCode != ''">
+                #{responsiCompanyCode},
+            </if>
+            <if test="responsePersonID != null and responsePersonID != ''">
+                #{responsePersonID},
+            </if>
+            <if test="responsePersonName != null and responsePersonName != ''">
+                #{responsePersonName},
+            </if>
+            <if test="checkDate != null and checkDate != ''">
+                #{checkDate},
+            </if>
+            <if test="checkPersonID != null and checkPersonID != ''">
+                #{checkPersonID},
+            </if>
+            <if test="checkPerson != null and checkPerson != ''">
+                #{checkPerson},
+            </if>
+            <if test="checkBasis != null and checkBasis != ''">
+                #{checkBasis},
+            </if>
+            <if test="contractor != null and contractor != ''">
+                #{contractor},
+            </if>
+            <if test="owner != null and owner != ''">
+                #{owner},
+            </if>
+            <if test="projectName != null and projectName != ''">
+                #{projectName},
+            </if>
+            <if test="projectLeaderID != null and projectLeaderID != ''">
+                #{projectLeaderID},
+            </if>
+            <if test="projectLeaderName != null and projectLeaderName != ''">
+                #{projectLeaderName},
+            </if>
+            <if test="checkProject != null and checkProject != ''">
+                #{checkProject},
+            </if>
+            <if test="execStd != null and execStd != ''">
+                #{execStd},
+            </if>
+            <if test="isPush != null and isPush != ''">
+                #{isPush},
+            </if>
+            <if test="checkListName != null and checkListName != ''">
+                #{checkListName},
+            </if>
+            <if test="issued != null and issued != ''">
+                #{issued},
+            </if>
+            <if test="checkMethod != null and checkMethod != ''">
+                #{checkMethod},
+            </if>
+            <if test="qualityCheckName != null and qualityCheckName != ''">
+                #{qualityCheckName},
+            </if>
+            <if test="workerNumber != null and workerNumber != ''">
+                #{workerNumber},
+            </if>
+            <if test="ERPNumber != null and ERPNumber != ''">
+                #{ERPNumber},
+            </if>
+            <if test="externalNumber != null and externalNumber != ''">
+                #{externalNumber},
+            </if>
+            <if test="workPlace != null and workPlace != ''">
+                #{workPlace},
+            </if>
+            <if test="contractorNumber != null and contractorNumber != ''">
+                #{contractorNumber},
+            </if>
+            <if test="progress != null and progress != ''">
+                #{progress},
+            </if>
+            <if test="finishDate != null and finishDate != ''">
+                #{finishDate},
+            </if>
+            <if test="checkEndDate != null and checkEndDate != ''">
+                #{checkEndDate}
+            </if>
+        </trim>
+        )
+    </insert>
+
+    <delete id="deleteQualityCheck">
+        delete from quality_check where Qulity_CheckID=#{0}
+    </delete>
+
+    <update id="updateQualityCheck" parameterType="com.wlhse.dto.QualityCheckDto">
+        update quality_check
+        <set>
+            <if test="checkCategory != null and checkCategory != ''">
+                CheckCategory=#{checkCategory},
+            </if>
+            <if test="checkListCode != null and checkListCode != ''">
+                checkListCode=#{checkListCode},
+            </if>
+            <if test="checkedCompanyName != null and checkedCompanyName != ''">
+                checkedCompanyName=#{checkedCompanyName},
+            </if>
+            <if test="checkedCompanyCode != null and checkedCompanyCode != ''">
+                checkedCompanyCode=#{checkedCompanyCode},
+            </if>
+            <if test="group != null and group != ''">
+                `group`=#{group},
+            </if>
+            <if test="checkedPersonID != null and checkedPersonID != ''">
+                checkedPersonID=#{checkedPersonID},
+            </if>
+            <if test="checkedPersonName != null and checkedPersonName != ''">
+                checkedPersonName=#{checkedPersonName},
+            </if>
+            <if test="groupLeaderID != null and groupLeaderID != ''">
+                groupLeaderID=#{groupLeaderID},
+            </if>
+            <if test="groupLeaderName != null and groupLeaderName != ''">
+                groupLeaderName=#{groupLeaderName},
+            </if>
+            <if test="responsiCompanyName != null and responsiCompanyName != ''">
+                responsiCompanyName=#{responsiCompanyName},
+            </if>
+            <if test="responsiCompanyCode != null and responsiCompanyCode != ''">
+                responsiCompanyCode=#{responsiCompanyCode},
+            </if>
+            <if test="responsePersonID != null and responsePersonID != ''">
+                responsePersonID=#{responsePersonID},
+            </if>
+            <if test="responsePersonName != null and responsePersonName != ''">
+                responsePersonName=#{responsePersonName},
+            </if>
+            <if test="checkDate != null and checkDate != ''">
+                checkDate=#{checkDate},
+            </if>
+            <if test="checkPersonID != null and checkPersonID != ''">
+                checkPersonID=#{checkPersonID},
+            </if>
+            <if test="checkPerson != null and checkPerson != ''">
+                checkPerson=#{checkPerson},
+            </if>
+            <if test="checkBasis != null and checkBasis != ''">
+                checkBasis=#{checkBasis},
+            </if>
+            <if test="contractor != null and contractor != ''">
+                contractor=#{contractor},
+            </if>
+            <if test="owner != null and owner != ''">
+                owner=#{owner},
+            </if>
+            <if test="projectName != null and projectName != ''">
+                projectName=#{projectName},
+            </if>
+            <if test="projectLeaderID != null and projectLeaderID != ''">
+                projectLeaderID=#{projectLeaderID},
+            </if>
+            <if test="projectLeaderName != null and projectLeaderName != ''">
+                projectLeaderName=#{projectLeaderName},
+            </if>
+            <if test="checkProject != null and checkProject != ''">
+                checkProject=#{checkProject},
+            </if>
+            <if test="execStd != null and execStd != ''">
+                execStd=#{execStd},
+            </if>
+            <if test="isPush != null and isPush != ''">
+                isPush=#{isPush},
+            </if>
+            <if test="checkListName != null and checkListName != ''">
+                checkListName=#{checkListName},
+            </if>
+            <if test="issued != null and issued != ''">
+                issued=#{issued},
+            </if>
+            <if test="checkMethod != null and checkMethod != ''">
+                checkMethod=#{checkMethod},
+            </if>
+            <if test="qualityCheckName != null and qualityCheckName != ''">
+                qualityCheckName=#{qualityCheckName},
+            </if>
+            <if test="workerNumber != null and workerNumber != ''">
+                workerNumber=#{workerNumber},
+            </if>
+            <if test="ERPNumber != null and ERPNumber != ''">
+                ERPNumber=#{ERPNumber},
+            </if>
+            <if test="externalNumber != null and externalNumber != ''">
+                externalNumber=#{externalNumber},
+            </if>
+            <if test="workPlace != null and workPlace != ''">
+                workPlace=#{workPlace},
+            </if>
+            <if test="contractorNumber != null and contractorNumber != ''">
+                contractorNumber=#{contractorNumber},
+            </if>
+            <if test="progress != null and progress != ''">
+                progress=#{progress},
+            </if>
+            <if test="finishDate != null and finishDate != ''">
+                finishDate=#{finishDate}
+            </if>
+        </set>
+        where Qulity_CheckID=#{qualityCheckID}
+    </update>
+
+    <select id="queryCheckListCodeById" resultType="java.lang.String">
+        select CheckListCode
+        from quality_check
+        where Qulity_CheckID=#{0}
+    </select>
+
+    <select id="queryAllTable" resultType="com.wlhse.dto.QualityCheckDto">
+        select Qulity_CheckID as qualityCheckID,
+        CheckCategory as checkCategory,
+        CheckedCompanyName as checkedCompanyName,
+        CheckedCompanyCode as checkedCompanyCode,
+        `Group` as `group`,
+        CheckedPersonID as checkedPersonID,
+        CheckedPersonName as checkedPersonName,
+        GroupLeaderID as groupLeaderID,
+        GroupLeaderName as groupLeaderName,
+        ResponsiCompanyName as responsiCompanyName,
+        ResponsiCompanyCode as responsiCompanyCode,
+        ResponsePersonID as responsePersonID,
+        ResponsePersonName as responsePersonName,
+        CheckDate as checkDate,
+        CheckPersonID as checkPersonID,
+        CheckPerson as checkPerson,
+        CheckBasis as checkBasis,
+        Contractor as contractor,
+        Owner as owner,
+        ProjectName as projectName,
+        ProjectLeaderID as projectLeaderID,
+        ProjectLeaderName as projectLeaderName,
+        CheckProject as checkProject,
+        ExecStd as execStd,
+        IsPush as isPush,
+        Issued as issued,
+        CheckListCode as checkListCode,
+        CheckListName as checkListName,
+        CheckMethod as checkMethod,
+        QualityCheckName as qualityCheckName,
+        WorkerNumber as workerNumber,
+        ERPNumber as ERPNumber,
+        ExternalNumber as externalNumber,
+        ContractorNumber as contractorNumber,
+        Progress as progress,
+        FinishDate as finishDate,
+        WorkPlace as workPlace,
+        CheckEndDate as checkEndDate
+        from quality_check
+    </select>
+
+
+    <select id="queryTableByDateCom" resultType="com.wlhse.dto.QualityCheckDto">
+       select Qulity_CheckID as qualityCheckID,
+        CheckCategory as checkCategory,
+        CheckedCompanyName as checkedCompanyName,
+        CheckedCompanyCode as checkedCompanyCode,
+        `Group` as `group`,
+        CheckedPersonID as checkedPersonID,
+        CheckedPersonName as checkedPersonName,
+        GroupLeaderID as groupLeaderID,
+        GroupLeaderName as groupLeaderName,
+        ResponsiCompanyName as responsiCompanyName,
+        ResponsiCompanyCode as responsiCompanyCode,
+        ResponsePersonID as responsePersonID,
+        ResponsePersonName as responsePersonName,
+        CheckDate as checkDate,
+        CheckPersonID as checkPersonID,
+        CheckPerson as checkPerson,
+        CheckBasis as checkBasis,
+        Contractor as contractor,
+        Owner as owner,
+        ProjectName as projectName,
+        ProjectLeaderID as projectLeaderID,
+        ProjectLeaderName as projectLeaderName,
+        CheckProject as checkProject,
+        ExecStd as execStd,
+        IsPush as isPush,
+        Issued as issued,
+        CheckListCode as checkListCode,
+        CheckListName as checkListName,
+        CheckMethod as checkMethod,
+        QualityCheckName as qualityCheckName,
+        WorkerNumber as workerNumber,
+        ERPNumber as ERPNumber,
+        ExternalNumber as externalNumber,
+        ContractorNumber as contractorNumber,
+        Progress as progress,
+        FinishDate as finishDate,
+        WorkPlace as workPlace,
+        CheckEndDate as checkEndDate
+        from quality_check
+        where CheckedCompanyCode=#{0}
+        and CheckDate &gt;= #{1} and CheckEndDate &lt;= #{2}
+    </select>
+
+    <select id="queryTableByDate" resultType="com.wlhse.dto.QualityCheckDto">
+        select Qulity_CheckID as qualityCheckID,
+        CheckCategory as checkCategory,
+        CheckedCompanyName as checkedCompanyName,
+        CheckedCompanyCode as checkedCompanyCode,
+        `Group` as `group`,
+        CheckedPersonID as checkedPersonID,
+        CheckedPersonName as checkedPersonName,
+        GroupLeaderID as groupLeaderID,
+        GroupLeaderName as groupLeaderName,
+        ResponsiCompanyName as responsiCompanyName,
+        ResponsiCompanyCode as responsiCompanyCode,
+        ResponsePersonID as responsePersonID,
+        ResponsePersonName as responsePersonName,
+        CheckDate as checkDate,
+        CheckPersonID as checkPersonID,
+        CheckPerson as checkPerson,
+        CheckBasis as checkBasis,
+        Contractor as contractor,
+        Owner as owner,
+        ProjectName as projectName,
+        ProjectLeaderID as projectLeaderID,
+        ProjectLeaderName as projectLeaderName,
+        CheckProject as checkProject,
+        ExecStd as execStd,
+        IsPush as isPush,
+        Issued as issued,
+        CheckListCode as checkListCode,
+        CheckListName as checkListName,
+        CheckMethod as checkMethod,
+        QualityCheckName as qualityCheckName,
+        WorkerNumber as workerNumber,
+        ERPNumber as ERPNumber,
+        ExternalNumber as externalNumber,
+        ContractorNumber as contractorNumber,
+        Progress as progress,
+        FinishDate as finishDate,
+        WorkPlace as workPlace,
+        CheckEndDate as checkEndDate
+        from quality_check
+        where CheckDate &gt;= #{0} and CheckEndDate &lt;= #{1}
+    </select>
+
+    <select id="queryTableByCom" resultType="com.wlhse.dto.QualityCheckDto">
+        select Qulity_CheckID as qualityCheckID,
+        CheckCategory as checkCategory,
+        CheckedCompanyName as checkedCompanyName,
+        CheckedCompanyCode as checkedCompanyCode,
+        `Group` as `group`,
+        CheckedPersonID as checkedPersonID,
+        CheckedPersonName as checkedPersonName,
+        GroupLeaderID as groupLeaderID,
+        GroupLeaderName as groupLeaderName,
+        ResponsiCompanyName as responsiCompanyName,
+        ResponsiCompanyCode as responsiCompanyCode,
+        ResponsePersonID as responsePersonID,
+        ResponsePersonName as responsePersonName,
+        CheckDate as checkDate,
+        CheckPersonID as checkPersonID,
+        CheckPerson as checkPerson,
+        CheckBasis as checkBasis,
+        Contractor as contractor,
+        Owner as owner,
+        ProjectName as projectName,
+        ProjectLeaderID as projectLeaderID,
+        ProjectLeaderName as projectLeaderName,
+        CheckProject as checkProject,
+        ExecStd as execStd,
+        IsPush as isPush,
+        Issued as issued,
+        CheckListCode as checkListCode,
+        CheckListName as checkListName,
+        CheckMethod as checkMethod,
+        QualityCheckName as qualityCheckName,
+        WorkerNumber as workerNumber,
+        ERPNumber as ERPNumber,
+        ExternalNumber as externalNumber,
+        ContractorNumber as contractorNumber,
+        Progress as progress,
+        FinishDate as finishDate,
+        WorkPlace as workPlace,
+        CheckEndDate as checkEndDate
+        from quality_check
+        where CheckedCompanyCode=#{0}
+    </select>
+
+    <update id="pushTable">
+        update quality_check
+        <set>
+            IsPush='已推送',
+            Progress='录入中'
+        </set>
+        where Qulity_CheckID=#{0}
+    </update>
+
+    <select id="queryTableByDateAndPush" resultType="com.wlhse.dto.QualityCheckDto">
+       select Qulity_CheckID as qualityCheckID,
+        CheckCategory as checkCategory,
+        CheckedCompanyName as checkedCompanyName,
+        CheckedCompanyCode as checkedCompanyCode,
+        `Group` as `group`,
+        CheckedPersonID as checkedPersonID,
+        CheckedPersonName as checkedPersonName,
+        GroupLeaderID as groupLeaderID,
+        GroupLeaderName as groupLeaderName,
+        ResponsiCompanyName as responsiCompanyName,
+        ResponsiCompanyCode as responsiCompanyCode,
+        ResponsePersonID as responsePersonID,
+        ResponsePersonName as responsePersonName,
+        CheckDate as checkDate,
+        CheckPersonID as checkPersonID,
+        CheckPerson as checkPerson,
+        CheckBasis as checkBasis,
+        Contractor as contractor,
+        Owner as owner,
+        ProjectName as projectName,
+        ProjectLeaderID as projectLeaderID,
+        ProjectLeaderName as projectLeaderName,
+        CheckProject as checkProject,
+        ExecStd as execStd,
+        IsPush as isPush,
+        Issued as issued,
+        CheckListCode as checkListCode,
+        CheckListName as checkListName,
+        CheckMethod as checkMethod,
+        QualityCheckName as qualityCheckName,
+        WorkerNumber as workerNumber,
+        ERPNumber as ERPNumber,
+        ExternalNumber as externalNumber,
+        ContractorNumber as contractorNumber,
+        Progress as progress,
+        FinishDate as finishDate,
+        WorkPlace as workPlace,
+        CheckEndDate as checkEndDate
+        from quality_check
+        where CheckedCompanyCode=#{0}
+        and CheckDate &gt;= #{1} and CheckEndDate &lt;= #{2}
+        and IsPush='已推送'
+        and Issued='未下达'
+    </select>
+    <update id="issuedTable">
+        update quality_check
+        <set>
+            Issued='已下达',
+            Progress='整改中'
+        </set>
+        where Qulity_CheckID=#{0}
+    </update>
+    <select id="queryTableByDateAndIssue" resultType="com.wlhse.dto.QualityCheckDto">
+        select Qulity_CheckID as qualityCheckID,
+        CheckCategory as checkCategory,
+        CheckedCompanyName as checkedCompanyName,
+        CheckedCompanyCode as checkedCompanyCode,
+        `Group` as `group`,
+        CheckedPersonID as checkedPersonID,
+        CheckedPersonName as checkedPersonName,
+        GroupLeaderID as groupLeaderID,
+        GroupLeaderName as groupLeaderName,
+        ResponsiCompanyName as responsiCompanyName,
+        ResponsiCompanyCode as responsiCompanyCode,
+        ResponsePersonID as responsePersonID,
+        ResponsePersonName as responsePersonName,
+        CheckDate as checkDate,
+        CheckPersonID as checkPersonID,
+        CheckPerson as checkPerson,
+        CheckBasis as checkBasis,
+        Contractor as contractor,
+        Owner as owner,
+        ProjectName as projectName,
+        ProjectLeaderID as projectLeaderID,
+        ProjectLeaderName as projectLeaderName,
+        CheckProject as checkProject,
+        ExecStd as execStd,
+        IsPush as isPush,
+        Issued as issued,
+        CheckListCode as checkListCode,
+        CheckListName as checkListName,
+        CheckMethod as checkMethod,
+        QualityCheckName as qualityCheckName,
+        WorkerNumber as workerNumber,
+        ERPNumber as ERPNumber,
+        ExternalNumber as externalNumber,
+        ContractorNumber as contractorNumber,
+        Progress as progress,
+        FinishDate as finishDate,
+        WorkPlace as workPlace,
+        CheckEndDate as checkEndDate
+        from quality_check
+        where CheckedCompanyCode=#{0}
+        and CheckDate &gt;=#{1} and CheckEndDate &lt;=#{2}
+        and IsPush='已推送'
+        and Issued='已下达'
+    </select>
+    <update id="passTable">
+        update quality_check
+        <set>
+            IsPush='通过',
+            Progress='完成'
+        </set>
+        where Qulity_CheckID=#{0}
+    </update>
+    <update id="passTable2">
+        update quality_check
+        <set>
+            IsPush='通过',
+            Progress='完成',
+            FinishDate=#{finishDate}
+        </set>
+        where Qulity_CheckID=#{qualityCheckID}
+    </update>
+
+    <update id="modifyPush">
+        update quality_check
+        <set>
+            Issued='已整改',
+            Progress='审查中'
+        </set>
+        where Qulity_CheckID=#{0}
+    </update>
+    <select id="queryByYearComAndModify" resultType="com.wlhse.dto.QualityCheckDto">
+        select Qulity_CheckID as qualityCheckID,
+        CheckCategory as checkCategory,
+        CheckedCompanyName as checkedCompanyName,
+        CheckedCompanyCode as checkedCompanyCode,
+        `Group` as `group`,
+        CheckedPersonID as checkedPersonID,
+        CheckedPersonName as checkedPersonName,
+        GroupLeaderID as groupLeaderID,
+        GroupLeaderName as groupLeaderName,
+        ResponsiCompanyName as responsiCompanyName,
+        ResponsiCompanyCode as responsiCompanyCode,
+        ResponsePersonID as responsePersonID,
+        ResponsePersonName as responsePersonName,
+        CheckDate as checkDate,
+        CheckPersonID as checkPersonID,
+        CheckPerson as checkPerson,
+        CheckBasis as checkBasis,
+        Contractor as contractor,
+        Owner as owner,
+        ProjectName as projectName,
+        ProjectLeaderID as projectLeaderID,
+        ProjectLeaderName as projectLeaderName,
+        CheckProject as checkProject,
+        ExecStd as execStd,
+        IsPush as isPush,
+        Issued as issued,
+        CheckListCode as checkListCode,
+        CheckListName as checkListName,
+        CheckMethod as checkMethod,
+        QualityCheckName as qualityCheckName,
+        WorkerNumber as workerNumber,
+        ERPNumber as ERPNumber,
+        ExternalNumber as externalNumber,
+        ContractorNumber as contractorNumber,
+        Progress as progress,
+        FinishDate as finishDate,
+        WorkPlace as workPlace,
+        CheckEndDate as checkEndDate
+        from quality_check
+        where CheckedCompanyCode=#{0}
+        and CheckDate &gt;=#{1} and CheckEndDate &lt;=#{2}
+        and IsPush='已推送'
+        and Issued='已整改'
+    </select>
+
+    <select id="queryAllPassTable" resultType="com.wlhse.dto.QualityCheckDto">
+        select Qulity_CheckID as qualityCheckID,
+        CheckCategory as checkCategory,
+        CheckedCompanyName as checkedCompanyName,
+        CheckedCompanyCode as checkedCompanyCode,
+        `Group` as `group`,
+        CheckedPersonID as checkedPersonID,
+        CheckedPersonName as checkedPersonName,
+        GroupLeaderID as groupLeaderID,
+        GroupLeaderName as groupLeaderName,
+        ResponsiCompanyName as responsiCompanyName,
+        ResponsiCompanyCode as responsiCompanyCode,
+        ResponsePersonID as responsePersonID,
+        ResponsePersonName as responsePersonName,
+        CheckDate as checkDate,
+        CheckPersonID as checkPersonID,
+        CheckPerson as checkPerson,
+        CheckBasis as checkBasis,
+        Contractor as contractor,
+        Owner as owner,
+        ProjectName as projectName,
+        ProjectLeaderID as projectLeaderID,
+        ProjectLeaderName as projectLeaderName,
+        CheckProject as checkProject,
+        ExecStd as execStd,
+        IsPush as isPush,
+        Issued as issued,
+        CheckListCode as checkListCode,
+        CheckListName as checkListName,
+        CheckMethod as checkMethod,
+        QualityCheckName as qualityCheckName,
+        WorkerNumber as workerNumber,
+        ERPNumber as ERPNumber,
+        ExternalNumber as externalNumber,
+        ContractorNumber as contractorNumber,
+        Progress as progress,
+        FinishDate as finishDate,
+        WorkPlace as workPlace,
+        CheckEndDate as checkEndDate
+        from quality_check
+        where IsPush='通过'
+    </select>
+
+
+</mapper>

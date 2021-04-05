@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.MonitorInputCheckDao">
+
+    <insert id="insertNewInputRecord">
+        insert into
+        monitorinputcheckrecord
+        (MonitorPlanID,MonitorPlanDetailID,`Condition`,Description,PicNo,Dispose_In,Close_In,InputPersonID,InputPersonName,InputDate,picLink,CheckStatus)
+        values (
+        #{monitorPlanID},#{monitorPlanDetailID},#{condition},#{description},#{picNo},#{disposeIn},#{closeIn},#{inputPersonID},#{inputPersonName},
+        now(),#{picLink},#{checkStatus}
+        )
+
+    </insert>
+
+
+    <update id="updateInputRecord">
+        update monitorinputcheckrecord
+        <trim suffixOverrides=",">
+            <if test="condition!=null and condition!=''">
+                set `Condition`=#{condition},
+            </if>
+            <if test="description!=null and description!=''">
+                Description=#{description},
+            </if>
+            <if test="picNo!=null and picNo!=''">
+                PicNo=#{picNo},
+            </if>
+            <if test="disposeIn!=null and disposeIn!=''">
+                Dispose_In=#{disposeIn},
+            </if>
+            <if test="closeIn!=null and closeIn!=''">
+                Close_In=#{closeIn},
+            </if>
+            <if test="checkPersonID!=null and checkPersonID!=''">
+                `Check`=#{check},
+            </if>
+            <if test="disposeCheck!=null and disposeCheck!=''">
+                Dispose_Check=#{disposeCheck},
+            </if>
+            <if test="closeCheck!=null and closeCheck!=''">
+                Close_Check=#{closeCheck},
+            </if>
+            <if test="checkPersonID!=null and checkPersonID!=''">
+                CheckPersonID=#{checkPersonID},
+            </if>
+            <if test="checkPersonName!=null and checkPersonName!=''">
+                CheckPersonName=#{checkPersonName},
+            </if>
+            <if test="checkPersonName!=null and checkPersonName!=''">
+                CheckDate=now(),
+            </if>
+            <if test="result!=null and result!=''">
+                Result=#{result},
+            </if>
+            <if  test="checkStatus!=null and checkStatus!=''">
+                CheckStatus=#{checkStatus}
+            </if>
+        </trim>
+        where MonitorInputCheckRecordID=#{monitorInputCheckRecordID}
+    </update>
+
+    <delete id="deleteInputRecord">
+        delete from monitorinputcheckrecord
+        where MonitorPlanDetailID=#{0}
+        and InputDate like CONCAT('%',curdate(),'%')
+    </delete>
+
+    <select id="getRecordDetail" resultType="com.wlhse.dto.outDto.MonitorInputCheckRecordOutDto">
+        select t2.MonitorInputCheckRecordID as monitorInputCheckRecordID,
+        t2.Description as description,
+        t2.PicNo as picNo,
+        t2.Dispose_In as disposeIn,
+        t2.Close_In as closeIn,
+        t2.Check as `check`,
+        t2.Condition as `condition`,
+        t2.InputPersonID as inputPersonID,
+        t2.InputPersonName as inputPersonName,
+        t2.InputDate as inputDate,
+        t2.picLink as picLink,
+        t2.Result as result,
+        t2.CheckStatus as checkStatus
+        from monitorplandetail t1
+        left join monitorinputcheckrecord t2
+        on t1.MonitorPlanDetailID=t2.MonitorPlanDetailID
+        where t1.MonitorPlanDetailID=#{0}
+        and t2.Inputdate like CONCAT('%',curdate(),'%')
+    </select>
+
+    <select id="getCheckMonitor" resultType="com.wlhse.dto.outDto.MonitorInputCheckRecordOutDto">
+     select t2.MonitorInputCheckRecordID as monitorInputCheckRecordID,
+        t2.MonitorPlanID as monitorInputCheckRecordID,
+        t2.MonitorPlanDetailID as monitorInputCheckRecordID,
+        t1.No as `no`,
+        t1.DeviceNo as deviceNo,
+        t1.myNo as myNo,
+        t1.ProjectName as projectName,
+        t1.Charger as charger,
+        t1.Tel as tel,
+        t1.Condition as `condition`,
+        t2.Description as description,
+        t2.PicNo as picNo,
+        t2.Dispose_In as disposeIn,
+        t2.Close_In as closeIn,
+        t2.Check as `check`,
+        t2.dispose_Check as disposeCheck,
+        t2.Close_Check as closeCheck,
+        t2.InputPersonID as inputPersonID,
+        t2.InputPersonName as inputPersonName,
+        t2.InputDate as inputDate,
+        t2.CheckPersonID as  checkPersonID,
+        t2.CheckPersonName as checkPersonName,
+        t2.CheckDate as checkDate,
+        t2.picLink as picLink,
+        t2.CheckStatus as checkStatus
+        from monitorplandetail t1
+        left join monitorinputcheckrecord t2
+        on t1.MonitorPlanDetailID=t2.MonitorPlanDetailID
+        where t2.MonitorPlanID=#{0}
+        and t2.InputDate like CONCAT('%',#{1},'%')
+    </select>
+    <select id="getNeedToCheckPlanDetails" resultType="com.wlhse.dto.outDto.MonitorInputCheckRecordOutDto">
+        SELECT t1.MonitorInputCheckRecordID as monitorInputCheckRecordID,
+        t1.MonitorPlanID as monitorPlanID,
+        t1.MonitorPlanDetailID as monitorPlanDetailID,
+        t1.`Condition` as `condition`,
+        t1.Description as description,
+        t1.PicNo as picNo,
+        t1.Dispose_In as disposeIn,
+        t1.Close_In as closeIn,
+        t1.`Check` as `check`,
+        t1.Dispose_Check as disposeCheck,
+        t1.Close_Check as closeCheck,
+        t2.`No` as `no`,
+        t2.DeviceNo as deviceNo,
+        t2.MyNo as myNo,
+        t2.ProjectName as projectName,
+        t2.Charger as charger,
+        t2.Tel as tel,
+        t1.InputPersonName as inputPersonName,
+        t2.CompanyName as companyName,
+        t2.ItemCategory as itemCategory,
+        t1.CheckDate as checkDate,
+        t1.Result as result,
+        t1.CheckStatus as checkStatus
+        FROM monitorinputcheckrecord t1
+        INNER JOIN monitorplandetail t2
+        ON t1.MonitorPlanDetailID=t2.MonitorPlanDetailID
+        WHERE t1.`Condition`='备用'
+        AND t1.InputDate like CONCAT('%',#{1},'%')
+        AND t1.MonitorPlanID=#{0}
+
+    </select>
+    <select id="getRecordDetailByDate" resultType="com.wlhse.dto.outDto.MonitorInputCheckRecordOutDto">
+       select t2.MonitorInputCheckRecordID as monitorInputCheckRecordID,
+        t2.MonitorPlanID as monitorPlanID,
+        t2.MonitorPlanDetailID as monitorPlanDetailID,
+        t1.No as `no`,
+        t1.DeviceNo as deviceNo,
+        t1.myNo as myNo,
+        t1.ProjectName as projectName,
+        t1.Charger as charger,
+        t1.Tel as tel,
+        t2.Description as description,
+        t2.PicNo as picNo,
+        t2.Dispose_In as disposeIn,
+        t2.Close_In as closeIn,
+        t2.Check as `check`,
+        t2.Condition as `condition`,
+        t2.dispose_Check as disposeCheck,
+        t2.Close_Check as closeCheck,
+        t2.InputPersonID as inputPersonID,
+        t2.InputPersonName as inputPersonName,
+        t2.InputDate as inputDate,
+        t2.CheckPersonID as  checkPersonID,
+        t2.CheckPersonName as checkPersonName,
+        t2.CheckDate as checkDate,
+        t2.picLink as picLink,
+        t2.Result as result,
+        t2.CheckStatus as checkStatus
+        from monitorplandetail t1
+        left join monitorinputcheckrecord t2
+        on t1.MonitorPlanID=t2.MonitorPlanID
+        where t2.MonitorPlanDetailID=#{0}
+        and Inputdate like CONCAT('%',#{1},'%')
+    </select>
+
+
+    <select id="getDayReport" resultType="com.wlhse.dto.outDto.MonitorInputCheckRecordOutDto">
+         select distinct t2.MonitorInputCheckRecordID as monitorInputCheckRecordID,
+        t2.MonitorPlanID as monitorPlanID,
+        t2.MonitorPlanDetailID as monitorPlanDetailID,
+        t1.No as `no`,
+        t1.DeviceNo as deviceNo,
+        t1.myNo as myNo,
+        t1.ProjectName as projectName,
+        t1.Charger as charger,
+        t1.Tel as tel,
+        t2.Description as description,
+        t2.PicNo as picNo,
+        t2.Dispose_In as disposeIn,
+        t2.Close_In as closeIn,
+        t2.Check as `check`,
+        t2.Condition as `condition`,
+        t2.dispose_Check as disposeCheck,
+        t2.Close_Check as closeCheck,
+        t2.InputPersonID as inputPersonID,
+        t2.InputPersonName as inputPersonName,
+        t2.InputDate as inputDate,
+        t2.CheckPersonID as  checkPersonID,
+        t2.CheckPersonName as checkPersonName,
+        t2.CheckDate as checkDate,
+        t2.picLink as picLink,
+        t2.Result as result,
+        t2.CheckStatus as checkStatus
+        from monitorplandetail t1
+        ,monitorinputcheckrecord t2
+        where t1.MonitorPlanID=#{0}
+        and t1.MonitorPlanID=t2.MonitorPlanID
+        and Inputdate like CONCAT('%',#{1},'%')
+    </select>
+
+    <select id="getInputAndCheckDetail" resultType="com.wlhse.dto.outDto.MonitorInputCheckRecordOutDto">
+        select t1.MonitorInputCheckRecordID as monitorInputCheckRecordID,
+        t1.Description as description,
+        t1.Condition as `condition`,
+        t1.PicNo as picNo,
+        t1.Dispose_In as disposeIn,
+        t1.Close_In as closeIn,
+        t1.Check as `check`,
+        t1.Dispose_Check as disposeCheck,
+        t1.Close_Check as closeCheck,
+        t1.InputPersonID as inputPersonID,
+        t1.InputPersonName as inputPersonName,
+        t1.InputDate as inputDate,
+        t1.CheckPersonID as  checkPersonID,
+        t1.CheckPersonName as checkPersonName,
+        t1.CheckDate as checkDate,
+        t1.picLink as picLink,
+        t1.Result as result,
+        t1.CheckStatus as checkStatus
+        from monitorinputcheckrecord t1
+        where t1.MonitorPlanDetailID=#{0}
+        order by Close_Check asc
+    </select>
+
+    <delete id="deleteInputInfo">
+        delete from monitorinputcheckrecord
+        where MonitorInputCheckRecordID=#{0}
+    </delete>
+
+    <select id="getItemNum" resultType="int">
+        select count(*)
+        from monitorplandetail
+        where MonitorPlanID=#{0}
+    </select>
+
+
+
+</mapper>

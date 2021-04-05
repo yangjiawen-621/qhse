@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.EmployeeManagementDao">
+    <resultMap id="employeeMap" type="com.wlhse.dto.EmployeeManagementDto">
+        <id property="employeeID" column="CheckItem_ID"/>
+        <result property="name" column="name"/>
+        <result property="topFourCompanyCode" column="topFourCompanyCode"/>
+        <result property="companyCode" column="companyCode"/>
+        <result property="birthday" column="birthday"/>
+        <result property="jobTime" column="jobTime"/>
+        <result property="empGroup" column="empGroup"/>
+        <result property="position" column="position"/>
+        <result property="station" column="station"/>
+        <result property="uName" column="uName"/>
+        <result property="education" column="education"/>
+        <result property="roleName" column="roleName"/>
+        <result property="category" column="category"/>
+    </resultMap>
+
+    <resultMap id="employeeDtoMap" type="com.wlhse.dto.getDto.EmployeeDto">
+        <id property="employeeID" column="CheckItem_ID"/>
+        <result property="companyName" column="companyName"/>
+        <result property="topFourCompanyCode" column="companyCode"/>
+        <result property="name" column="name"/>
+        <result property="sex" column="sex"/>
+        <result property="birthday" column="birthday"/>
+        <result property="jobTime" column="jobTime"/>
+        <result property="empGroup" column="empGroup"/>
+        <result property="position" column="position"/>
+        <result property="station" column="station"/>
+        <result property="education" column="education"/>
+        <result property="email" column="email"/>
+        <result property="tel" column="tel"/>
+    </resultMap>
+
+    <resultMap id="employeeOldMap" type="com.wlhse.dto.EmployeeManagementDto">
+        <id property="employeeID" column="CheckItem_ID"/>
+        <result property="name" column="name"/>
+        <result property="companyCode" column="companyCode"/>
+        <result property="birthday" column="birthday"/>
+        <result property="jobTime" column="jobTime"/>
+        <result property="empGroup" column="empGroup"/>
+        <result property="position" column="position"/>
+        <result property="station" column="station"/>
+        <result property="uName" column="uName"/>
+        <result property="education" column="education"/>
+        <result property="roleName" column="roleName"/>
+    </resultMap>
+
+    <resultMap id="employeeDtoMap123" type="com.wlhse.dto.getDto.EmployeeDto">
+        <id property="employeeID" column="CheckItem_ID"/>
+        <result property="companyName" column="companyName"/>
+        <result property="name" column="name"/>
+        <result property="sex" column="sex"/>
+        <result property="birthday" column="birthday"/>
+        <result property="jobTime" column="jobTime"/>
+        <result property="empGroup" column="empGroup"/>
+        <result property="position" column="position"/>
+        <result property="station" column="station"/>
+        <result property="education" column="education"/>
+        <result property="email" column="email"/>
+        <result property="tel" column="tel"/>
+    </resultMap>
+
+    <sql id="key">
+        <trim suffixOverrides=",">
+            <if test="companyCode != null and companyCode != ''">
+                companyCode,
+            </if>
+            <if test="employeeCode != null and employeeCode != ''">
+                employeeCode,
+            </if>
+            <if test="name != null and name != ''">
+                name,
+            </if>
+            <if test="sex != null and sex != ''">
+                sex,
+            </if>
+            <if test="birthday != null and birthday != ''">
+                birthday,
+            </if>
+            <if test="jobTime != null and jobTime != ''">
+                jobTime,
+            </if>
+            <if test="empGroup != null and empGroup != ''">
+                empGroup,
+            </if>
+            <if test="position != null and position != ''">
+                position,
+            </if>
+            <if test="station != null and station != ''">
+                station,
+            </if>
+            <if test="education != null and education != ''">
+                education,
+            </if>
+            <if test="email != null and email != ''">
+                email,
+            </if>
+            <if test="tel != null and tel != ''">
+                tel,
+            </if>
+            <if test="category != null and category != ''">
+                category,
+            </if>
+            <if test="hash != null and hash != ''">
+                hash,
+            </if>
+        </trim>
+    </sql>
+
+    <sql id="value">
+        <trim suffixOverrides=",">
+            <if test="companyCode != null and companyCode != ''">
+                #{companyCode},
+            </if>
+            <if test="employeeCode != null and employeeCode != ''">
+                #{employeeCode},
+            </if>
+            <if test="name != null and name != ''">
+                #{name},
+            </if>
+            <if test="sex != null and sex != ''">
+                #{sex},
+            </if>
+            <if test="birthday != null and birthday != ''">
+                #{birthday},
+            </if>
+            <if test="jobTime != null and jobTime != ''">
+                #{jobTime},
+            </if>
+            <if test="empGroup != null and empGroup != ''">
+                #{empGroup},
+            </if>
+            <if test="position != null and position != ''">
+                #{position},
+            </if>
+            <if test="station != null and station != ''">
+                #{station},
+            </if>
+            <if test="education != null and education != ''">
+                #{education},
+            </if>
+            <if test="email != null and email != ''">
+                #{email},
+            </if>
+            <if test="tel != null and tel != ''">
+                #{tel},
+            </if>
+            <if test="category != null and category != ''">
+                #{category},
+            </if>
+            <if test="hash != null and hash != ''">
+                #{hash},
+            </if>
+        </trim>
+    </sql>
+
+    <insert id="addEmployee" parameterType="com.wlhse.dto.EmployeeManagementDto">
+        insert into employee
+        (<include refid="key"/>)
+        values
+        (<include refid="value"/>)
+    </insert>
+
+    <delete id="deleteEmployee" parameterType="com.wlhse.entity.EmployeePojo">
+        delete from employee
+        where employeeID = #{employeeID}
+    </delete>
+
+    <update id="updateEmployee" parameterType="com.wlhse.dto.EmployeeManagementDto">
+        update employee
+        <set>
+            <if test="companyCode != null and companyCode != ''">
+                companyCode=#{companyCode},
+            </if>
+            <if test="employeeCode != null and employeeCode != ''">
+                employeeCode=#{employeeCode},
+            </if>
+            <if test="name != null and name != ''">
+                name=#{name},
+            </if>
+            <if test="sex != null and sex != ''">
+                sex=#{sex},
+            </if>
+            <if test="birthday != null and birthday != ''">
+                birthday=#{birthday},
+            </if>
+            <if test="jobTime != null and jobTime != ''">
+                jobTime=#{jobTime},
+            </if>
+            <if test="empGroup != null and empGroup != ''">
+                empGroup=#{empGroup},
+            </if>
+            <if test="position != null and position != ''">
+                position=#{position},
+            </if>
+            <if test="station != null and station != ''">
+                station=#{station},
+            </if>
+            <if test="education != null and education != ''">
+                education=#{education},
+            </if>
+            <if test="email != null and email != ''">
+                email=#{email},
+            </if>
+            <if test="tel != null and tel != ''">
+                tel=#{tel},
+            </if>
+            <if test="category != null and category != ''">
+                category = #{category},
+            </if>
+        </set>
+        where EmployeeID = #{employeeID}
+    </update>
+
+    <sql id="baseColumn">
+        e.EmployeeID as employeeID,e.EmployeeCode as employeeCode,
+        e.name,left(e.companyCode,4) as topFourCompanyCode,
+        e.companyCode,e.birthday,e.jobTime,e.position,
+        e.station,e.education,e.EmpGroup as empGroup,
+        e.Sex as sex,e.Email as email,e.Tel as tel,us.UName as uName,e.Category as category,
+        cm.Name as companyName,cm2.Name as topFourCompanyName,r1.`Name` as rolename
+    </sql>
+
+    <select id="queryEmployeeByCondition" parameterType="com.wlhse.dto.EmployeeManagementDto" resultMap="employeeMap">
+        select
+        <include refid="baseColumn"/>
+        from
+        employee as e
+        LEFT JOIN sys_user as us on e.EmployeeID=us.EmployeeID
+        LEFT JOIN sys_company as cm on e.companyCode=cm.CompanyCode
+        LEFT JOIN sys_company as cm2 on left(e.companyCode,4)=cm2.CompanyCode
+        LEFT JOIN sys_user_role as ur1 on us.UName=ur1.UName
+        LEFT JOIN sys_roles as r1 on ur1.RoleCode=r1.RoleCode
+        <where>
+            <if test="name != null and name !=''">
+                and e.name = #{name}
+            </if>
+    <!--        <if test="companyCode != null and companyCode !=''">
+                and substring(e.companyCode,1,length(#{companyCode})) = #{companyCode}
+            </if>-->
+            <if test="birthday != null and birthday !=''">
+                and e.birthday = #{birthday}
+            </if>
+            <if test="position != null and position !=''">
+                and e.position = #{position}
+            </if>
+            <if test="station != null and station !=''">
+                and e.station = #{station}
+            </if>
+            <if test="education != null and education !=''">
+                and e.education = #{education}
+            </if>
+            <if test="empGroup != null and empGroup !=''">
+                and e.empGroup = #{empGroup}
+            </if>
+            <if test="category != null and category !=''">
+                and e.category = #{category}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryById" resultMap="employeeMap">
+        select
+        <include refid="baseColumn"/>
+        from
+        employee as e
+        LEFT JOIN sys_user as us on e.EmployeeID=us.EmployeeID
+        LEFT JOIN sys_company as cm on e.companyCode=cm.CompanyCode
+        LEFT JOIN sys_company as cm2 on left(e.companyCode,4)=cm2.CompanyCode
+        LEFT JOIN sys_user_role as ur1 on us.UName=ur1.UName
+        LEFT JOIN sys_roles as r1 on ur1.RoleCode=r1.RoleCode
+        where e.employeeID=#{0}
+    </select>
+
+    <insert id="addManyEmployeePojo" parameterType="com.wlhse.entity.EmployeePojo">
+        insert into
+        employee(CompanyCode,EmployeeCode,Name,Sex,Birthday,JobTime,EmpGroup,Position,Station,Education,Email,Tel,Hash)
+        values
+        <foreach collection="list" item="obj" separator=",">
+            (#{obj.companyCode},#{obj.employeeCode},#{obj.name},#{obj.sex},#{obj.birthday},#{obj.jobTime},#{obj.empGroup},#{obj.position},#{obj.station},#{obj.education},#{obj.email},#{obj.tel},#{obj.hash})
+        </foreach>
+    </insert>
+
+    <select id="queryByTestName" resultType="com.wlhse.dto.outDto.EmployOutDtoTest">
+        select e1.EmployeeID as employId ,c1.`Name` as companyName,e1.`Name` as employName
+        from employee e1 ,
+        sys_company c1
+        where e1.`Name` LIKE CONCAT(#{0},'%')
+        and e1.CompanyCode=c1.CompanyCode
+    </select>
+
+    <select id="getAllEmployeeDto" resultMap="employeeOldMap">
+        select e1.EmployeeID,
+        c1.`Name` as companyName,
+        e1.EmployeeCode,
+        e1.`Name`,
+        e1.EmpGroup as empGroup
+        from employee as e1
+        left join sys_company as c1
+        on e1.CompanyCode=c1.CompanyCode
+        left join sys_user as u1
+        on e1.EmployeeID=u1.EmployeeID
+        <where>
+            <if test="name1 != null and name1 !=''">
+                and e1.Name LIKE CONCAT('%','${name1}','%')
+            </if>
+  <!--          <if test="companyCode != null and companyCode !=''">
+                and substring(e1.companyCode,1,length(#{companyCode})) = #{companyCode}
+            </if>-->
+        </where>
+    </select>
+
+    <select id="getAllEmployeeDtoCount" resultType="java.lang.Integer">
+        select count(*)
+        from employee as e1
+        left join sys_company as c1
+        on e1.CompanyCode=c1.CompanyCode
+        left join sys_user as u1
+        on e1.EmployeeID=u1.EmployeeID
+        left join sys_user_role as ur1
+        on u1.UName=ur1.UName
+        left join sys_roles as r1
+        on ur1.RoleCode=r1.RoleCode
+        <where>
+            <if test="name1 != null and name1 !=''">
+                and e1.Name LIKE CONCAT('%','${name1}','%')
+            </if>
+        </where>
+    </select>
+
+    <select id="getEmployeeTotal" resultType="int">
+        select count(*) as count
+        from employee as e LEFT JOIN sys_user as us on e.EmployeeID=us.EmployeeID
+        <where>
+            <if test="name != null and name !=''">
+                and e.name = #{name}
+            </if>
+       <!--     <if test="companyCode != null and companyCode !=''">
+                and substring(e.companyCode,1,length(#{companyCode})) = #{companyCode}
+            </if>-->
+
+            <if test="birthday != null and birthday !=''">
+                and e.birthday = #{birthday}
+            </if>
+
+            <if test="position != null and position !=''">
+                and e.position = #{position}
+            </if>
+            <if test="station != null and station !=''">
+                and e.station = #{station}
+            </if>
+            <if test="education != null and education !=''">
+                and e.education = #{education}
+            </if>
+            <if test="empGroup != null and empGroup !=''">
+                and e.empGroup = #{empGroup}
+            </if>
+            <if test="category != null and category !=''">
+                and e.category = #{category}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateStatusByEmpId">
+        update sys_user set `Status`=#{status} where EmployeeID=#{employeeId}
+    </update>
+
+    <update id="updateRoleCodeByEmpId">
+        update sys_user_role set RoleCode=#{roleCode}
+        where uname=(select uname from sys_user where EmployeeID=#{employeeId})
+    </update>
+
+    <select id="queryRoleCodeByEmpId" resultType="com.wlhse.dto.EmployeeManagementDto">
+        select t1.RoleCode,t2.`Status`,t2.UName
+        from sys_user_role as t1
+        right join sys_user as t2
+        on t1.UName=t2.UName where t2.EmployeeID=#{employeeId}
+    </select>
+
+
+    <select id="queryCompanyCodeByEmpId" resultType="java.lang.String">
+        SELECT CompanyCode
+        FROM employee
+        where EmployeeID=#{employeeId}
+    </select>
+
+    <select id="querySecondCompanyCodeByEmpId" resultType="java.lang.String">
+        select substring(CompanyCode,1,4) from employee where employeeID=#{employeeId}
+    </select>
+
+    <select id="queryByHash" resultType="java.lang.Integer">
+        select count(*) from employee where hash=#{hash}
+    </select>
+
+    <insert id="addNewEmployeePojo" parameterType="com.wlhse.entity.EmployeePojo">
+        insert into
+        employee(CompanyCode,EmployeeCode,Name,Sex,Birthday,JobTime,EmpGroup,Position,Station,Education,Email,Tel,Hash)
+        values
+            (#{companyCode},#{employeeCode},#{name},#{sex},#{birthday},#{jobTime},#{empGroup},#{position},#{station},#{education},#{email},#{tel},#{hash})
+    </insert>
+
+    <select id="getEmployeePojo" resultMap="employeeDtoMap123">
+        select * from employee where EmployeeID=#{employeeId}
+    </select>
+
+    <select id="queryEmployeeID" resultType="java.lang.Integer">
+        select employeeID from employee where hash=#{hash}
+    </select>
+
+    <select id="queryEmployeeNameByEmployeeId" resultType="java.lang.String">
+        select Name
+        from employee
+        where EmployeeID=#{0}
+    </select>
+</mapper>

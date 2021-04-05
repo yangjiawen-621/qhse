@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--tobing-->
+<!--大屏Mapper-->
+<mapper namespace="com.wlhse.dao.DashboardSecurityMillionDao">
+    <resultMap id="dashboardSecurityMillionDaoMap" type="com.wlhse.entity.DashboardSecurityMillionPojo">
+    </resultMap>
+
+    <resultMap id="DSM" type="com.wlhse.entity.DashboardSecurityMillionDto">
+    </resultMap>
+    <!--查：安全管理-月度百万工时-->
+    <select id="queryMonthDSM" resultMap="DSM">
+        SELECT
+        SUM(subtotal) AS monthSubtotal
+        FROM dashboard_security_million
+        WHERE updateTime BETWEEN #{minDate} AND #{maxDate}
+        <if test="companyCode!=null and companyCode!=''">
+            AND companyCode=#{companyCode}
+        </if>
+    </select>
+
+    <!--查：安全管理-年度百万工时-->
+    <select id="queryYearDSM" resultMap="DSM">
+        SELECT
+        SUM(subtotal) AS yearSubtotal
+        FROM dashboard_security_million
+        WHERE updateTime BETWEEN #{minDate} AND #{maxDate}
+        <if test="companyCode!=null and companyCode!=''">
+            AND companyCode=#{companyCode}
+        </if>
+    </select>
+
+    <!--统计：companyCode-->
+    <select id="countDashboardSecurityMillion" resultType="java.lang.Integer">
+        SELECT COUNT(CompanyCode) FROM dashboard_security_million
+    </select>
+
+    <!--插入：【安全管理数据】-->
+    <insert id="insertDashboardSecurityMillion" parameterType="com.wlhse.entity.DashboardSecurityMillionPojo">
+        INSERT INTO dashboard_security_million(
+        companyCode,
+        companyName,
+        subtotal,
+        updateTime
+        )
+        VALUES (
+        #{companyCode},
+        #{companyName},
+        #{subtotal},
+        #{updateTime}
+        )
+    </insert>
+
+    <!--更新：【安全管理数据】-->
+    <update id="updateDashboardSecurity" parameterType="com.wlhse.entity.DashboardSecurityMillionPojo">
+        UPDATE dashboard_security_million SET
+        subtotal=#{subtotal},
+        updateTime=#{updateTime}
+    </update>
+</mapper>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.CompanyDao">
+
+    <resultMap id="companyMap" type="com.wlhse.entity.CompanyPojo">
+        <id property="sysCompanyID" column="sys_CompanyID"/>
+        <result property="companyCode" column="companyCode"/>
+        <result property="name" column="name"/>
+        <result property="serialNO" column="serialNO"/>
+        <result property="category1" column="category1"/>
+        <result property="category2" column="category2"/>
+        <result property="category3" column="category3"/>
+        <result property="description" column="description"/>
+    </resultMap>
+
+    <select id="queryCompany" resultMap="companyMap" parameterType="Integer">
+        SELECT * FROM sys_company
+        WHERE Status='启用' And SUBSTR(sys_company.CompanyCode,1,LENGTH(
+        (select CompanyCode from employee where EmployeeID=#{id})))
+        =(select CompanyCode from employee where EmployeeID=#{id})
+    </select>
+
+    <select id="queryQhseCompany" resultMap="companyMap" parameterType="Integer">
+        SELECT * FROM sys_company
+        WHERE Status='启用'
+    </select>
+
+    <select id="queryByCompanyName" resultType="java.lang.String">
+        select CompanyCode from sys_company
+        <where>
+            name=#{0}
+        </where>
+    </select>
+
+    <select id="queryByCompanyCode" resultType="java.lang.String">
+        select name from sys_company
+        <where>
+            CompanyCode=#{0}
+        </where>
+    </select>
+
+    <select id="queryMaxLenth" resultType="int">
+        select MAX(LENGTH(CompanyCode)) from sys_company
+    </select>
+    <select id="getListCompanyOutSonDto" resultType="com.wlhse.dto.outDto.CompanyOutDto">
+        select CompanyCode as sonCode,Name as sonName from sys_company
+        <where>
+            LENGTH(CompanyCode)=#{length}
+            <if test="name!=null and name != ''">
+                AND Name LIKE CONCAT('%',#{name},'%')
+            </if>
+        </where>
+    </select>
+    <select id="getCompanyOutDto" resultType="java.lang.String">
+        select name from sys_company
+        <where>
+            CompanyCode=#{0}
+        </where>
+    </select>
+    <select id="getCompanyCode" resultType="java.lang.String">
+        select CompanyCode from sys_company
+        <where>
+            SUBSTRING(CompanyCode,1,length(#{companyCode}))=#{companyCode}
+            and name=#{name}
+        </where>
+    </select>
+
+    <select id="getNameCount" resultType="int">
+        SELECT COUNT(*) from sys_company
+        WHERE name=#{name}
+    </select>
+
+    <select id="queryContractingCompany" resultMap="companyMap">
+        SELECT * FROM sys_company
+        <where>
+            Status='启用'
+            AND SUBSTR(CompanyCode,1,2)='99'
+            <if test="name!=null and name != ''">
+                AND Name LIKE CONCAT('%',#{name},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="getContractingCompanyCount" resultType="int">
+        SELECT COUNT(*)
+        FROM
+        sys_company
+        <where>
+            Status='启用'
+            AND SUBSTR(CompanyCode,1,2)='99'
+            <if test="name!=null and name != ''">
+                AND Name LIKE CONCAT('%',#{name},'%')
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据总公司代码查询总公司和一级子公司信息-->
+    <select id="subCompanysCodeByCompanyCode" parameterType="java.lang.String" resultMap="companyMap">
+        select * from sys_company where
+        SUBSTR(sys_company.CompanyCode,1,LENGTH(#{companyCode}))=#{companyCode}
+         and LENGTH(#{companyCode})+2>=LENGTH(sys_company.CompanyCode)
+    </select>
+    <!-- 根据登录人ID查询其所在总公司和一级子公司信息 -->
+    <select id="subCompanysCodeByPersonId" parameterType="java.lang.Integer" resultMap="companyMap">
+        select * from sys_company where
+        SUBSTR(sys_company.CompanyCode,1,LENGTH((select CompanyCode from employee where EmployeeID=#{id})))=
+        (select CompanyCode from employee where EmployeeID=#{id})
+         and LENGTH((select CompanyCode from employee where EmployeeID=#{id}))+2>=LENGTH(sys_company.CompanyCode)
+    </select>
+    <!--  查询公司的编号代码  -->
+    <select id="querryCode" parameterType="java.lang.String" resultType="java.lang.String">
+        select Code from sys_company where CompanyCode=#{code}
+    </select>
+
+    <select id="getCompanyByEmployeeId" resultType="java.lang.String">
+        select CompanyCode
+        from employee
+        where EmployeeID=#{0}
+    </select>
+
+    <select id="getCompanyByCompanyCode" resultMap="companyMap">
+        select * from sys_company
+        where CompanyCode=#{0}
+    </select>
+</mapper>

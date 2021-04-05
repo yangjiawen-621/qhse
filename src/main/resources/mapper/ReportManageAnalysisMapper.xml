@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wlhse.dao.ReportManageAnalysisDao">
+<!--    <select id="getReportCostManageAnalysis" resultType="com.wlhse.dto.outDto.ReportCostManageOutDto">-->
+<!--        select-->
+<!--        rup.UnitPriceID as unitPriceID,-->
+<!--        rup.ReportType as reportType,-->
+<!--        CONCAT(rup.CostYear,'年') as costYear,-->
+<!--        count(*) as reportCount,-->
+<!--        count(if(re.AuditorCategory = #{personCategory},1,NULL)) as auditorCount,-->
+<!--        count(if(re.AuditorCategory =  #{personCategory},1,NULL))*rup.unitPrice*rup.auditorProportion as auditorTotalCost,-->
+<!--        count(if(re.ApproverCategory =  #{personCategory},1,NULL)) as approverCount,-->
+<!--        count(if(re.ApproverCategory =  #{personCategory},1,NULL))*rup.unitPrice*rup.approverProportion as approverTotalCost,-->
+<!--        count(if(re.AuditorCategory =  #{personCategory},1,NULL))*rup.unitPrice*rup.auditorProportion +-->
+<!--        count(if(re.ApproverCategory =  #{personCategory},1,NULL))*rup.unitPrice*rup.approverProportion as reportTypeTotalCost-->
+<!--        from report_unit_price as rup , report as re-->
+<!--        <where>-->
+<!--            <if test="companyCode != null and companyCode != ''">-->
+<!--                and substring(re.CompanyCode,1,length(#{companyCode}))=#{companyCode}-->
+<!--            </if>-->
+<!--            and rup.CostYear=#{costYear}-->
+<!--            and rup.ReportType=re.ReportType-->
+<!--            and YEAR(re.ReportPlanDate) = #{costYear}-->
+<!--            and (re.SealDate!='' or re.SealDate!=null)-->
+<!--        </where>-->
+<!--        group by rup.reportType, rup.unitPriceID-->
+<!--    </select>-->
+    <select id="getReportCostManageAnalysis" resultType="com.wlhse.dto.outDto.ReportCostManageOutDto">
+        SELECT
+            CONCAT(r2.year,"年") as costYear,
+            r2.reportType,
+            COUNT(DISTINCT(r2.reportCode)) as reportCount,
+            COUNT(IF(r2.role="审核",1,NULL)) as auditorCount,
+            SUM(IF(r2.role="审核",r2.unitPrice,0)) as auditorTotalCost,
+            COUNT(IF(r2.role="审批",1,NULL)) as approverCount,
+            SUM(IF(r2.role="审批",r2.unitPrice,0)) as approverTotalCost,
+            SUM(IF(r2.role="审核",r2.unitPrice,0))+SUM(IF(r2.role="审批",r2.unitPrice,0)) as reportTypeTotalCost
+        FROM
+            (SELECT
+                ANY_VALUE(YEAR(rer1.SealDate)) as year,
+                rer1.ReportCode as reportCode,
+                ANY_VALUE(rer1.ReportType) as reportType,
+                ANY_VALUE(rer1.CompanyName) as companyName,
+                rer1.EmployeeRole as role,
+                rer1.EmployeeName as personName,
+                r1.unitPrice as unitPrice,
+                rer1.EmployeeCategory as personCategory,
+                COUNT(*) as count
+            FROM report_employee_record as rer1
+            JOIN
+                (SELECT
+                    ANY_VALUE(YEAR(rer.SealDate)) as year,
+                    rer.ReportCode as reportCode,
+                    ANY_VALUE(rer.ReportType) as reportType,
+                    ANY_VALUE(rer.CompanyName) as companyName,
+                    rer.EmployeeRole as role,
+                    ANY_VALUE(up.unitPrice) as initialUnitPrice,
+                    TRUNCATE(ANY_VALUE(up.unitPrice)/COUNT(*),2) as unitPrice,
+                    COUNT(*) as count
+                FROM report_employee_record as rer
+                JOIN
+                    (SELECT
+                        rup1.CostYear as year,
+                        rup1.ReportType as reportType,
+                        rup1.UnitPrice*rup1.AuditorProportion as unitPrice,
+                        "审核" as role
+                    FROM report_unit_price as rup1
+                    WHERE rup1.CostYear=#{costYear}
+                    UNION
+                    SELECT
+                        rup2.CostYear as year,
+                        rup2.ReportType as reportType,
+                        rup2.UnitPrice*rup2.ApproverProportion as unitPrice,
+                        "审批" as role
+                    FROM report_unit_price as rup2
+                    WHERE rup2.CostYear=#{costYear}) as up
+                ON rer.ReportType=up.reportType and rer.EmployeeRole=up.role
+                WHERE YEAR(rer.SealDate)=#{costYear}
+                    <if test="companyCode != null and companyCode != ''">
+                        and substring(rer.CompanyCode,1,length(#{companyCode}))=#{companyCode}
+                    </if>
+                GROUP BY rer.ReportCode,rer.EmployeeRole) as r1
+            ON rer1.ReportCode=r1.reportCode and rer1.EmployeeRole=r1.role
+            WHERE rer1.EmployeeCategory=#{personCategory}
+            GROUP BY rer1.ReportCode,rer1.EmployeeRole,rer1.EmployeeName) as r2
+        GROUP BY r2.reportType
+    </select>
+
+    <select id="getSealStatisticsAnalysisOutDto" resultType="com.wlhse.dto.outDto.ReportSealStatisticsOutDto">
+        select companyName,
+        IFNULL(sum(re.Seal1), 0) as seal1Num,
+        IFNULL(sum(re.Seal2), 0) as seal2Num,
+        IFNULL(sum(re.Seal3), 0) as seal3Num,
+        IFNULL(sum(re.Seal4), 0) as seal4Num,
+        IFNULL(sum(re.Seal5), 0) as seal5Num,
+        IFNULL(sum(re.Seal6), 0) as seal6Num,
+        IFNULL(sum(re.Seal1), 0)+IFNULL(sum(re.Seal2), 0)+IFNULL(sum(re.Seal3), 0)+
+        IFNULL(sum(re.Seal4), 0)+IFNULL(sum(re.Seal5), 0)+IFNULL(sum(re.Seal6), 0) as total
+        from report as re
+        LEFT JOIN sys_company as cp
+        on re.CompanyCode=cp.CompanyCode
+        <where>
+            <if test="companyCode != null and companyCode != ''">
+                and substring(re.CompanyCode,1,length(#{companyCode}))=#{companyCode}
+            </if>
+            <if test="startDate != null and startDate != ''">
+                and re.ReportPlanDate between #{startDate} and #{endDate}
+            </if>
+            and (re.SealDate!='' or re.SealDate!=null)
+            and cp.`Status`='启用'
+        </where>
+        group by CompanyName
+    </select>
+
+<!--    <select id="getWorkloadsticsAnalysisOutDto" resultType="com.wlhse.dto.outDto.ReportWorkloadStatisticsOutDto">-->
+<!--        SELECT-->
+<!--            re.companyName,-->
+<!--            re.auditorName as personName,-->
+<!--            re.reportType as reportType,-->
+<!--            rup.UnitPrice * rup.AuditorProportion as unitPrice,-->
+<!--            '审核' as role,-->
+<!--            re.AuditorCategory as personCategory,-->
+<!--            count(*) as typeCount,-->
+<!--            rup.UnitPrice * rup.AuditorProportion * count(*) as rewardAmount-->
+<!--            FROM report as re-->
+<!--            JOIN report_unit_price as rup-->
+<!--            on re.ReportType = rup.ReportType-->
+<!--            <where>-->
+<!--                <if test="companyCode != null and companyCode != ''">-->
+<!--                    and re.CompanyCode = #{companyCode}-->
+<!--                </if>-->
+<!--                <if test="startDate != null and startDate != ''">-->
+<!--                    and re.ReportPlanDate between #{startDate} and #{endDate}-->
+<!--                    and rup.CostYear = YEAR (#{startDate})-->
+<!--                </if>-->
+<!--                and (re.SealDate!='' or re.SealDate!=null)-->
+<!--            </where>-->
+<!--            GROUP BY-->
+<!--                re.AuditorName,re.ReportType-->
+<!--        UNION-->
+<!--        SELECT-->
+<!--            re.companyName,-->
+<!--            re.ApproverName as personName,-->
+<!--            re.reportType as reportType,-->
+<!--            rup.UnitPrice * rup.ApproverProportion as unitPrice,-->
+<!--            '审批' as role,-->
+<!--            re.ApproverCategory as personCategory,-->
+<!--            count(*) as typeCount,-->
+<!--            rup.UnitPrice * rup.ApproverProportion * count(*) as rewardAmount-->
+<!--        FROM report as re-->
+<!--        JOIN report_unit_price as rup-->
+<!--        on re.ReportType = rup.ReportType-->
+<!--        <where>-->
+<!--            <if test="companyCode != null and companyCode != ''">-->
+<!--                and re.CompanyCode = #{companyCode}-->
+<!--            </if>-->
+<!--            <if test="startDate != null and startDate != ''">-->
+<!--                and re.ReportPlanDate between #{startDate} and #{endDate}-->
+<!--                and rup.CostYear = YEAR (#{startDate})-->
+<!--            </if>-->
+<!--            and (re.SealDate!='' or re.SealDate!=null)-->
+<!--        </where>-->
+<!--        GROUP BY-->
+<!--            re.ApproverName,re.ReportType-->
+<!--    </select>-->
+
+    <select id="getWorkloadStatisticsAnalysisOutDto" resultType="com.wlhse.dto.outDto.ReportWorkloadStatisticsOutDto">
+        SELECT
+            ANY_VALUE(YEAR(rer.SealDate)) as year,
+            ANY_VALUE(rer.CompanyName) as companyName,
+            rer.EmployeeName as personName,
+            rer.ReportType as reportType,
+            r1.unitPrice,
+            rer.EmployeeRole as role,
+            COUNT(*) as typeCount,
+            r1.unitPrice*COUNT(*) as rewardAmount,
+            ANY_VALUE(rer.EmployeeCategory) as personCategory
+        FROM report_employee_record as rer
+        JOIN
+            (SELECT
+                rer1.ReportCode as reportCode,
+                ANY_VALUE(rer1.ReportType) as reportType,
+                TRUNCATE(ANY_VALUE(price.unitPrice)/COUNT(*),2) as unitPrice,
+                rer1.EmployeeRole as role
+            FROM report_employee_record as rer1
+            JOIN
+                (SELECT
+                    rup1.CostYear as year,
+                    rup1.ReportType as reportType,
+                    rup1.UnitPrice*AuditorProportion as unitPrice,
+                    '审核' as role
+                FROM report_unit_price as rup1
+                WHERE rup1.CostYear = YEAR (#{startDate})
+                UNION
+                SELECT
+                    rup2.CostYear as year,
+                    rup2.ReportType as reportType,
+                    rup2.UnitPrice*ApproverProportion as unitPrice,
+                    '审批' as role
+                FROM report_unit_price as rup2
+                WHERE rup2.CostYear = YEAR (#{startDate})
+                ) as price
+            ON rer1.ReportType=price.reportType and rer1.EmployeeRole=price.role
+            WHERE
+                <if test="companyCode != null and companyCode != ''">
+                    rer1.CompanyCode = #{companyCode}
+                </if>
+                and rer1.SealDate between #{startDate} and #{endDate}
+            GROUP BY rer1.ReportCode,rer1.EmployeeRole) as r1
+        ON rer.ReportCode=r1.reportCode and rer.EmployeeRole=r1.role
+        WHERE
+            <if test="companyCode != null and companyCode != ''">
+                rer.CompanyCode = #{companyCode}
+            </if>
+            and rer.SealDate between #{startDate} and #{endDate}
+        GROUP BY rer.EmployeeRole DESC,rer.ReportType,r1.unitPrice,rer.EmployeeName
+    </select>
+
+    <select id="getCompanyCodeByEmployeeID" resultType="java.lang.String" parameterType="java.lang.Integer">
+        select companyCode
+        from employee
+        <where>
+            <if test="employeeID!=null and employeeID != ''">
+                AND EmployeeID=#{employeeID}
+            </if>
+        </where>
+    </select>
+</mapper>

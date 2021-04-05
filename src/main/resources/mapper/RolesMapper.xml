@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.RolesDao">
+    <resultMap id="roleMap" type="com.wlhse.entity.RolesPojo">
+        <id property="roleID" column="role_ID"/>
+        <result property="roleCode" column="roleCode"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+    </resultMap>
+
+    <sql id="key">
+        <trim suffixOverrides=",">
+            <if test="roleCode != null and roleCode != ''">
+                roleCode,
+            </if>
+            <if test="name != null and name != ''">
+                name,
+            </if>
+            <if test="description != null and description != ''">
+                description,
+            </if>
+        </trim>
+    </sql>
+
+    <sql id="value">
+        <trim suffixOverrides=",">
+            <if test="roleCode != null and roleCode != ''">
+                #{roleCode},
+            </if>
+            <if test="name != null and name != ''">
+                #{name},
+            </if>
+            <if test="description != null and description != ''">
+                #{description},
+            </if>
+        </trim>
+    </sql>
+
+    <insert id="addRoles" parameterType="com.wlhse.entity.RolesPojo">
+        insert into sys_roles
+        (<include refid="key"/>)
+        values
+        (<include refid="value"/>)
+    </insert>
+
+    <delete id="deleteRoles" parameterType="com.wlhse.entity.RolesPojo">
+      delete from  sys_roles
+      where role_ID = #{roleID}
+   </delete>
+
+    <update id="updateRoles" parameterType="java.lang.Integer">
+        update sys_roles
+        <trim prefix="set" suffixOverrides=",">
+            <if test="roleCode != null and roleCode != ''">
+                roleCode = #{roleCode},
+            </if>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="description != null and description != ''">
+                description = #{description},
+            </if>
+        </trim>
+        where role_ID = #{roleID}
+    </update>
+
+    <select id="queryRoles" resultMap="roleMap">
+      select * from sys_roles
+      <where>
+          <if test="roleName != null and roleName != ''">
+              Name like "%"#{roleName}"%"
+          </if>
+      </where>
+   </select>
+
+    <select id="queryTotal" resultType="java.lang.Integer">
+       select count(*)
+       from sys_roles
+       <where>
+           <if test="roleName != null and roleName != ''">
+               Name like "%"#{roleName}"%"
+           </if>
+       </where>
+    </select>
+
+    <select id="queryRoleById" resultMap="roleMap">
+       select * from sys_roles
+       where
+       Role_ID = #{roleID}
+    </select>
+
+    <select id="queryMaxRoleCode" resultType="java.lang.String">
+        select max(roleCode) from sys_roles
+    </select>
+    <select id="queryRoleByName" resultMap="roleMap">
+    select * from sys_roles
+       where
+       `Name` = #{0}
+    </select>
+</mapper>

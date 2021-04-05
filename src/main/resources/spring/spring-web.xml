@@ -1,0 +1,78 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:task="http://www.springframework.org/schema/task"
+
+       xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/task
+        http://www.springframework.org/schema/task/spring-task-3.2.xsd">
+    <!--1.开启spring注解模式-->
+    <mvc:annotation-driven/>
+
+    <context:property-placeholder location="classpath:db.properties"/>
+    <context:component-scan base-package="com.wlhse.controller"/>
+    <!--让Spring框架能够捕获所有URL的请求，同时又将静态资源的请求转由Web容器处理-->
+    <mvc:default-servlet-handler/>
+    <!-- 扫描任务 -->
+    <context:component-scan base-package="com.wlhse.task" />
+    <!--配置开始定时任务-->
+    <task:annotation-driven />
+    <!-- 项目权限认证 - 本地测试时关闭 -->
+ <mvc:interceptors>
+        <mvc:interceptor>
+
+            <mvc:mapping path="/**"/>
+
+            <mvc:exclude-mapping path="/api/v3/login"/>
+            <mvc:exclude-mapping path="/api/v3/anzhuo2"/>
+            <mvc:exclude-mapping path="/api/v3/menu_module"/>
+            <mvc:exclude-mapping path="/api/v3/logout"/>
+            <mvc:exclude-mapping path="/api/v3/file_upload"/>
+            <mvc:exclude-mapping path="/api/v3/uploadQHSEProblem"/>
+            <mvc:exclude-mapping path="/api/v3/uploadQHSEFill"/>
+            <mvc:exclude-mapping path="/api/v3/problem_excel_upload"/>
+            <mvc:exclude-mapping path="/api/v3/check_item_excel_upload"/>
+            <mvc:exclude-mapping path="/api/v3/app_apk"/>
+            <mvc:exclude-mapping path="/api/v3/employees_excel_upload"/>
+            <mvc:exclude-mapping path="/api/v3/problems_excel_upload"/>
+            <mvc:exclude-mapping path="/api/v3/description/excel/upload"/>
+            <mvc:exclude-mapping path="/api/v3/downloadStatisticsTemplate"/>
+            <mvc:exclude-mapping path="/api/v3/downloadMonitorDetailExcelTemplate"/>
+            <mvc:exclude-mapping path="/api/v3/screenShotDownload"/>
+            <mvc:exclude-mapping path="/wlhse/api/v3/selectModule/"/>
+            <mvc:exclude-mapping path="/api/v3/selectModule/"/>
+            <mvc:exclude-mapping path="/api/v3/produce"/>
+            <mvc:exclude-mapping path="/api/v3/message"/>
+            <mvc:exclude-mapping path="/api/v3/message/*"/>
+            <mvc:exclude-mapping path="/api/v3/message_count"/>
+            <mvc:exclude-mapping path="/api/v3/message/all"/>
+
+            <mvc:exclude-mapping path="/api/v3/problems_response/*"/>
+    <mvc:exclude-mapping path="/ws"/>
+
+    <bean class="com.wlhse.controller.APIInterceptor"/>
+</mvc:interceptor>
+</mvc:interceptors>
+
+<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+<property name="prefix" value="/WEB-INF/"/>
+<property name="suffix" value=".jsp"/>
+</bean>
+
+<!-- <mvc:resources mapping="/Pictures/**" location="/WEB-INF/Pictures/"/>-->
+    <!--文件上传解析器,名字不允许更改 bytes-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 设定默认编码 -->
+        <property name="defaultEncoding" value="UTF-8"/>
+        <!-- 设定文件上传的最大值50MB，50*1024*1024 -->
+        <property name="maxUploadSize" value="${web.maxUploadSize}"/>
+        <property name="maxInMemorySize" value="${web.maxInMemorySize}"/>
+    </bean>
+</beans>

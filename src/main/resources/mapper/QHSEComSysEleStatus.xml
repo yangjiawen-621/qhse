@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.QHSEComSysEleStatusDao">
+
+    <insert id="addComstatus" parameterType="com.wlhse.dto.QHSEComSysEleStatusDto">
+        insert into qhse_comsyselestatus
+        (Year,CompanyCode,CompanyName,Status)
+        values(#{year},#{companyCode},(select Name from sys_company where CompanyCode=#{companyCode}),#{status})
+    </insert>
+
+    <delete id="deleteComstatus" parameterType="com.wlhse.dto.QHSEComSysEleStatusDto">
+        delete from qhse_comsyselestatus
+        where ID = #{id}
+    </delete>
+
+    <update id="updateComstatus" parameterType="com.wlhse.dto.QHSEComSysEleStatusDto">
+        update qhse_comsyselestatus
+        <trim prefix="set" suffixOverrides=",">
+            <if test="status != null and status != ''">
+                Status= #{status},
+            </if>
+        </trim>
+        <where>
+            Year=#{year} and CompanyCode=#{companyCode}
+        </where>
+    </update>
+
+    <select id="querryComstatus" parameterType="com.wlhse.dto.QHSEComSysEleStatusDto" resultType="com.wlhse.entity.QHSEComSysEleStatusPojo">
+        select *
+        from qhse_comsyselestatus
+        <where>
+            <if test="year != null and year != ''">
+                and Year=#{year}
+            </if>
+            <if test="companyCode != null and companyCode != ''">
+                and substring(CompanyCode,1,length(#{companyCode}))=#{companyCode}
+            </if>
+            <if test="status != null and status != ''">
+                and Status= #{status}
+            </if>
+        </where>
+    </select>
+</mapper>

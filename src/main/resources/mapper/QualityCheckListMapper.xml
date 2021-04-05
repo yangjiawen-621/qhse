@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.QualityCheckListDao">
+    <select id="getTreeDto" resultType="com.wlhse.dto.QualityCheckListDto">
+        select * from quality_checklist
+        where status="启用"
+    </select>
+
+
+    <select id="getTreeDto1" parameterType="java.lang.String" resultType="com.wlhse.dto.QualityCheckListDto">
+         select  * from
+         (select * from quality_checklist where CheckListCode like concat(#{checkedListCode},'%'))
+         as a
+        where Status='启用'
+
+    </select>
+
+    <select id="getAllTreeDto" resultType="com.wlhse.dto.QualityCheckListDto">
+        select * from quality_checklist
+    </select>
+
+    <select id="getAllTableNode" resultType="java.lang.String">
+        select CheckListCode
+        from quality_checklist
+        where length(CheckListCode)=4
+    </select>
+
+    <select id="getCurrentChildNodes" resultType="java.lang.String">
+        select  CheckListCode
+        from quality_checklist
+        where length(CheckListCode)=length(#{code})+4 and CheckListCode like concat(#{code},'%')
+    </select>
+
+    <select id="getCheckListOne" resultType="com.wlhse.dto.QualityCheckListDto">
+        select * from quality_checklist
+        where CheckListCode=#{code}
+    </select>
+    <update id="updateIsChild">
+        update quality_checklist
+        <set>
+            IsChildNode=#{status}
+        </set>
+        where CheckListCode=#{code}
+    </update>
+
+    <insert id="addCheckList" parameterType="com.wlhse.dto.QualityCheckListDto" useGeneratedKeys="true" keyProperty="checkListID">
+        insert into quality_checklist
+        (
+        <trim suffixOverrides=",">
+            <if test="checkListName != null and checkListName != ''">
+                CheckListName,
+            </if>
+            <if test="checkListCode != null and checkListCode != ''">
+                checkListCode,
+            </if>
+            <if test="attribute != null and attribute != ''">
+                attribute,
+            </if>
+            <if test="parentName != null and parentName != ''">
+                parentName,
+            </if>
+            <if test="isChildNode != null and isChildNode != ''">
+                isChildNode,
+            </if>
+            <if test="status != null and status != ''">
+                status,
+            </if>
+            <if test="checkCategory != null and checkCategory != ''">
+                CheckCategory,
+            </if>
+            <if test="checkBasis != null and checkBasis != ''">
+                CheckBasis,
+            </if>
+            <if test="checkMethod != null and checkMethod != ''">
+                CheckMethod,
+            </if>
+            <if test="targetScore != null and targetScore != ''">
+                TargetScore,
+            </if>
+            <if test="scoreShows != null and scoreShows != ''">
+                ScoreShows,
+            </if>
+            <if test="standard != null and standard != ''">
+                Standard,
+            </if>
+            <if test="standardNo != null and standardNo != ''">
+                StandardNo,
+            </if>
+            <if test="standardContent != null and standardContent != ''">
+                StandardContent
+            </if>
+        </trim>
+        )
+        values
+        (
+        <trim suffixOverrides=",">
+            <if test="checkListName != null and checkListName != ''">
+                #{checkListName},
+            </if>
+            <if test="checkListCode != null and checkListCode != ''">
+                #{checkListCode},
+            </if>
+            <if test="attribute != null and attribute != ''">
+                #{attribute},
+            </if>
+            <if test="parentName != null and parentName != ''">
+                #{parentName},
+            </if>
+            <if test="isChildNode != null and isChildNode != ''">
+                #{isChildNode},
+            </if>
+            <if test="status != null and status != ''">
+                #{status},
+            </if>
+            <if test="checkCategory != null and checkCategory != ''">
+                #{checkCategory},
+            </if>
+            <if test="checkBasis != null and checkBasis != ''">
+                #{checkBasis},
+            </if>
+            <if test="checkMethod != null and checkMethod != ''">
+                #{checkMethod},
+            </if>
+            <if test="targetScore != null and targetScore != ''">
+                #{targetScore},
+            </if>
+            <if test="scoreShows != null and scoreShows != ''">
+                #{scoreShows},
+            </if>
+            <if test="standard != null and standard != ''">
+                #{standard},
+            </if>
+            <if test="standardNo != null and standardNo != ''">
+                #{standardNo},
+            </if>
+            <if test="standardContent != null and standardContent != ''">
+                #{standardContent}
+            </if>
+        </trim>
+        )
+    </insert>
+
+    <select id="getCurrentAllChild" resultType="com.wlhse.dto.QualityCheckListDto">
+        select * from quality_checklist
+        where checkListCode like concat(#{code},"%")
+    </select>
+
+    <update id="updateCheckList" parameterType="com.wlhse.dto.QualityCheckListDto">
+        update quality_checklist
+        <set>
+            <if test="checkListName != null and checkListName  != ''">
+                checkListName=#{checkListName},
+            </if>
+            <if test="status != null and status  != ''">
+                status=#{status},
+            </if>
+            <if test="parentName != null and parentName  != ''">
+                parentName=#{parentName},
+            </if>
+            <if test="checkCategory != null and checkCategory != ''">
+                CheckCategory=#{checkCategory},
+            </if>
+            <if test="checkBasis != null and checkBasis != ''">
+                CheckBasis=#{checkBasis},
+            </if>
+            <if test="checkMethod != null and checkMethod != ''">
+                CheckMethod=#{checkMethod},
+            </if>
+            <if test="targetScore != null and targetScore != ''">
+                argetScore=#{targetScore},
+            </if>
+            <if test="scoreShows != null and scoreShows != ''">
+                ScoreShows=#{scoreShows},
+            </if>
+            <if test="standard != null and standard != ''">
+                Standard=#{standard},
+            </if>
+            <if test="standardNo != null and standardNo != ''">
+                StandardNo=#{standardNo},
+            </if>
+            <if test="standardContent != null and standardContent != ''">
+                StandardContent=#{standardContent}
+            </if>
+        </set>
+        where CheckListID=#{checkListID}
+    </update>
+
+    <select id="getById" resultType="com.wlhse.dto.QualityCheckListDto">
+        select * from quality_checklist
+        where CheckListID=#{id}
+    </select>
+
+    <update id="updateAllChildStatus">
+        update quality_checklist
+        <set>
+            status="停用"
+        </set>
+        where CheckListCode like concat(#{code},"%")
+    </update>
+
+    <update id="updateStatus" >
+        update quality_checklist
+        <set>
+            Status=#{status}
+        </set>
+        where CheckListCode=#{code}
+    </update>
+
+    <delete id="clearTable">
+        delete from quality_checklist
+    </delete>
+    <delete id="deleteQualityCheckNodeByCode" parameterType="java.lang.String">
+         delete from quality_checklist
+         where CheckListCode like concat(#{code},"%")
+    </delete>
+
+    <insert id="batchInsertRecord">
+        insert into quality_checklist
+        (CheckListCode,CheckListName,Attribute,ParentName,IsChildNode,Status,CheckCategory,
+        CheckBasis,CheckMethod,TargetScore,ScoreShows,Standard,StandardNo,StandardContent)
+        values
+        <foreach collection="list" item="detail" separator=",">
+            (
+            #{detail.checkListCode},#{detail.checkListName},#{detail.attribute},
+            #{detail.parentName},#{detail.isChildNode},#{detail.status},
+            #{detail.checkCategory},#{detail.checkBasis},#{detail.checkMethod}
+            #{detail.targetScore},#{detail.scoreShows},#{detail.standard},
+            #{detail.standardNo},#{detail.standardContent}
+            )
+        </foreach>
+    </insert>
+    <select id="findTreeByCode" resultType="com.wlhse.dto.QualityCheckTableRecordDto">
+        select
+        CheckListCode as checkListCode,
+        CheckListName as qualityCheckName
+        from quality_checklist
+        where CheckListCode like concat(#{0},'%')
+        and Status='启用'
+    </select>
+
+    <select id="findTreeByCode1" resultType="com.wlhse.dto.QualityCheckTableRecordDto">
+        select
+        CheckListCode as checkListCode,
+        CheckListName as qualityCheckName
+        from quality_checklist
+        where CheckListCode = #{code}
+        and Status='启用'
+    </select>
+
+    <select id="getTableNode" resultType="com.wlhse.dto.QualityCheckListDto">
+        select CheckListCode as checkListCode,
+        CheckListName as checkListName,
+        CheckCategory as checkCategory,
+        CheckBasis as checkBasis,
+        CheckMethod as checkMethod
+        from quality_checklist
+        where length(CheckListCode)=4
+        and Status='启用'
+    </select>
+
+    <select id="findMaxCode" resultType="java.lang.String">
+        select CheckListCode from quality_checklist where length(CheckListCode)=4 order by CheckListCode desc limit 1
+    </select>
+
+    <select id="findTableName" resultType="java.lang.String">
+        select CheckListName from quality_checklist where CheckListName=#{0}
+    </select>
+
+</mapper>

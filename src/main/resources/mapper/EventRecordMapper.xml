@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wlhse.dao.EventRecordDao">
+    <sql id="key">
+        <trim suffixOverrides=",">
+            <if test="companyCode != null and companyCode != ''">
+                companyCode,companyName,
+            </if>
+            <if test="eventRecordName != null and eventRecordName != ''">
+                eventRecordName,
+            </if>
+            <if test="eventRecordTypeCode != null and eventRecordTypeCode != ''">
+                eventRecordTypeCode,
+            </if>
+            <if test="eventRecordType != null and eventRecordType != ''">
+                eventRecordType,
+            </if>
+            <if test="address != null and address != ''">
+                address,
+            </if>
+            <if test="checkDate != null and checkDate != ''">
+                checkDate,
+            </if>
+            <if test="description != null and description != ''">
+                description,
+            </if>
+            <if test="attach1 != null and attach1 != ''">
+                attach1,
+            </if>
+            <if test="attach2 != null and attach2 != ''">
+                attach2,
+            </if>
+            <if test="attach3 != null and attach3 != ''">
+                attach3,
+            </if>
+            <if test="attach4 != null and attach4 != ''">
+                attach4,
+            </if>
+            <if test="attach != null and attach != ''">
+                attach,
+            </if>
+            <if test="hash != null and hash != ''">
+                hash,
+            </if>
+        </trim>
+    </sql>
+    <sql id="value1">
+        <trim suffixOverrides=",">
+            <if test="companyCode != null">
+                #{companyCode},(select name from sys_company where CompanyCode=#{companyCode}),
+            </if>
+            <if test="eventRecordName != null and eventRecordName != ''">
+                #{eventRecordName},
+            </if>
+            <if test="eventRecordTypeCode != null and eventRecordTypeCode != ''">
+                #{eventRecordTypeCode},
+            </if>
+            <if test="eventRecordType != null and eventRecordType != ''">
+                #{eventRecordType},
+            </if>
+            <if test="address != null and address != ''">
+                #{address},
+            </if>
+            <if test="checkDate != null and checkDate != ''">
+                #{checkDate},
+            </if>
+            <if test="description != null and description != ''">
+                #{description},
+            </if>
+            <if test="attach1 != null and attach1 != ''">
+                #{attach1},
+            </if>
+            <if test="attach2 != null and attach2 != ''">
+                #{attach2},
+            </if>
+            <if test="attach3 != null and attach3 != ''">
+                #{attach3},
+            </if>
+            <if test="attach4 != null and attach4 != ''">
+                #{attach4},
+            </if>
+            <if test="attach != null and attach != ''">
+                #{attach},
+            </if>
+            <if test="hash != null and hash != ''">
+                #{hash},
+            </if>
+        </trim>
+    </sql>
+    <insert id="addEventRecord">
+        insert into eventRecord
+        (<include refid="key"/>)
+        values
+        (<include refid="value1"/>)
+    </insert>
+
+    <delete id="deleteEventRecord">
+        delete from eventRecord
+        where EventRecord_ID = #{id}
+    </delete>
+
+    <sql id="value2">
+        <trim prefix="set" suffixOverrides=",">
+            <if test="companyCode != null">
+                companyCode=#{companyCode},companyName=(select name from sys_company where CompanyCode=#{companyCode}),
+            </if>
+            <if test="eventRecordName != null and eventRecordName != ''">
+                eventRecordName=#{eventRecordName},
+            </if>
+            <if test="eventRecordTypeCode != null and eventRecordTypeCode != ''">
+                eventRecordTypeCode=#{eventRecordTypeCode},
+            </if>
+            <if test="eventRecordType != null and eventRecordType != ''">
+                eventRecordType=#{eventRecordType},
+            </if>
+            <if test="address != null and address != ''">
+                address=#{address},
+            </if>
+            <if test="checkDate != null and checkDate != ''">
+                checkDate=#{checkDate},
+            </if>
+            <if test="description != null and description != ''">
+                description=#{description},
+            </if>
+            <if test="attach1 != null and attach1 != ''">
+                attach1=#{attach1},
+            </if>
+            <if test="attach2 != null and attach2 != ''">
+                attach2=#{attach2},
+            </if>
+            <if test="attach3 != null and attach3 != ''">
+                attach3=#{attach3},
+            </if>
+            <if test="attach4 != null and attach4 != ''">
+                attach4=#{attach4},
+            </if>
+            <if test="attach != null and attach != ''">
+                attach=#{attach},
+            </if>
+            <if test="hash != null and hash != ''">
+                hash=#{hash},
+            </if>
+        </trim>
+    </sql>
+    <update id="updateEventRecord">
+        update eventRecord
+        <include refid="value2"/>
+        where EventRecord_ID = #{id}
+    </update>
+
+    <resultMap id="eventRecordMap" type="com.wlhse.entity.EventRecordPojo">
+        <id property="id" column="EventRecord_ID"/>
+        <result property="companyCode" column="companyCode"/>
+        <result property="companyName" column="companyName"/>
+        <result property="eventRecordName" column="eventRecordName"/>
+        <result property="eventRecordTypeCode" column="eventRecordTypeCode"/>
+        <result property="eventRecordType" column="eventRecordType"/>
+        <result property="address" column="address"/>
+        <result property="checkDate" column="checkDate"/>
+        <result property="description" column="description"/>
+        <result property="attach1" column="attach1"/>
+        <result property="attach2" column="attach2"/>
+        <result property="attach3" column="attach3"/>
+        <result property="attach4" column="attach4"/>
+        <result property="attach" column="attach"/>
+    </resultMap>
+    <select id="queryEventRecords" resultMap="eventRecordMap">
+        select
+        EventRecord_ID,CompanyCode,CompanyName,EventRecordName,EventRecordTypeCode,
+        EventRecordType,Address,CheckDate,Description,
+        if(Attach1='',Attach1,concat(#{url},Attach1)) as Attach1,
+        if(Attach2='',Attach2,concat(#{url},Attach2)) as Attach2,
+        if(Attach3='',Attach3,concat(#{url},Attach3)) as Attach3,
+        if(Attach4='',Attach4,concat(#{url},Attach4)) as Attach4,
+        if(Attach='',Attach,concat(#{url},Attach)) as Attach
+        from eventRecord
+        <where>
+            <trim suffixOverrides="and">
+                <if test="id != null and id  != ''">
+                    EventRecord_ID=#{id} and
+                </if>
+                <if test="companyCode != null and companyCode != ''">
+                    companyCode=#{companyCode} and
+                </if>
+                <if test="companyName != null and companyName != ''">
+                    companyName like CONCAT('%',#{companyName},'%') and
+                </if>
+                <if test="eventRecordName != null and eventRecordName != ''">
+                    eventRecordName=#{eventRecordName} and
+                </if>
+                <if test="eventRecordTypeCode != null and eventRecordTypeCode != ''">
+                    eventRecordTypeCode=#{eventRecordTypeCode} and
+                </if>
+                <if test="eventRecordType != null and eventRecordType != ''">
+                    eventRecordType like CONCAT('%',#{eventRecordType},'%') and
+                </if>
+                <if test="address != null and address != ''">
+                    address=#{address} and
+                </if>
+                <if test="startDate != null and startDate != ''">
+                    checkDate between #{startDate} and #{endDate} and
+                </if>
+                <if test="description != null and description != ''">
+                    description=#{description} and
+                </if>
+            </trim>
+        </where>
+        order by CheckDate desc
+    </select>
+    <select id="queryEventRecordsCount" resultType="int">
+        select count(*) from eventRecord
+        <where>
+            <trim suffixOverrides="and">
+                <if test="id != null and id  != ''">
+                    EventRecord_ID=#{id} and
+                </if>
+                <if test="companyCode != null and companyCode != ''">
+                    companyCode=#{companyCode} and
+                </if>
+                <if test="companyName != null and companyName != ''">
+                    companyName like CONCAT('%',#{companyName},'%') and
+                </if>
+                <if test="eventRecordName != null and eventRecordName != ''">
+                    eventRecordName=#{eventRecordName} and
+                </if>
+                <if test="eventRecordTypeCode != null and eventRecordTypeCode != ''">
+                    eventRecordTypeCode=#{eventRecordTypeCode} and
+                </if>
+                <if test="eventRecordType != null and eventRecordType != ''">
+                    eventRecordType like CONCAT('%',#{eventRecordType},'%') and
+                </if>
+                <if test="address != null and address != ''">
+                    address=#{address} and
+                </if>
+                <if test="startDate != null and startDate != ''">
+                    checkDate between #{startDate} and #{endDate} and
+                </if>
+                <if test="description != null and description != ''">
+                    description=#{description} and
+                </if>
+            </trim>
+        </where>
+    </select>
+    <select id="queryEventRecordsById" resultMap="eventRecordMap">
+        select
+        EventRecord_ID,CompanyCode,CompanyName,EventRecordName,EventRecordTypeCode,
+        EventRecordType,Address,CheckDate,Description,
+        if(Attach1='',Attach1,concat(#{url},Attach1)) as Attach1,
+        if(Attach2='',Attach2,concat(#{url},Attach2)) as Attach2,
+        if(Attach3='',Attach3,concat(#{url},Attach3)) as Attach3,
+        if(Attach4='',Attach4,concat(#{url},Attach4)) as Attach4,
+        if(Attach='',Attach,concat(#{url},Attach)) as Attach
+        from eventRecord where EventRecord_ID=#{id}
+    </select>
+
+</mapper>

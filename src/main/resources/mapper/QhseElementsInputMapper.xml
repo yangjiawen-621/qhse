@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.QhseElementsInputDao">
+
+    <select id="query" parameterType="com.wlhse.dto.inDto.ElementEvidenceAttachInDto" resultType="com.wlhse.dto.inDto.ElementEvidenceAttachInDto">
+        select
+        t1.QHSE_CompanyYearManagerSysElementEvidence_ID as evidenceID,
+        QHSE_CompanyYearManagerSysElement_ID as id,
+        Code as code,
+        EvidenceDescription as evidenceDescription,
+        QHSE_CompanyYearManagerSysElementEvidenceAttach_ID as attachId,
+        AttachDescrption as attachDescrption,
+        Attach as attach,
+        uploadTime,
+        negativeOpinion
+        from QHSE_CompanyYearManagerSysElementEvidence t1,QHSE_CompanyYearManagerSysElementEvidenceAttach t2
+        where t1.QHSE_CompanyYearManagerSysElementEvidence_ID=t2.QHSE_CompanyYearManagerSysElementEvidence_ID
+        and t1.QHSE_CompanyYearManagerSysElement_ID=#{id}
+    </select>
+
+    <insert id="add" parameterType="com.wlhse.dto.inDto.ElementEvidenceAttachInDto"
+            useGeneratedKeys="true" keyProperty="evidenceID" keyColumn="QHSE_CompanyYearManagerSysElementEvidence_ID">
+        insert into QHSE_CompanyYearManagerSysElementEvidence
+        (
+        <trim suffixOverrides=",">
+            <if test="code != null and code != ''">
+                Code,
+            </if>
+            <if test="evidenceDescription != null and evidenceDescription != ''">
+                EvidenceDescription,
+            </if>
+            QHSE_CompanyYearManagerSysElement_ID,
+        </trim>
+        )
+        values
+        (
+        <trim suffixOverrides=",">
+            <if test="code != null and code != ''">
+                #{code},
+            </if>
+            <if test="evidenceDescription != null and evidenceDescription != ''">
+                #{evidenceDescription},
+            </if>
+            #{id},
+        </trim>
+        )
+    </insert>
+
+    <update id="update" parameterType="com.wlhse.dto.inDto.ElementEvidenceAttachInDto" >
+        update QHSE_CompanyYearManagerSysElementEvidence
+        <set>
+            <if test="code != null and code != ''">
+                Code= #{code},
+            </if>
+            <if test="evidenceDescription != null and evidenceDescription != ''">
+                EvidenceDescription= #{evidenceDescription},
+            </if>
+        </set>
+        where QHSE_CompanyYearManagerSysElement_ID=#{id}
+    </update>
+
+
+    <insert id="addAttach" parameterType="com.wlhse.dto.inDto.ElementEvidenceAttachInDto"
+            useGeneratedKeys="true" keyProperty="evidenceID" keyColumn="QHSE_CompanyYearManagerSysElementEvidence_ID">
+        insert into QHSE_CompanyYearManagerSysElementEvidenceAttach
+        (
+        <trim suffixOverrides=",">
+            <if test="attachDescrption != null and attachDescrption != ''">
+                attachDescrption,
+            </if>
+            <if test="attach != null and attach != ''">
+                attach,
+            </if>
+            <if test="uploadTime != null and uploadTime != ''">
+                uploadTime,
+            </if>
+            <if test="evidenceID != null and evidenceID != ''">
+                QHSE_CompanyYearManagerSysElementEvidence_ID,
+            </if>
+        </trim>
+        )
+        values
+        (
+        <trim suffixOverrides=",">
+            <if test="attachDescrption != null and attachDescrption != ''">
+                #{attachDescrption},
+            </if>
+            <if test="attach != null and attach != ''">
+                #{attach},
+            </if>
+            <if test="uploadTime != null and uploadTime != ''">
+                #{uploadTime},
+            </if>
+            <if test="evidenceID != null and evidenceID != ''">
+                #{evidenceID},
+            </if>
+        </trim>
+        )
+
+    </insert>
+
+    <update id="updateAttach" parameterType="com.wlhse.dto.inDto.ElementEvidenceAttachInDto">
+        update QHSE_CompanyYearManagerSysElementEvidenceAttach
+        <set>
+            <if test="attachDescrption != null and attachDescrption != ''">
+                AttachDescrption=#{attachDescrption},
+            </if>
+            <if test="attach != null and attach != ''">
+                Attach=#{attach},
+            </if>
+            <if test="uploadTime != null and uploadTime != ''">
+                uploadTime=#{uploadTime},
+            </if>
+        </set>
+        where QHSE_CompanyYearManagerSysElementEvidence_ID=#{evidenceID}
+    </update>
+
+    <update id="updateStatus" parameterType="java.lang.Integer">
+        update QHSE_CompanyYearManagerSysElement set Status="未审核",
+        CheckPersonId=#{1}
+        where QHSE_CompanyYearManagerSysElement_ID=#{0}
+    </update>
+
+    <select id="queryOriginFileName" parameterType="java.lang.String" resultType="java.lang.String">
+        select elementOriginFileName from elementinputfileinfo where newElementFileName=#{newElementFileName}
+    </select>
+
+    <delete id="deleteNewOriginFileName" parameterType="java.lang.Integer" >
+        delete from elementinputfileinfo where QHSE_CompanyYearManagerSysElementEvidence_ID=#{id}
+    </delete>
+
+    <insert id="insertNewOriginFileName" parameterType="com.wlhse.entity.ElementInputFileInfo">
+        insert into elementinputfileinfo
+        (
+        <trim suffixOverrides=",">
+            <if test="QHSE_CompanyYearManagerSysElementEvidence_ID != null and QHSE_CompanyYearManagerSysElementEvidence_ID != ''">
+                QHSE_CompanyYearManagerSysElementEvidence_ID,
+            </if>
+            <if test="newElementFileName != null and newElementFileName != ''">
+                newElementFileName,
+            </if>
+            <if test="elementOriginFileName != null and elementOriginFileName != ''">
+                elementOriginFileName,
+            </if>
+        </trim>
+        )
+        values
+        (
+        <trim suffixOverrides=",">
+            <if test="QHSE_CompanyYearManagerSysElementEvidence_ID != null and QHSE_CompanyYearManagerSysElementEvidence_ID != ''">
+                #{QHSE_CompanyYearManagerSysElementEvidence_ID},
+            </if>
+            <if test="newElementFileName != null and newElementFileName != ''">
+                #{newElementFileName},
+            </if>
+            <if test="elementOriginFileName != null and elementOriginFileName != ''">
+                #{elementOriginFileName},
+            </if>
+        </trim>
+        )
+    </insert>
+    <insert id="insertNewOriginFileNames" parameterType="com.wlhse.dto.QualityFileInputInfoDto">
+        insert into qualityelementinputfileinfo
+        (
+        <trim suffixOverrides=",">
+            <if test="originalFileName != null and originalFileName != ''">
+                originalFileName,
+            </if>
+            <if test="newFileName != null and newFileName != ''">
+                newFileName,
+            </if>
+        </trim>
+        )
+        values
+        (
+        <trim suffixOverrides=",">
+            <if test="originalFileName != null and originalFileName != ''">
+                #{originalFileName},
+            </if>
+            <if test="newFileName != null and newFileName != ''">
+                #{newFileName},
+            </if>
+        </trim>
+        )
+    </insert>
+
+    <update id="updateNewOriginFileName" parameterType="com.wlhse.entity.ElementInputFileInfo">
+        update elementinputfileinfo set  QHSE_CompanyYearManagerSysElementEvidence_ID=
+        #{QHSE_CompanyYearManagerSysElementEvidence_ID} where newElementFileName=#{newElementFileName}
+    </update>
+
+
+
+<!--    <select id="getEmployeeCompany" resultType="string">-->
+<!--        select-->
+<!--        c1.`Name` as companyName-->
+<!--        from employee as e1-->
+<!--        left join sys_company as c1-->
+<!--        on e1.CompanyCode=c1.CompanyCode-->
+<!--        left join sys_user as u1-->
+<!--        on e1.EmployeeID=u1.EmployeeID-->
+<!--        <where>-->
+<!--            e1.EmployeeID=#{employeeID}-->
+<!--            &lt;!&ndash;<if test="name1 != null and name1 !=''">&ndash;&gt;-->
+<!--                &lt;!&ndash;and e1.Name LIKE CONCAT('%','${name1}','%')&ndash;&gt;-->
+<!--            &lt;!&ndash;</if>&ndash;&gt;-->
+<!--            &lt;!&ndash;<if test="companyCode != null and companyCode !=''">&ndash;&gt;-->
+<!--                &lt;!&ndash;and substring(e1.companyCode,1,length(#{companyCode})) = #{companyCode}&ndash;&gt;-->
+<!--            &lt;!&ndash;</if>&ndash;&gt;-->
+<!--        </where>-->
+<!--    </select>-->
+
+<!--    <update id="updateElementsEvidenceAttach" parameterType="com.wlhse.dto.inDto.ElementEvidenceAttachInDto">-->
+<!--        update QHSE_CompanyYearManagerSysElementEvidenceAttach-->
+<!--        <set>-->
+<!--            <if test="attachDescrption!=null and attachDescrption!=''">-->
+<!--                AttachDescrption=#{attachDescrption},-->
+<!--            </if>-->
+<!--            <if test="attach!=null and attach!=''">-->
+<!--                Attach=#{attach},-->
+<!--            </if>-->
+<!--            <if test="uploadTime!=null and uploadTime!=''">-->
+<!--                uploadTime=#{uploadTime},-->
+<!--            </if>-->
+<!--        </set>-->
+<!--        where-->
+<!--        QHSE_CompanyYearManagerSysElementEvidence_ID=#{qhseCompanyYearManagerSysElementEvidenceID}-->
+<!--    </update>-->
+    <select id="getCompanyManagerSysElementId" resultType="Integer" >
+        select QHSE_CompanyYearManagerSysElement_ID
+        from QHSE_CompanyYearManagerSysElement
+        where QHSE_CompanyYearManagerSysElementTable_ID=#{tableId}
+    </select>
+
+    <delete id="deleteFromCompanyManagerSysElement">
+        delete from  QHSE_CompanyYearManagerSysElement
+        where QHSE_CompanyYearManagerSysElementTable_ID=#{tableId}
+    </delete>
+
+    <select id="getCompanyYearManagerSysElementEvidenceId" resultType="Integer">
+        select QHSE_CompanyYearManagerSysElementEvidence_ID
+        from QHSE_CompanyYearManagerSysElementEvidence
+        where QHSE_CompanyYearManagerSysElement_ID=#{elementId}
+    </select>
+
+    <delete id="deleteFromCompanyYearManagerSysElementEvidence">
+        delete from QHSE_CompanyYearManagerSysElementEvidence
+        where  QHSE_CompanyYearManagerSysElement_ID=#{elementId}
+    </delete>
+    <delete id="deleteFromCompanyYearManagerSysElementEvidenceAttach">
+        delete from QHSE_CompanyYearManagerSysElementEvidenceAttach
+        where QHSE_CompanyYearManagerSysElementEvidence_ID=#{evidenceId}
+    </delete>
+    
+    <select id="getQHSEYearManagerTableIdByElementId" resultType="Integer">
+        select QHSE_CompanyYearManagerSysElementTable_ID
+        from qhse_companyyearmanagersyselement
+        where QHSE_CompanyYearManagerSysElement_ID=#{0}
+    </select>
+    <select id="queryQualityOriginFileName" resultType="java.lang.String">
+          select OriginalFileName from qualityelementinputfileinfo where NewFileName=#{NewFileName}
+    </select>
+
+    <update id="updateCheckStatus">
+        update QHSE_CompanyYearManagerSysElement
+        set CheckStatus=#{2}
+        where QHSE_CompanyYearManagerSysElementTable_ID=#{0}
+        and CheckStatus=#{1}
+    </update>
+
+    <update id="updateCheckStatusByElementId" parameterType="java.lang.Integer">
+    update QHSE_CompanyYearManagerSysElement
+        set CheckStatus=0
+        where QHSE_CompanyYearManagerSysElement_ID=#{id}
+    </update>
+</mapper>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.QualityCheckTableRecordDao">
+
+
+    <insert id="batchInsertTree">
+        insert into quality_checktablerecord
+        (Qulity_CheckID,CheckListCode,CheckResult,Attach,Pic,Description,Quality_CheckName,Score)
+        values
+        <foreach collection="list" item="detail" separator=",">
+            (
+            #{detail.qualityCheckID},#{detail.checkListCode},#{detail.checkResult},
+            #{detail.attach},#{detail.pic},#{detail.description},#{detail.qualityCheckName},#{detail.score}
+            )
+        </foreach>
+    </insert>
+
+    <select id="findCheckedListCodeById" resultType="java.lang.String">
+        select CheckListCode from quality_checktablerecord where Qulity_CheckID=#{QualityCheckID}
+    </select>
+
+    <select id="findQualityId" resultType="java.lang.String">
+        select Quality_CheckName from quality_checktablerecord
+        where Qulity_CheckID = #{qualityId}
+    </select>
+
+    <insert id="insertCheckInfo" parameterType="com.wlhse.dto.QualityAuditRecord">
+        insert into quality_audit_record
+        (
+        <trim suffixOverrides=",">
+        <if test="qualityCheckTableRecordID != null and qualityCheckTableRecordID != ''">
+            Quality_CheckTableRecordID,
+        </if>
+        <if test="reviewerName != null and reviewerName != ''">
+            ReviewerName,
+        </if>
+        <if test="reviewerTime != null and reviewerTime != ''">
+            ReviewerTime
+        </if>
+        </trim>
+        )
+        values
+        (
+        <trim suffixOverrides=",">
+            <if test="qualityCheckTableRecordID != null and qualityCheckTableRecordID != ''">
+                #{qualityCheckTableRecordID},
+            </if>
+            <if test="reviewerName != null and reviewerName != ''">
+            #{reviewerName},
+            </if>
+            <if test="reviewerTime != null and reviewerTime != ''">
+            #{reviewerTime}
+            </if>
+        </trim>
+        )
+    </insert>
+
+    <insert id="insertConfigElement">
+        insert into quality_checktablerecord(CheckListCode) values (#{elementId})
+    </insert>
+
+    <delete id="deleteChickList">
+        delete from quality_checktablerecord
+        where Qulity_CheckID= #{qualityCheckID}
+    </delete>
+
+    <select id="queryCheckTreeByID" resultType="com.wlhse.dto.QualityCheckTableRecordDto">
+        select Qulity_CheckTableRecordID as qualityCheckTableRecordID,
+        Qulity_CheckID as qualityCheckID,
+        CheckListCode as checkListCode,
+        CheckResult as checkResult,
+        Attach as attach,
+        Pic as pic,
+        Description as description,
+        Quality_CheckName as qualityCheckName,
+        Score as score
+        from quality_checktablerecord
+        where Qulity_CheckID=#{0}
+    </select>
+    <select id="queryID" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+        select Quality_CheckTableRecordID from quality_audit_record where Quality_CheckTableRecordID=#{0}
+    </select>
+    <select id="queryCheckInfo" resultType="com.wlhse.dto.QualityAuditRecord"  parameterType="java.lang.Integer">
+        select ID as id,
+        Quality_CheckTableRecordID as qualityCheckTableRecordID,
+        ReviewerName as reviewerName,
+        ReviewerTime as reviewerTime
+        from quality_audit_record where Quality_CheckTableRecordID=#{0}
+    </select>
+
+    <update id="addInformAndAttach" parameterType="com.wlhse.dto.QualityCheckTableRecordDto">
+        update quality_checktablerecord
+        <set>
+            <if test="description != null and description != ''">
+                Description=#{description},
+            </if>
+            <if test="checkResult != null and checkResult != ''">
+                CheckResult=#{checkResult},
+            </if>
+            <if test="score != null and score != ''">
+                Score=#{score},
+            </if>
+                Attach=#{attach},
+                Pic=#{pic},
+        </set>
+        where Qulity_CheckTableRecordID=#{qualityCheckTableRecordID}
+    </update>
+    <update id="updateCheckInfo" parameterType="com.wlhse.dto.QualityAuditRecord">
+        update quality_audit_record
+        <set>
+            <if test="reviewerName != null and reviewerName != ''">
+                ReviewerName=#{reviewerName},
+            </if>
+            <if test="reviewerTime != null and reviewerTime != ''">
+                ReviewerTime=#{reviewerTime}
+            </if>
+        </set>
+        where Quality_CheckTableRecordID=#{qualityCheckTableRecordID}
+    </update>
+</mapper>

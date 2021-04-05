@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.CheckRecordDao">
+
+    <insert id="addCheckRecord" parameterType="com.wlhse.dto.CheckRecordDto" useGeneratedKeys="true" keyProperty="checkRecordID">
+        insert into checkrecord
+        (
+        <trim suffixOverrides=",">
+            <if test="code != null and code != ''">
+                Code,
+            </if>
+            <if test="name != null and name != ''">
+                Name,
+            </if>
+            <if test="checkType != null and checkType != ''">
+                CheckType,
+            </if>
+            <if test="companyName != null and companyName != ''">
+                CompanyName,
+            </if>
+            <if test="companyCode != null and companyCode != ''">
+                CompanyCode,
+            </if>
+            <if test="checkDate != null and checkDate != ''">
+                CheckDate,
+            </if>
+            <if test="problems != null and problems !=''">
+                Problems,
+            </if>
+            <if test="checkTypeCode !=null and checkTypeCode!=''">
+                CheckTypeCode,
+            </if>
+            <if test="pass !=null and pass!=''">
+                Pass,
+            </if>
+            <if test="checkPersonId !=null and checkPersonId!=''">
+                CheckPersonId,
+            </if>
+            <if test="checkPerson!=null and checkPerson!=''">
+                CheckPerson,
+            </if>
+            <if test="reason!=null and reason!=''">
+                reason,
+            </if>
+        </trim>
+        )
+        values
+        (
+        <trim suffixOverrides=",">
+            <if test="code != null and code != ''">
+                #{code},
+            </if>
+            <if test="name != null and name != ''">
+                #{name},
+            </if>
+            <if test="checkType != null and checkType != ''">
+                #{checkType},
+            </if>
+            <if test="companyName != null and companyName != ''">
+                #{companyName},
+            </if>
+            <if test="companyCode != null and companyCode != ''">
+                #{companyCode},
+            </if>
+            <if test="checkDate != null and checkDate != ''">
+                #{checkDate},
+            </if>
+            <if test="problems != null and problems !=''">
+                #{problems},
+            </if>
+            <if test="checkTypeCode !=null and checkTypeCode!=''">
+                #{checkTypeCode},
+            </if>
+            <if test="pass !=null and pass!=''">
+                #{pass},
+            </if>
+            <if test="checkPersonId !=null and checkPersonId!=''">
+                #{checkPersonId},
+            </if>
+            <if test="checkPerson!=null and checkPerson!=''">
+                #{checkPerson},
+            </if>
+            <if test="reason!=null and reason!=''">
+                #{reason},
+            </if>
+        </trim>
+        )
+    </insert>
+
+    <select id="queryAll" resultType="com.wlhse.dto.CheckRecordDto" >
+        select * from checkrecord
+    </select>
+
+    <select id="queryAllByParentCode" resultType="com.wlhse.dto.CheckRecordTreeDto" >
+        select checklist.CheckListCode,
+        checklist.CheckListName,
+        checkrecord.CheckRecordID,
+        checkrecord.CheckType,
+        checkrecord.CompanyName,
+        checkrecord.CompanyCode,
+        checkrecord.CheckDate,
+        checkrecord.Pass,
+        checkrecord.Problems,
+        checkrecord.CheckTypeCode,
+        checkrecord.CheckPersonId,
+        checkrecord.CheckPerson,
+        checkrecord.reason
+        from checklist
+        left join checkrecord
+        on checklist.CheckListCode=checkrecord.code
+        where checklist.CheckListCode like concat(#{code},'%')
+    </select>
+
+    <update id="updateCheckRecord" parameterType="com.wlhse.dto.CheckRecordDto">
+        update checkrecord
+        <set>
+            <if test="checkType != null and checkType  != ''">
+                checkType=#{checkType},
+            </if>
+            <if test="companyName != null and companyName  != ''">
+                companyName=#{companyName},
+            </if>
+            <if test="companyCode != null and companyCode  != ''">
+                companyCode=#{companyCode},
+            </if>
+            <if test="checkDate != null and checkDate  != ''">
+                checkDate=#{checkDate},
+            </if>
+            <if test="problems != null and problems !=''">
+                problems= #{problems},
+            </if>
+            <if test="checkTypeCode !=null and checkTypeCode!=''">
+                checkTypeCode=  #{checkTypeCode},
+            </if>
+            <if test="pass !=null and pass!=''">
+                pass=  #{pass},
+            </if>
+            <if test="checkPersonId !=null and checkPersonId!=''">
+                checkPersonId=#{checkPersonId},
+            </if>
+            <if test="checkPerson!=null and checkPerson!=''">
+                checkPerson= #{checkPerson},
+            </if>
+        </set>
+        where checkRecordID=#{checkRecordID}
+    </update>
+
+    <delete id="deleteCheckRecord">
+        delete from CheckRecord
+        where checkRecordID=#{checkRecordID}
+    </delete>
+
+    <select id="queryByCondition" resultType="com.wlhse.dto.CheckRecordDto" parameterType="com.wlhse.entity.CheckConditionPOJO">
+        select *
+        from checkrecord
+        <where>
+        <if test="checkType!=null and checkType!=''">
+        checkType=#{checkType}
+        </if>
+        <if test="companyName!=null and companyName!=''">
+        and companyName=#{companyName}
+        </if>
+        <if test="checkDate!=null and checkDate!=''">
+        and checkDate=#{checkDate}
+        </if>
+        <if test="pass!=null and pass!=''">
+        and pass=#{pass}
+        </if>
+        <if test="checkTypeCode!=null and checkTypeCode!=''">
+        and checkTypeCode=#{checkTypeCode}
+        </if>
+        <if test="problems!=null and problems!=''">
+        and problems=#{problems}
+        </if>
+        <if test="checkPersonId!=null and checkPersonId!=''">
+        and checkPersonId=#{checkPersonId}
+        </if>
+        <if test="checkPerson!=null and checkPerson!=''">
+        and  checkPerson=#{checkPerson}
+        </if>
+        </where>
+    </select>
+    <select id="getCheckRecord" resultType="com.wlhse.dto.CheckRecordDto">
+        select * from
+        checkrecord
+        where CompanyCode=#{companyCode}
+        and CompanyName=#{companyName}
+        and Name=#{name}
+        and Code=#{checkListCode}
+        and CheckType=#{checkType}
+        and CheckDate=#{checkDate}
+    </select>
+</mapper>

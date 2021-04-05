@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.CompanyYearManagerDao">
+
+    <select id="queryAll" parameterType="com.wlhse.dto.inDto.CompanyYearManagerDto"
+            resultType="com.wlhse.dto.CompanyYearManagerDtoWithEmployeeId">
+        select * from qhse_companyyearmanagersyselementtable
+        <where>
+            <if test="companyName != null and companyName  != ''">
+                AND companyName=#{companyName}
+            </if>
+            <if test="year != null and year  != ''">
+                AND year=#{year}
+            </if>
+            AND IssuedID=#{employeeId}
+        </where>
+    </select>
+
+
+
+    <update id="updateAll">
+        update QHSE_CompanyYearManagerSysElementTable
+        where QHSE_CompanyYearManagerSysElementTable_ID=#{id}
+    </update>
+
+  <delete id="deleteAll">
+      delete from QHSE_CompanyYearManagerSysElementTable where  QHSE_CompanyYearManagerSysElementTable_ID=#{id}
+  </delete>
+
+    <insert id="addCompanyYearManager" parameterType="com.wlhse.dto.inDto.CompanyYearManagerDto">
+        insert into QHSE_CompanyYearManagerSysElementTable
+        (
+        <trim suffixOverrides=",">
+            <if test="companyName != null and companyName != ''">
+                CompanyName,
+            </if>
+            <if test="companyCode != null and companyCode != ''">
+                CompanyCode,
+            </if>
+            <if test="year != null and year != ''">
+                Year,
+            </if>
+            <if test="elementTableName != null and elementTableName != ''">
+                ElementTableName,
+            </if>
+            <if test="status!=null and status!=''">
+                Status,
+            </if>
+            IssuedID
+        </trim>
+        )
+        values
+        (
+        <trim suffixOverrides=",">
+            <if test="companyName != null and companyName != ''">
+                #{companyName},
+            </if>
+            <if test="companyCode != null and companyCode != ''">
+                #{companyCode},
+            </if>
+            <if test="year != null and year != ''">
+                #{year},
+            </if>
+            <if test="elementTableName != null and elementTableName != ''">
+                #{elementTableName},
+            </if>
+            <if test="status!=null and status!=''">
+                #{status},
+            </if>
+            #{employeeId}
+        </trim>
+        )
+  </insert>
+
+    <select id="getInputPersonId" resultType="Integer">
+        select distinct CheckPersonId
+        from qhse_companyyearmanagersyselement
+        where QHSE_CompanyYearManagerSysElementTable_ID=#{0}
+        and status='不通过'
+    </select>
+</mapper>

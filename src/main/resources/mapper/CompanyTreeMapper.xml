@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.CompanyTreeDao">
+    <insert id="addCompanyTreeNode">
+        INSERT INTO sys_company
+        SET  CompanyCode = #{companyCode},NAME = #{name},
+        description=#{description},
+        hash=#{hash},
+        Status='启用'
+    </insert>
+
+    <select id="queryLastChildCode" resultType="java.lang.String">
+        SELECT
+        concat(
+        SUBSTRING(CompanyCode,1,LENGTH(CompanyCode)-LENGTH(CompanyCode + 1)),
+        CompanyCode + 1
+                ) AS CompanyCode
+        FROM
+                sys_company
+        WHERE
+                SUBSTRING(CompanyCode,1,LENGTH(#{companyCode}))=#{companyCode}
+                AND LENGTH(CompanyCode) = LENGTH(#{companyCode}) + 2
+        ORDER BY
+                CompanyCode DESC LIMIT 1;
+    </select>
+
+    <update id="deleteCompanyTreeNode">
+        UPDATE sys_company
+        SET Status='停用'
+        WHERE companycode=#{companyCode}
+    </update>
+
+    <update id="updateCompanyTreeNode">
+        UPDATE sys_company SET Name=#{name} where CompanyCode=#{companyCode}
+    </update>
+
+    <select id="getCompanyTreeDelOutDto" resultType="java.lang.Integer">
+        SELECT count(*) as count FROM ${tableName}
+        where substring(companycode,1,length(#{companyCode}))=#{companyCode}
+        <if test="tableName=='sys_company'">
+            and length(#{companyCode})=length(companycode)-2
+        </if>
+        and Status='启用'
+    </select>
+
+    <select id="queryChildCode" resultType="java.lang.String">
+        SELECT MAX(CompanyCode)
+        FROM
+        sys_company
+        WHERE
+        <choose>
+            <when test="companyCode!=null and companyCode != ''">
+                LENGTH(CompanyCode)=LENGTH(#{companyCode})+2
+                AND SUBSTR(CompanyCode,1,LENGTH(#{companyCode}))=#{companyCode}
+            </when>
+            <otherwise>
+                LENGTH(CompanyCode)=2
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="queryContractingCompany" resultType="java.lang.String">
+        SELECT MAX(CompanyCode)
+        FROM
+        sys_company
+        WHERE SUBSTR(CompanyCode,1,2)='99'
+    </select>
+</mapper>

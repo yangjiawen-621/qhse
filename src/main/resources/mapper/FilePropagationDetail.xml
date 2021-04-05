@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.FilePropagationDetailDao">
+    <select id="getFilePropagationByStaffId" resultType="com.wlhse.dto.outDto.FilePropagationResultDto">
+        select t1.File_PropagationPlanDetailID as filePropagationPlanDetailID,
+        t2.FileName as fileName,
+        t1.Status as status,
+        t1.PushStaffName as staffName,
+        t2.Description as description,
+        t2.PropagationDate as propagationDate,
+        t1.ReadDate as readTime,
+        t1.File_PropagationID as filePropagationId,
+        t1.department as department,
+        t1.PushCompanyName as companyName
+        from file_propagationplandetail t1,file_propagationplan t2
+        where t1.PushStaffId=#{staffId} and t1.File_PropagationID=t2.File_PropagationID
+        order by createTime desc
+    </select>
+    <insert id="addNewDetail">
+       insert into
+       file_propagationplandetail
+       (
+        <trim suffixOverrides=",">
+        <if test="filePropagationID!=null and filePropagationID!=''">
+            File_PropagationID,
+        </if>
+        <if test="pushCompanyCode!=null and pushCompanyCode!=''">
+            PushCompanyCode,
+        </if>
+        <if test="pushCompanyName!=null and pushCompanyName !=''">
+            PushCompanyName,
+        </if>
+        <if test="pushStaffId!=null and pushStaffId!=''">
+            PushStaffId,
+        </if>
+        <if test="pushStaffName!=null and pushStaffName!=''">
+            PushStaffName,
+        </if>
+
+            Status,
+        <if test="readDate!=null and readDate!=''">
+            ReadDate,
+        </if>
+        <if test="department!=null and department!=''">
+            department,
+        </if>
+            createTime,
+        </trim>
+       )
+    values (
+        <trim suffixOverrides=",">
+            <if test="filePropagationID!=null and filePropagationID!=''">
+                #{filePropagationID},
+            </if>
+            <if test="pushCompanyCode!=null and pushCompanyCode!=''">
+                #{pushCompanyCode},
+            </if>
+            <if test="pushCompanyName!=null and pushCompanyName !=''">
+                #{pushCompanyName},
+            </if>
+            <if test="pushStaffId!=null and pushStaffId!=''">
+                #{pushStaffId},
+            </if>
+            <if test="pushStaffName!=null and pushStaffName!=''">
+                #{pushStaffName},
+            </if>
+            '未读',
+            <if test="readDate!=null and readDate!=''">
+                #{readDate},
+            </if>
+            <if test="department!=null and department!=''">
+                #{department},
+            </if>
+                now()
+        </trim>
+
+        )
+    </insert>
+
+    <update id="updateFilePropagationStatus">
+        update file_propagationplandetail
+        set Status='已读',ReadDate=now()
+        where File_PropagationPlanDetailID=#{0}
+        and PushStaffId=#{1}
+    </update>
+
+    <select id="queryAllPropagationDetailIdByFilePropagationId" resultType="com.wlhse.dto.outDto.FilePropagationResultDto">
+        select t1.File_PropagationPlanDetailID as filePropagationPlanDetailID,
+        t2.FileName as fileName,
+        t1.Status as status,
+        t1.PushStaffName as staffName,
+        t2.Description as description,
+        t2.PropagationDate as propagationDate,
+        t1.ReadDate as readTime,
+        t1.File_PropagationID as filePropagationId,
+        t1.department as department,
+        t1.PushCompanyName as companyName
+        from file_propagationplandetail t1,file_propagationplan t2
+        where t1.File_PropagationID=#{filePropagationId}
+    </select>
+
+    <delete id="deleteFilePropagationPlanDetail">
+        delete from
+        file_propagationplandetail
+        where File_PropagationPlanDetailID=#{detailId}
+    </delete>
+
+    <select id="getReadHistory" resultType="com.wlhse.dto.outDto.ReadHistoryDto">
+        select
+        PushCompanyCode as pushCompanyCode,
+        PushCompanyName as pushCompanyName,
+        PushStaffId as pushStaffId,
+        PushStaffName as pushStaffName,
+        ReadDate as readDate,
+        Status as status
+        from file_propagationplandetail
+        where File_PropagationID=#{propagationId}
+    </select>
+</mapper>

@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.ElementReviewDao">
+
+    <select id="query" parameterType="com.wlhse.dto.inDto.ElementReviewDto"
+            resultType="com.wlhse.dto.outDto.QHSECompanyYearManagerSysElementDto">
+        select * from qhse_companyyearmanagersyselement
+        <where>
+            <if test="companyCode !=null and companyCode!=''">
+                AND companyCode like concat(#{companyCode},'%')
+            </if>
+            <if test="year != null and year  != ''">
+                AND year=#{year}
+            </if>
+            and ConfigStatus="启用"
+            and Status="未审核"
+        </where>
+    </select>
+
+    <select id="queryS" parameterType="com.wlhse.dto.inDto.ElementReviewDto"
+            resultType="com.wlhse.dto.outDto.QHSECompanyYearManagerSysElementDto">
+        select * from qhse_companyyearmanagersyselement
+        <where>
+            <if test="companyCode !=null and companyCode!=''">
+                AND companyCode like concat(#{companyCode},'%')
+            </if>
+        <if test="year != null and year  != ''">
+            AND year=#{year}
+        </if>
+        and ConfigStatus="启用"
+        and Status="未批准"
+        </where>
+    </select>
+
+    <update id="update" parameterType="com.wlhse.dto.inDto.ElementReviewDto">
+        update qhse_companyyearmanagersyselement
+        set status=#{status}
+        where qHSE_CompanyYearManagerSysElement_ID=#{qHSE_CompanyYearManagerSysElement_ID}
+    </update>
+
+    <update id="updateCheck" parameterType="com.wlhse.dto.inDto.ElementReviewDto">
+        update QHSE_CompanyYearManagerSysElementEvidence set
+        CheckStaffID=#{checkStaffID},CheckStaffName=(select Name from employee where EmployeeID=#{checkStaffID})
+        where QHSE_CompanyYearManagerSysElement_ID=#{qHSE_CompanyYearManagerSysElement_ID}
+    </update>
+
+    <update id="updateApprove" parameterType="com.wlhse.dto.inDto.ElementReviewDto">
+        update QHSE_CompanyYearManagerSysElementEvidence set
+        ApproverStaffID=#{approverStaffID},ApproverStaffName=(select Name from employee where EmployeeID=#{approverStaffID})
+        where QHSE_CompanyYearManagerSysElement_ID=#{qHSE_CompanyYearManagerSysElement_ID}
+    </update>
+    <update id="updateAddvice" parameterType="com.wlhse.dto.inDto.ElementReviewDto">
+        update qhse_companyyearmanagersyselementevidence
+        <set>
+            <if test="negativeOpinion!='' and negativeOpinion!=null ">
+                negativeOpinion=#{negativeOpinion}
+            </if>
+        </set>
+        where  QHSE_CompanyYearManagerSysElement_ID=#{qHSE_CompanyYearManagerSysElement_ID}
+    </update>
+    <update id="updateQuality" parameterType="com.wlhse.dto.QualityCheckTableRecordDto">
+        update  quality_checktablerecord set CheckResult=#{checkResult}
+        where CheckListCode=#{checkListCode} and Qulity_CheckTableRecordID=#{qualityCheckTableRecordID}
+    </update>
+    <update id="qualityInput"  parameterType="com.wlhse.dto.QualityCheckTableRecordDto">
+         update  quality_checktablerecord
+         <set>
+
+         </set>
+            where CheckListCode=#{checkListCode} and Qulity_CheckTableRecordID=#{qualityCheckTableRecordID}
+    </update>
+
+    <sql id = "element_evidence_key">
+        t1.qHSE_CompanyYearManagerSysElementEvidence_ID,
+        qHSE_CompanyYearManagerSysElement_ID,
+        code,
+        evidenceDescription,
+        checkStaffID,
+        checkStaffName,
+        approverStaffID,
+        approverStaffName,
+        qHSE_CompanyYearManagerSysElementEvidenceAttach_ID,
+        attachDescrption,
+        attach,
+        uploadTime
+    </sql>
+
+    <select id="queryAll" parameterType="com.wlhse.dto.outDto.QhseEvidenceAttatchDto"
+            resultType="com.wlhse.dto.outDto.QhseEvidenceAttatchDto">
+        select
+        <include refid="element_evidence_key"/>
+         from qhse_companyyearmanagersyselementevidence t1,qhse_companyyearmanagersyselementevidenceattach t2
+        where t1.QHSE_CompanyYearManagerSysElementEvidence_ID=t2.QHSE_CompanyYearManagerSysElementEvidence_ID
+        and t1.QHSE_CompanyYearManagerSysElement_ID=#{qHSE_CompanyYearManagerSysElement_ID}
+    </select>
+
+    <select id="queryParent" parameterType="java.lang.String"
+            resultType="com.wlhse.dto.outDto.QHSECompanyYearManagerSysElementDto">
+        select * from qhse_companyyearmanagersyselement where  code=#{code}
+    </select>
+
+    <select id="queryCheck" resultType="com.wlhse.dto.outDto.QHSECompanyYearManagerSysElementDto"
+            parameterType="com.wlhse.dto.inDto.ElementReviewDto">
+        select * from qhse_companyyearmanagersyselement
+        <where>
+            <if test="companyCode !=null and companyCode!=''">
+                AND companyCode=#{companyCode}
+            </if>
+            <if test="year != null and year  != ''">
+                AND year=#{year}
+            </if>
+            <if test="status==0">
+                and (status="未批准" or status="备案待查")
+            </if>
+            <if test="status==1">
+                and status="备案待查"
+            </if>
+            and ConfigStatus="启用"
+        </where>
+    </select>
+    <select id="queryParents" resultType="com.wlhse.dto.outDto.QHSECompanyYearManagerSysElementDto">
+         select * from qhse_companyyearmanagersyselement where  code=#{0} and companyCode=#{1}
+         and `year`=#{2}
+    </select>
+    <select id="queryAllElement" resultType="java.lang.Integer" parameterType="com.wlhse.dto.inDto.ElementReviewDto">
+        select count(*) from qhse_companyyearmanagersyselement where companyCode=#{companyCode} and `year`=#{year}
+        and (status is not null or status!="")
+    </select>
+    <select id="queryQuality" resultType="com.wlhse.dto.QualityCheckTableRecordDto" parameterType="com.wlhse.dto.QualityCheckTableRecordDto">
+        select Qulity_CheckTableRecordID as qualityCheckTableRecordID,
+        Qulity_CheckID as qualityCheckID,
+        CheckListCode as checkListCode,
+        CheckResult as checkResult,
+        Attach as attach,
+        Pic as pic,
+        Description as description,
+        Quality_CheckName as qualityCheckName
+        from quality_checktablerecord
+        where CheckListCode=#{checkListCode} and Qulity_CheckID=#{qualityCheckID}
+    </select>
+    <select id="queryParentss" resultType="com.wlhse.entity.QualityManergerSysElementPojo">
+         select * from quality_companyyearmanagersyselement where  code=#{0} and companyCode=#{1}
+         and `year`=#{2}
+    </select>
+    <select id="queryQualityCheck" resultType="com.wlhse.entity.QualityManergerSysElementPojo">
+        select * from quality_companyyearmanagersyselement
+        <where>
+            <if test="companyCode !=null and companyCode!=''">
+                AND companyCode=#{companyCode}
+            </if>
+            <if test="year != null and year  != ''">
+                AND year=#{year}
+            </if>
+            <if test="status==0">
+                and (status="未批准" or status="备案待查")
+            </if>
+            <if test="status==1">
+                and status="备案待查"
+            </if>
+            and ConfigStatus="启用"
+        </where>
+    </select>
+    <select id="queryQualityAllElement" resultType="java.lang.Integer">
+         select count(*) from quality_companyyearmanagersyselement where companyCode=#{companyCode} and `year`=#{year}
+        and (status is not null and  status!="")
+    </select>
+
+
+    <delete id="delete" parameterType="com.wlhse.dto.inDto.ElementReviewDto">
+        delete  from QHSE_CompanyYearManagerSysElementEvidence where
+         QHSE_CompanyYearManagerSysElement_ID=#{qHSE_CompanyYearManagerSysElement_ID};
+    </delete>
+
+    <delete id="deleteAttach" parameterType="com.wlhse.dto.inDto.ElementReviewDto">
+        delete from QHSE_CompanyYearManagerSysElementEvidenceAttach where
+         QHSE_CompanyYearManagerSysElementEvidence_ID=(select QHSE_CompanyYearManagerSysElementEvidence_ID
+         from QHSE_CompanyYearManagerSysElementEvidence where
+          QHSE_CompanyYearManagerSysElement_ID=#{qHSE_CompanyYearManagerSysElement_ID});
+    </delete>
+
+    <delete id="deleteNewOriginFile" parameterType="com.wlhse.dto.inDto.ElementReviewDto">
+        delete from elementinputfileinfo where
+        QHSE_CompanyYearManagerSysElementEvidence_ID=(select QHSE_CompanyYearManagerSysElementEvidence_ID
+         from QHSE_CompanyYearManagerSysElementEvidence where
+          QHSE_CompanyYearManagerSysElement_ID=#{qHSE_CompanyYearManagerSysElement_ID});
+    </delete>
+
+    <delete id="deleteNewOriginFiles" parameterType="java.lang.Integer">
+        DELETE FROM elementinputfileinfo WHERE QHSE_CompanyYearManagerSysElementEvidence_ID
+        is null or QHSE_CompanyYearManagerSysElementEvidence_ID =#{id}
+    </delete>
+
+    <select id="queryNoPasElement" resultType="com.wlhse.dto.outDto.QHSECompanyYearManagerSysElementDto"
+            parameterType="com.wlhse.dto.inDto.ElementReviewDto">
+    select * from qhse_companyyearmanagersyselement
+    <where>
+        <if test="companyCode !=null and companyCode!=''">
+            AND companyCode=#{companyCode}
+        </if>
+        <if test="year != null and year  != ''">
+            AND `year`=#{year}
+        </if>
+        <if test="status==0">
+            and status='不通过'
+        </if>
+        <if test="status==1">
+            and status="不通过"
+        </if>
+        and ConfigStatus="启用"
+    </where>
+    </select>
+
+    <update id="passAll">
+        update qhse_companyyearmanagersyselement
+        set Status='未批准'
+        where AuditMode is not null
+        and QHSE_CompanyYearManagerSysElementTable_ID=#{0}
+    </update>
+
+    <update id="approveAll">
+        update qhse_companyyearmanagersyselement
+        set Status='备案待查'
+        where AuditMode is not null
+        and QHSE_CompanyYearManagerSysElementTable_ID=#{0}
+    </update>
+</mapper>

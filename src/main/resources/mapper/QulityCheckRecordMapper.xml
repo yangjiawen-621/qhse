@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.QulityCheckRecordDao">
+
+    <!--质量检查记录表quality_checkrecord-->
+
+    <!--QulityCheckRecordPojo的ResultMap-->
+    <resultMap id="qulityCheckRecordPojoResultMap" type="com.wlhse.entity.QulityCheckRecordPojo">
+    </resultMap>
+
+    <!--添加质量检查-->
+    <insert id="addQualityCheckRecord" parameterType="com.wlhse.entity.QulityCheckRecordPojo" useGeneratedKeys="true"
+            keyProperty="qulity_CheckRecordID">
+        insert into quality_checkrecord
+        (
+        <trim suffixOverrides=",">
+            <if test="qulity_CheckRecordID != null and qulity_CheckRecordID != ''">
+                qulity_CheckRecordID,
+            </if>
+            <if test="qulity_CheckID != null and qulity_CheckID != ''">
+                qulity_CheckID,
+            </if>
+            <if test="checkListCode != null and checkListCode != ''">
+                checkListCode,
+            </if>
+            <if test="no != null and no != ''">
+                `no`,
+            </if>
+            <if test="description != null and description != ''">
+                description,
+            </if>
+            <if test="nature != null and nature != ''">
+                nature,
+            </if>
+            <if test="nonConformityType != null and nonConformityType != ''">
+                nonConformityType,
+            </if>
+            <if test="nonConformityNature != null and nonConformityNature != ''">
+                nonConformityNature,
+            </if>
+            <if test="nonConformityStd != null and nonConformityStd != ''">
+                nonConformityStd,
+            </if>
+            <if test="nonConformClauseNo != null and nonConformClauseNo != ''">
+                nonConformClauseNo,
+            </if>
+            <if test="nonConformClauseContent != null and nonConformClauseContent != ''">
+                nonConformClauseContent,
+            </if>
+            <if test="nonConformSource != null and nonConformSource != ''">
+                nonConformSource,
+            </if>
+            <if test="nonConformCorrect != null and nonConformCorrect != ''">
+                nonConformCorrect,
+            </if>
+            <if test="nonConformCorrectMeasure != null and nonConformCorrectMeasure != ''">
+                nonConformCorrectMeasure,
+            </if>
+            <if test="nonConformCorrectMeasureVerify != null and nonConformCorrectMeasureVerify != ''">
+                nonConformCorrectMeasureVerify,
+            </if>
+            <if test="punishmentBasis != null and punishmentBasis != ''">
+                punishmentBasis,
+            </if>
+            <if test="violationClause != null and violationClause != ''">
+                violationClause,
+            </if>
+            <if test="violationClauseContent != null and violationClauseContent != ''">
+                violationClauseContent,
+            </if>
+            <if test="violationScore != null and violationScore != ''">
+                violationScore,
+            </if>
+            <if test="illegalPerson != null and illegalPerson != ''">
+                illegalPerson,
+            </if>
+            <if test="violationDeduction != null and violationDeduction != ''">
+                violationDeduction,
+            </if>
+            <if test="illegalPersonID != null and illegalPersonID != ''">
+                illegalPersonID,
+            </if>
+            <if test="post != null and post != ''">
+                post,
+            </if>
+            <if test="postType != null and postType != ''">
+                postType,
+            </if>
+            <if test="employmentProperty != null and employmentProperty != ''">
+                employmentProperty,
+            </if>
+            <if test="workingYears != null and workingYears != ''">
+                workingYears,
+            </if>
+            <if test="education != null and education != ''">
+                education,
+            </if>
+            <if test="reformDate != null and reformDate != ''">
+                reformDate,
+            </if>
+            <if test="reformLimit != null and reformLimit != ''">
+                reformLimit,
+            </if>
+            <if test="isPush != null and isPush != ''">
+                isPush,
+            </if>
+            <if test="problemAttach != null and problemAttach != ''">
+                problemAttach,
+            </if>
+            <if test="problemPic != null and problemPic != ''">
+                problemPic,
+            </if>
+            <if test="correctAttach != null and correctAttach != ''">
+                correctAttach,
+            </if>
+            <if test="correctPic != null and correctPic != ''">
+                correctPic,
+            </if>
+            <!--new add-->
+            <if test="nonConformClause != null and nonConformClause != ''">nonConformClause,</if>
+            <if test="nonConformityStdNo != null and nonConformityStdNo != ''">nonConformityStdNo,</if>
+            <if test="nonConformityStdContent != null and nonConformityStdContent != ''">nonConformityStdContent,</if>
+            <if test="resVerifierID != null and resVerifierID != ''">resVerifierID,</if>
+            <if test="resVerifierName != null and resVerifierName != ''">resVerifierName,</if>
+            <if test="resVerifyDate != null and resVerifyDate != ''">resVerifyDate,</if>
+            <if test="resVerifyAdvice != null and resVerifyAdvice != ''">resVerifyAdvice,</if>
+            <if test="cheVerifierID != null and cheVerifierID != ''">cheVerifierID,</if>
+            <if test="cheVerifierName != null and cheVerifierName != ''">cheVerifierName,</if>
+            <if test="cheVerifyDate != null and cheVerifyDate != ''">cheVerifyDate,</if>
+            <if test="cheVerifyAdvice != null and cheVerifyAdvice != ''">cheVerifyAdvice,</if>
+            <if test="responsiCompanyName != null and responsiCompanyName != ''">responsiCompanyName,</if>
+            <if test="responsiCompanyCode != null and responsiCompanyCode != ''">responsiCompanyCode,</if>
+            <if test="responsePersonID != null and responsePersonID != ''">responsePersonID,</if>
+            <if test="responsePersonName != null and responsePersonName != ''">responsePersonName,</if>
+        </trim>
+        )
+        values
+        (
+        <trim suffixOverrides=",">
+            <if test="qulity_CheckRecordID != null and qulity_CheckRecordID != ''">
+                #{qulity_CheckRecordID},
+            </if>
+            <if test="qulity_CheckID != null and qulity_CheckID != ''">
+                #{qulity_CheckID},
+            </if>
+            <if test="checkListCode != null and checkListCode != ''">
+                #{checkListCode},
+            </if>
+            <if test="no != null and no != ''">
+                #{no},
+            </if>
+            <if test="description != null and description != ''">
+                #{description},
+            </if>
+            <if test="nature != null and nature != ''">
+                #{nature},
+            </if>
+            <if test="nonConformityType != null and nonConformityType != ''">
+                #{nonConformityType},
+            </if>
+            <if test="nonConformityNature != null and nonConformityNature != ''">
+                #{nonConformityNature},
+            </if>
+            <if test="nonConformityStd != null and nonConformityStd != ''">
+                #{nonConformityStd},
+            </if>
+            <if test="nonConformClauseNo != null and nonConformClauseNo != ''">
+                #{nonConformClauseNo},
+            </if>
+            <if test="nonConformClauseContent != null and nonConformClauseContent != ''">
+                #{nonConformClauseContent},
+            </if>
+            <if test="nonConformSource != null and nonConformSource != ''">
+                #{nonConformSource},
+            </if>
+            <if test="nonConformCorrect != null and nonConformCorrect != ''">
+                #{nonConformCorrect},
+            </if>
+            <if test="nonConformCorrectMeasure != null and nonConformCorrectMeasure != ''">
+                #{nonConformCorrectMeasure},
+            </if>
+            <if test="nonConformCorrectMeasureVerify != null and nonConformCorrectMeasureVerify != ''">
+                #{nonConformCorrectMeasureVerify},
+            </if>
+            <if test="punishmentBasis != null and punishmentBasis != ''">
+                #{punishmentBasis},
+            </if>
+            <if test="violationClause != null and violationClause != ''">
+                #{violationClause},
+            </if>
+            <if test="violationClauseContent != null and violationClauseContent != ''">
+                #{violationClauseContent},
+            </if>
+            <if test="violationScore != null and violationScore != ''">
+                #{violationScore},
+            </if>
+            <if test="illegalPerson != null and illegalPerson != ''">
+                #{illegalPerson},
+            </if>
+            <if test="violationDeduction != null and violationDeduction != ''">
+                #{violationDeduction},
+            </if>
+            <if test="illegalPersonID != null and illegalPersonID != ''">
+                #{illegalPersonID},
+            </if>
+            <if test="post != null and post != ''">
+                #{post},
+            </if>
+            <if test="postType != null and postType != ''">
+                #{postType},
+            </if>
+            <if test="employmentProperty != null and employmentProperty != ''">
+                #{employmentProperty},
+            </if>
+            <if test="workingYears != null and workingYears != ''">
+                #{workingYears},
+            </if>
+            <if test="education != null and education != ''">
+                #{education},
+            </if>
+            <if test="reformDate != null and reformDate != ''">
+                #{reformDate},
+            </if>
+            <if test="reformLimit != null and reformLimit != ''">
+                #{reformLimit},
+            </if>
+            <if test="isPush != null and isPush != ''">
+                #{isPush},
+            </if>
+            <if test="problemAttach != null and problemAttach != ''">
+                #{problemAttach},
+            </if>
+            <if test="problemPic != null and problemPic != ''">
+                #{problemPic},
+            </if>
+            <if test="correctAttach != null and correctAttach != ''">
+                #{correctAttach},
+            </if>
+            <if test="correctPic != null and correctPic != ''">
+                #{correctPic},
+            </if>
+            <!--new add-->
+            <if test="nonConformClause != null and nonConformClause != ''">#{nonConformClause},</if>
+            <if test="nonConformityStdNo != null and nonConformityStdNo != ''">#{nonConformityStdNo},</if>
+            <if test="nonConformityStdContent != null and nonConformityStdContent != ''">#{nonConformityStdContent},
+            </if>
+            <if test="resVerifierID != null and resVerifierID != ''">#{resVerifierID},</if>
+            <if test="resVerifierName != null and resVerifierName != ''">#{resVerifierName},</if>
+            <if test="resVerifyDate != null and resVerifyDate != ''">#{resVerifyDate},</if>
+            <if test="resVerifyAdvice != null and resVerifyAdvice != ''">#{resVerifyAdvice},</if>
+            <if test="cheVerifierID != null and cheVerifierID != ''">#{cheVerifierID},</if>
+            <if test="cheVerifierName != null and cheVerifierName != ''">#{cheVerifierName},</if>
+            <if test="cheVerifyDate != null and cheVerifyDate != ''">#{cheVerifyDate},</if>
+            <if test="cheVerifyAdvice != null and cheVerifyAdvice != ''">#{cheVerifyAdvice},</if>
+            <if test="responsiCompanyName != null and responsiCompanyName != ''">#{responsiCompanyName},</if>
+            <if test="responsiCompanyCode != null and responsiCompanyCode != ''">#{responsiCompanyCode},</if>
+            <if test="responsePersonID != null and responsePersonID != ''">#{responsePersonID},</if>
+            <if test="responsePersonName != null and responsePersonName != ''">#{responsePersonName},</if>
+
+        </trim>
+        )
+    </insert>
+
+    <!--查询质量检查-->
+    <select id="queryQualityCheckRecord" resultMap="qulityCheckRecordPojoResultMap">
+        select * from quality_checkrecord;
+    </select>
+
+    <!--根据质量检查id删除质量检查-->
+    <delete id="deleteQualityCheckRecord">
+         DELETE FROM quality_checkrecord WHERE Qulity_CheckRecordID = #{id};
+    </delete>
+
+    <!--根据质量检查id更新质量检查-->
+    <update id="updateQualityCheckRecord">
+        UPDATE quality_checkrecord SET
+        <trim suffixOverrides=",">
+            <if test="qulity_CheckRecordID != null and qulity_CheckRecordID != ''">
+                qulity_CheckRecordID= #{qulity_CheckRecordID},
+            </if>
+            <if test="qulity_CheckID != null and qulity_CheckID != ''">
+                qulity_CheckID= #{qulity_CheckID},
+            </if>
+            <if test="checkListCode != null and checkListCode != ''">
+                checkListCode= #{checkListCode},
+            </if>
+            <if test="no != null and no != ''">
+                `no`= #{no},
+            </if>
+            <if test="description != null and description != ''">
+                description= #{description},
+            </if>
+            <if test="nature != null and nature != ''">
+                nature= #{nature},
+            </if>
+            <if test="nonConformityType != null and nonConformityType != ''">
+                nonConformityType= #{nonConformityType},
+            </if>
+            <if test="nonConformityNature != null and nonConformityNature != ''">
+                nonConformityNature= #{nonConformityNature},
+            </if>
+            <if test="nonConformityStd != null and nonConformityStd != ''">
+                nonConformityStd= #{nonConformityStd},
+            </if>
+            <if test="nonConformClauseNo != null and nonConformClauseNo != ''">
+                nonConformClauseNo= #{nonConformClauseNo},
+            </if>
+            <if test="nonConformClauseContent != null and nonConformClauseContent != ''">
+                nonConformClauseContent= #{nonConformClauseContent},
+            </if>
+            <if test="nonConformSource != null and nonConformSource != ''">
+                nonConformSource= #{nonConformSource},
+            </if>
+            <if test="nonConformCorrect != null and nonConformCorrect != ''">
+                nonConformCorrect= #{nonConformCorrect},
+            </if>
+            <if test="nonConformCorrectMeasure != null and nonConformCorrectMeasure != ''">
+                nonConformCorrectMeasure= #{nonConformCorrectMeasure},
+            </if>
+            <if test="nonConformCorrectMeasureVerify != null and nonConformCorrectMeasureVerify != ''">
+                nonConformCorrectMeasureVerify= #{nonConformCorrectMeasureVerify},
+            </if>
+            <if test="punishmentBasis != null and punishmentBasis != ''">
+                punishmentBasis= #{punishmentBasis},
+            </if>
+            <if test="violationClause != null and violationClause != ''">
+                violationClause= #{violationClause},
+            </if>
+            <if test="violationClauseContent != null and violationClauseContent != ''">
+                violationClauseContent= #{violationClauseContent},
+            </if>
+            <if test="violationDeduction != null and violationDeduction != ''">
+                violationDeduction= #{violationDeduction},
+            </if>
+            <if test="violationScore != null and violationScore != ''">
+                violationScore= #{violationScore},
+            </if>
+            <if test="illegalPerson != null and illegalPerson != ''">
+                illegalPerson= #{illegalPerson},
+            </if>
+            <if test="illegalPersonID != null and illegalPersonID != ''">
+                illegalPersonID= #{illegalPersonID},
+            </if>
+            <if test="post != null and post != ''">
+                post= #{post},
+            </if>
+            <if test="postType != null and postType != ''">
+                postType= #{postType},
+            </if>
+            <if test="employmentProperty != null and employmentProperty != ''">
+                employmentProperty= #{employmentProperty},
+            </if>
+            <if test="workingYears != null and workingYears != ''">
+                workingYears= #{workingYears},
+            </if>
+            <if test="education != null and education != ''">
+                education= #{education},
+            </if>
+            <if test="reformDate != null and reformDate != ''">
+                reformDate= #{reformDate},
+            </if>
+            <if test="reformLimit != null and reformLimit != ''">
+                reformLimit= #{reformLimit},
+            </if>
+            <if test="isPush != null and isPush != ''">
+                isPush= #{isPush},
+            </if>
+            <if test="problemAttach != null and problemAttach != ''">
+                problemAttach= #{problemAttach},
+            </if>
+            <if test="problemPic != null and problemPic != ''">
+                problemPic= #{problemPic},
+            </if>
+            <if test="correctAttach != null and correctAttach != ''">
+                correctAttach= #{correctAttach},
+            </if>
+            <if test="correctPic != null and correctPic != ''">
+                correctPic= #{correctPic},
+            </if>
+            <!--new add-->
+            <if test="nonConformClause != null and nonConformClause != ''">nonConformClause = #{nonConformClause},</if>
+            <if test="nonConformityStdNo != null and nonConformityStdNo != ''">nonConformityStdNo =
+                #{nonConformityStdNo},
+            </if>
+            <if test="nonConformityStdContent != null and nonConformityStdContent != ''">
+                nonConformityStdContent=#{nonConformityStdContent},
+            </if>
+            <if test="resVerifierID != null and resVerifierID != ''">resVerifierID=#{resVerifierID},</if>
+            <if test="resVerifierName != null and resVerifierName != ''">resVerifierName=#{resVerifierName},</if>
+            <if test="resVerifyDate != null and resVerifyDate != ''">resVerifyDate=#{resVerifyDate},</if>
+            <if test="resVerifyAdvice != null and resVerifyAdvice != ''">resVerifyAdvice=#{resVerifyAdvice},</if>
+            <if test="cheVerifierID != null and cheVerifierID != ''">cheVerifierID=#{cheVerifierID},</if>
+            <if test="cheVerifierName != null and cheVerifierName != ''">cheVerifierName=#{cheVerifierName},</if>
+            <if test="cheVerifyDate != null and cheVerifyDate != ''">cheVerifyDate=#{cheVerifyDate},</if>
+            <if test="cheVerifyAdvice != null and cheVerifyAdvice != ''">cheVerifyAdvice=#{cheVerifyAdvice},</if>
+            <if test="responsiCompanyName != null and responsiCompanyName != ''">
+                responsiCompanyName=#{responsiCompanyName},
+            </if>
+            <if test="responsiCompanyCode != null and responsiCompanyCode != ''">
+                responsiCompanyCode=#{responsiCompanyCode},
+            </if>
+            <if test="responsePersonID != null and responsePersonID != ''">responsePersonID=#{responsePersonID},</if>
+            <if test="responsePersonName != null and responsePersonName != ''">
+                responsePersonName=#{responsePersonName},
+            </if>
+        </trim>
+        WHERE Qulity_CheckRecordID = #{qulity_CheckRecordID}
+    </update>
+
+    <!--根据质量检查checkId查询质量检查记录-->
+    <select id="queryQulityCheckRecordByCheckId" resultMap="qulityCheckRecordPojoResultMap">
+        SELECT * FROM quality_checkrecord WHERE Qulity_CheckID = #{checkId}
+    </select>
+
+    <select id="queryQualityCheckRecordById" resultType="com.wlhse.entity.QulityCheckRecordPojo">
+        SELECT * FROM quality_checkrecord WHERE Qulity_CheckRecordID = #{id}
+    </select>
+</mapper>

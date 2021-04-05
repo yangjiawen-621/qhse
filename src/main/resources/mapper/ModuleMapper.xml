@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.ModuleDao">
+    <resultMap id="ListSYSModulePojo" type="com.wlhse.entity.ModulePojo">
+        <id column="SYS_Module_ID" property="id"/>
+        <result column="ModuleCode" property="moduleCode"/>
+        <result column="Name" property="name"/>
+        <result column="URL" property="url"/>
+        <result column="Img" property="img"/>
+    </resultMap>
+    <select id="queryAllSYSModules" resultMap="ListSYSModulePojo">
+        select * from sys_module
+    </select>
+
+    <select id="queryByModuleCode" resultMap="ListSYSModulePojo">
+        select * from sys_module where ModuleCode=#{0}
+    </select>
+
+    <select id="queryModulesByEmpId" resultType="com.wlhse.entity.ModulePojo">
+        SELECT t5.SYS_Module_ID as id,
+        t5.`Name` as name,
+        t5.ModuleCode as moduleCode,
+        t5.URL as url,
+        t5.Img as img
+        FROM
+        sys_user as t2
+        join
+        sys_user_role as t3
+        on t2.UName=t3.UName
+        join
+        sys_rolemodule as t4
+        on t3.RoleCode=t4.RoleCode
+        join
+        sys_module as t5
+        on t4.ModuleCode=t5.ModuleCode
+        where t2.EmployeeID=#{employeeId}
+        order by t5.ModuleCode
+    </select>
+
+    <select id="queryModulesStringByEmpId" resultType="java.lang.String">
+        SELECT
+        t5.ModuleCode as moduleCode
+        FROM
+        sys_user as t2
+        join
+        sys_user_role as t3
+        on t2.UName=t3.UName
+        join
+        sys_rolemodule as t4
+        on t3.RoleCode=t4.RoleCode
+        join
+        sys_module as t5
+        on t4.ModuleCode=t5.ModuleCode
+        where t2.EmployeeID=#{employeeId}
+    </select>
+
+<!--    <select id="getInterfaceCountByEmpId" resultType="int">-->
+<!--        SELECT count(*)-->
+<!--        FROM-->
+<!--        sys_user as t1-->
+<!--        join-->
+<!--        sys_user_role as t2-->
+<!--        on t1.UName=t2.UName-->
+<!--        join-->
+<!--        sys_rolemodule as t3-->
+<!--        on t2.RoleCode=t3.RoleCode-->
+<!--        join-->
+<!--        sys_module as t4-->
+<!--        on t3.ModuleCode=t4.ModuleCode-->
+<!--        join-->
+<!--        interface_module as t5-->
+<!--        on t4.ModuleCode=t5.ModuleCode-->
+<!--    </select>-->
+
+    <select id="getInterfaceCountByEmpId" resultType="int">
+        SELECT count(*)
+        FROM
+        sys_user as t1
+        join
+        sys_user_role as t2
+        on t1.UName=t2.UName
+        join
+        sys_rolemodule as t3
+        on t2.RoleCode=t3.RoleCode
+        join
+        sys_module as t4
+        on t3.ModuleCode=t4.ModuleCode
+        join
+        interface_module as t5
+        on t4.ModuleCode=t5.ModuleCode
+        where
+                t1.EmployeeID=#{empId}
+                and t5.InterfaceUrl=#{interfaceUrl}
+                and t5.Method=#{method}
+    </select>
+
+</mapper>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.ReportTotalCostDao">
+
+    <insert id="addTotalCost" parameterType="com.wlhse.entity.ReportTotalCostPojo">
+        insert into report_total_cost
+        <trim prefix="set" suffixOverrides=",">
+            CostYear=#{costYear},
+            TotalCost=#{totalCost},
+            Category=#{category}
+        </trim>
+    </insert>
+
+    <select id="getTotalCostCount" resultType="int">
+        select COUNT(*) from report_total_cost where Category=#{category} and CostYear=#{costYear}
+    </select>
+
+    <select id="getTotalCostByContiton" resultType="com.wlhse.entity.ReportTotalCostPojo">
+        select
+        costID,
+        costYear,
+        totalCost,
+        category
+        from report_total_cost
+        where
+        CostYear = #{costYear}
+        and Category=#{category}
+    </select>
+
+    <select id="getReportCostManageAnalysis" resultType="com.wlhse.dto.outDto.ReportCostManageOutDto">
+        SELECT
+        r2.year,
+        r2.reportType,
+        COUNT(*) as count,
+        COUNT(IF(r2.role="审核",1,NULL)) as auditorCount,
+        SUM(IF(r2.role="审核",r2.unitPrice,0)) as auditorTotalCost,
+        COUNT(IF(r2.role="审批",1,NULL)) as approverCount,
+        SUM(IF(r2.role="审批",r2.unitPrice,0)) as approverTotalCost,
+        SUM(IF(r2.role="审核",r2.unitPrice,0))+SUM(IF(r2.role="审批",r2.unitPrice,0)) as reportTypeTotalCost
+        FROM
+            (SELECT
+                ANY_VALUE(YEAR(rer1.SealDate)) as year,
+                rer1.ReportCode as reportCode,
+                ANY_VALUE(rer1.ReportType) as reportType,
+                ANY_VALUE(rer1.CompanyName) as companyName,
+                rer1.EmployeeRole as role,
+                rer1.EmployeeName as personName,
+                ANY_VALUE(r1.unitPrice) as unitPrice,
+                rer1.EmployeeCategory as personCategory,
+                COUNT(*) as count
+            FROM report_employee_record as rer1
+            JOIN
+                (SELECT
+                    ANY_VALUE(YEAR(rer.SealDate)) as year,
+                    ANY_VALUE(rer.ReportCode) as reportCode,
+                    ANY_VALUE(rer.ReportType) as reportType,
+                    ANY_VALUE(rer.CompanyName) as companyName,
+                    rer.EmployeeRole as role,
+                    ANY_VALUE(up.unitPrice) as initialUnitPrice,
+                    TRUNCATE(ANY_VALUE(up.unitPrice)/COUNT(*),2) as unitPrice,
+                    COUNT(*) as count
+                FROM report_employee_record as rer
+                JOIN
+                    (SELECT
+                        rup1.CostYear as year,
+                        rup1.ReportType as reportType,
+                        rup1.UnitPrice*rup1.AuditorProportion as unitPrice,
+                        "审核" as role
+                    FROM report_unit_price as rup1
+                    WHERE rup1.CostYear="2020"
+                    UNION
+                    SELECT
+                        rup2.CostYear as year,
+                        rup2.ReportType as reportType,
+                        rup2.UnitPrice*rup2.ApproverProportion as unitPrice,
+                        "审批" as role
+                    FROM report_unit_price as rup2
+                    WHERE rup2.CostYear=#{costYear}) as up
+                ON rer.ReportType=up.reportType and rer.EmployeeRole=up.role
+                WHERE YEAR(rer.SealDate)=#{costYear}
+                GROUP BY rer.ReportCode,rer.EmployeeRole) as r1
+            ON rer1.ReportCode=r1.reportCode and rer1.EmployeeRole=r1.role
+            WHERE rer1.EmployeeCategory=#{personCategory}
+            GROUP BY rer1.ReportCode,rer1.EmployeeRole,rer1.EmployeeName) as r2
+        GROUP BY r2.reportType
+    </select>
+
+    <update id="updateTotalCost" parameterType="com.wlhse.entity.ReportTotalCostPojo">
+        update report_total_cost
+        <set>
+            <if test="totalCost != null and totalCost != ''">
+                TotalCost=#{totalCost}
+            </if>
+        </set>
+        <where>
+            CostID=#{costID}
+        </where>
+    </update>
+
+</mapper>

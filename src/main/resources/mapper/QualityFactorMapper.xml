@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wlhse.dao.QualityFactorDao">
+
+    <select id="findAll" resultType="com.wlhse.dto.outDto.QualityFactorOutDto">
+        select
+        ID as id,
+        FactorCode as factorCode,
+        FactorID as factorID,
+        Name as name,
+        Rigth as `right`,
+        FactorHseCode as factorHseCode,
+        FactorObserverCode as factorObserverCode,
+        FactorSourceCode as factorSourceCode,
+        FactorDepartmentCode as factorDepartmentCode
+        from quality_factor
+        <where>
+            <if test="code!=null and code!=''">
+                FactorCode like concat(#{code},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="findByName" resultType="string">
+        select FactorCode from Factor where name=#{name}
+    </select>
+
+</mapper>

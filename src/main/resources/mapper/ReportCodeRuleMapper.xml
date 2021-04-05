@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wlhse.dao.ReportCodeRuleDao">
+   <select id="querryRule" parameterType="java.lang.String" resultType="java.lang.String" >
+        select BusinessCode from report_code_rule where ReportType=#{type} LIMIT 1
+   </select>
+
+    <select id="querryRules" parameterType="com.wlhse.dto.ReportCodeRule" resultType="com.wlhse.dto.ReportCodeRule" >
+        select * from report_code_rule
+        <trim prefix="where" prefixOverrides="and">
+            <if test="companyCode!=null and companyCode!=''">
+                and substring(CompanyCode,1,length(#{companyCode})) = #{companyCode}
+            </if>
+            <if test="reportType!=null and reportType!=''">
+                and ReportType=#{reportType}
+            </if>
+        </trim>
+   </select>
+
+    <select id="querryRuleByID" parameterType="java.lang.Integer" resultType="com.wlhse.dto.ReportCodeRule" >
+        select * from report_code_rule where ReportCodeRuleID=#{id}
+   </select>
+
+
+    <select id="querryReportType" resultType="String">
+        select distinct (ReportType)
+        from report_code_rule
+    </select>
+
+    <select id="countBusinessType" resultType="java.lang.Integer" parameterType="com.wlhse.dto.ReportCodeRule">
+        select count(*) from report_code_rule
+        <trim prefix="where" prefixOverrides="and">
+            <if test="business!=null and business!=''">
+                and Business=#{business}
+            </if>
+        </trim>
+    </select>
+
+    <select id="countRules" resultType="java.lang.Integer" parameterType="com.wlhse.dto.ReportCodeRule">
+        select count(*) from report_code_rule
+        <trim prefix="where" prefixOverrides="and">
+            <if test="companyCode!=null and companyCode!=''">
+                and substring(CompanyCode,1,length(#{companyCode})) = #{companyCode}
+            </if>
+            <if test="reportType!=null and reportType!=''">
+                and ReportType=#{reportType}
+            </if>
+        </trim>
+    </select>
+
+    <insert id="addRule" parameterType="com.wlhse.dto.ReportCodeRule">
+        insert into report_code_rule (CompanyCode,CompanyName,Business,BusinessType,ServiceContent,BusinessCode,ReportType)
+        values(#{companyCode},(select Name from sys_company where CompanyCode=#{companyCode}),#{business},#{businessType},#{serviceContent},#{businessCode},#{reportType})
+    </insert>
+
+    <update id="updateRule" parameterType="com.wlhse.dto.ReportCodeRule">
+        update report_code_rule
+        <trim prefix="set" suffixOverrides=",">
+            <if test="companyCode!=null and companyCode!=''">
+                CompanyCode=#{companyCode},
+                CompanyName=(select Name from sys_company where CompanyCode=#{companyCode}),
+            </if>
+            <if test="business!=null and business!=''">
+                Business=#{business},
+            </if>
+            <if test="businessType!=null and businessType!=''">
+                BusinessType=#{businessType},
+            </if>
+            <if test="serviceContent!=null and serviceContent!=''">
+                ServiceContent=#{serviceContent},
+            </if>
+            <if test="businessCode!=null and businessCode!=''">
+                BusinessCode=#{businessCode},
+            </if>
+            <if test="reportType!=null and reportType!=''">
+                ReportType=#{reportType},
+            </if>
+        </trim>
+        where ReportCodeRuleID=#{reportCodeRuleID}
+    </update>
+
+    <delete id="deleteRule" parameterType="java.lang.Integer">
+        delete from report_code_rule
+        where ReportCodeRuleID=#{reportCodeRuleID}
+    </delete>
+</mapper>

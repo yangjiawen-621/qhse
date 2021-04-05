@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.QualityElementReviewDao">
+    <insert id="insertAttach" parameterType="com.wlhse.entity.QualityInputAttachPojo">
+        insert into quality_companyyearmanagersyselementevidence
+        (
+        <trim suffixOverrides=",">
+            <if test="quality_CompanyYearManagerSysElementEvidence_ID != null and quality_CompanyYearManagerSysElementEvidence_ID != ''">
+                quality_CompanyYearManagerSysElementEvidence_ID,
+            </if>
+            <if test="code != null and code != ''">
+                code,
+            </if>
+            <if test="evidenceDescription != null and evidenceDescription != ''">
+                evidenceDescription,
+            </if>
+            <if test="attachDescrption != null and attachDescrption != ''">
+                attachDescrption,
+            </if>
+            <if test="attach != null and attach != ''">
+                attach,
+            </if>
+        </trim>
+        )
+        values
+        (
+        <trim suffixOverrides=",">
+            <if test="quality_CompanyYearManagerSysElementEvidence_ID != null and quality_CompanyYearManagerSysElementEvidence_ID != ''">
+               #{quality_CompanyYearManagerSysElementEvidence_ID},
+            </if>
+            <if test="code != null and code != ''">
+                #{code},
+            </if>
+            <if test="evidenceDescription != null and evidenceDescription != ''">
+                #{evidenceDescription},
+            </if>
+            <if test="attachDescrption != null and attachDescrption != ''">
+                #{attachDescrption},
+            </if>
+            <if test="attach != null and attach != ''">
+                #{attach},
+            </if>
+        </trim>
+        )
+    </insert>
+    <update id="updateAttach" parameterType="com.wlhse.entity.QualityInputAttachPojo">
+        update quality_companyyearmanagersyselementevidence
+            <set>
+                <if test="evidenceDescription !=null and evidenceDescription!=''">
+                   EvidenceDescription=#{evidenceDescription},
+                </if>
+                <if test="attachDescrption !=null and attachDescrption!=''">
+                    AttachDescrption=#{attachDescrption},
+                </if>
+                <if test="attach !=null and attach!=''">
+                   Attach=#{attach},
+                </if>
+            </set>
+            where Quality_CompanyYearManagerSysElement_ID=#{quality_CompanyYearManagerSysElement_ID}
+    </update>
+    <update id="updatePass">
+        update quality_companyyearmanagersyselement
+        <set>
+            <if test="tag==0">
+                Status="未批准"
+            </if>
+            <if test="tag==1">
+                Status="备案待查"
+            </if>
+        </set>
+        where  Quality_CompanyYearManagerSysElement_ID=#{id}
+    </update>
+    <update id="updateNoPass">
+        update quality_companyyearmanagersyselement
+       set Status=#{pass}
+        where  Quality_CompanyYearManagerSysElement_ID=#{id}
+    </update>
+    <update id="updateNegativeOpinion">
+        update quality_companyyearmanagersyselementevidence
+        <set>
+            <if test="negativeOpinion!=null and negativeOpinion!=''">
+                NegativeOpinion=#{negativeOpinion}
+            </if>
+        </set>
+        where  Quality_CompanyYearManagerSysElement_ID=#{id}
+    </update>
+
+
+    <select id="query" resultType="com.wlhse.entity.QualityManergerSysElementPojo">
+        select t1.quality_CompanyYearManagerSysElement_ID as quality_CompanyYearManagerSysElement_ID,
+        t1.quality_CompanyYearManagerSysElementTable_ID as quality_CompanyYearManagerSysElementTable_ID,
+        t1.Code,
+        t1.Name,
+        t1.Content,
+        t1.AuditMode,
+        t1.InitialScore,
+        t1.Formula,
+        t1.TotalCount,
+        t1.Status,
+        t1.CompanyCode as companyCode,
+        t1.CompanyName as companyName,
+        t1.Year as `year`,
+        t1.fileCheckStatus as fileCheckStatus
+        from quality_companyyearmanagersyselement as t1
+        <where>
+            <if test="companyCode !=null and companyCode!=''">
+                AND t1.CompanyCode=#{companyCode}
+            </if>
+            <if test="year !=null and year!=''">
+                AND t1.Year=#{year}
+            </if>
+            AND t1.ConfigStatus="启用"
+
+        </where>
+    </select>
+    <select id="queryAttach" resultType="com.wlhse.entity.QualityInputAttachPojo">
+        select * from quality_companyyearmanagersyselementevidence where Quality_CompanyYearManagerSysElement_ID=#{id}
+    </select>
+
+    <select id="queryCheck" resultType="com.wlhse.entity.QualityManergerSysElementPojo">
+        select * from quality_companyyearmanagersyselement
+        <where>
+            <if test="companyCode !=null and companyCode!=''">
+                AND companyCode like concat(#{companyCode},'%')
+            </if>
+            <if test="year != null and year  != ''">
+                AND year=#{year}
+            </if>
+            <if test="status==0">
+                AND status="未审核"
+            </if>
+            <if test="status==1">
+                AND status="未批准"
+            </if>
+            and ConfigStatus="启用"
+        </where>
+    </select>
+
+</mapper>

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.FileDao">
+
+    <insert id="addFile">
+        insert into file
+        <trim prefix="set" suffixOverrides=",">
+            <if test="fileName != null and fileName  != ''">
+                fileName=#{fileName},
+            </if>
+            <if test="fileType != null and fileType  != ''">
+                fileType=#{fileType},
+            </if>
+            <if test="uploadDate != null and uploadDate  != ''">
+                uploadDate=#{uploadDate},
+            </if>
+            <if test="uploadPersonId != null and uploadPersonId  != ''">
+                uploadPerson=(select e.`Name` from employee as e where e.EmployeeID=#{uploadPersonId}),
+            </if>
+            <if test="appliComCode != null and appliComCode  != ''">
+                appliComCode=#{appliComCode},
+                appliCom=(select name from sys_company where CompanyCode=#{appliComCode}),
+            </if>
+            <if test="summary != null and summary  != ''">
+                summary=#{summary},
+            </if>
+            <if test="fileNameCode != null and fileNameCode  != ''">
+                fileNameCode=#{fileNameCode}
+            </if>
+        </trim>
+    </insert>
+
+    <select id="queryFilesByCondition" resultType="com.wlhse.entity.FilePojo">
+        SELECT
+        f.FileID,
+        f.FileName,
+        f.Summary,
+        f.AppliCom,
+        f.AppliComCode,
+        f.UploadDate,
+        f.UploadPerson,
+        if(f.fileNameCode='',f.fileNameCode,concat(#{url},f.fileNameCode)) as fileNameCode
+        FROM
+        file AS f
+        <where>
+            <if test="fileName != null and fileName  != ''">
+                and fileName like '%${fileName}%'
+            </if>
+            <if test="startDate != null and startDate  != ''">
+                and UploadDate between #{startDate} and #{endDate}
+            </if>
+            <if test="appliComCode != null and appliComCode != ''">
+                and substring(appliComCode,1,length(#{appliComCode}))=#{appliComCode}
+            </if>
+            <if test="uploadPersonId != null and uploadPersonId  != ''">
+                and uploadPersonId = #{uploadPersonId}
+            </if>
+            <if test="fileType != null and fileType  != ''">
+                and fileType = #{fileType}
+            </if>
+        </where>
+        order by f.UploadDate desc
+    </select>
+
+    <select id="queryTotalByCondition" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM
+        file AS f
+        <where>
+            <if test="fileName != null and fileName  != ''">
+                and fileName like '%${fileName}%'
+            </if>
+            <if test="startDate != null and startDate  != ''">
+                and UploadDate between #{startDate} and #{endDate}
+            </if>
+            <if test="appliComCode != null and appliComCode != ''">
+                and substring(appliComCode,1,length(#{appliComCode}))=#{appliComCode}
+            </if>
+            <if test="uploadPerson != null and uploadPerson  != ''">
+                and uploadPerson like '%${uploadPerson}%'
+            </if>
+            <if test="fileType != null and fileType  != ''">
+                and fileType =#{fileType}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryFileById" resultType="com.wlhse.entity.FilePojo">
+        SELECT
+        f.FileID,
+        f.FileName,
+        f.Summary,
+        f.AppliCom,
+        f.AppliComCode,
+        f.UploadDate,
+        f.UploadPerson,
+        if(f.fileNameCode='',f.fileNameCode,concat(#{url},f.fileNameCode)) as fileNameCode
+        FROM
+        file AS f
+        <where>
+            <if test="id != null and id  != ''">
+                and FileID = #{id}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteFile">
+        delete from file where FileID=#{id}
+    </delete>
+
+    <insert id="insertFilePropagationFile">
+        insert into
+        file_propagationfileinfo
+        (
+        id,
+        <if test="propagationId!=null and propagationId!=''">
+            propagationId,
+        </if>
+            filePath,
+            originName
+        )
+        values
+        (
+            #{id},
+        <if test="propagationId!=null and propagationId!=''">
+            #{propagationId},
+        </if>
+            #{filePath},
+            #{originName}
+        )
+    </insert>
+
+    <update id="updateFilePropagationID">
+        update
+        file_propagationfileinfo
+        set propagationId=#{1}
+        where filePath=#{0}
+    </update>
+
+    <select id="getFileInfoByPropagationId" resultType="com.wlhse.dto.inDto.FilePropagationFileInfo">
+        select * from
+        file_propagationfileinfo
+        where propagationId=#{id}
+    </select>
+
+    <select id="getFilePropagationOriginFileName" resultType="String">
+        select originName
+        from file_propagationfileinfo
+        where filePath=#{fileName}
+    </select>
+
+    <insert id="InsertQualityAttachInfo">
+        insert into
+        quality_checktablerecordattachinfo
+        (
+        <if test="attachFilePath!=null and attachOriginName!=''">
+            AttachFilePath,
+        </if>
+        <if test="attachOriginName!=null and attachOriginName!=''">
+            AttachOriginName
+        </if>
+        )
+        values
+        (
+        <if test="attachFilePath!=null and attachOriginName!=''">
+            #{attachFilePath},
+        </if>
+        <if test="attachOriginName!=null and attachOriginName!=''">
+            #{attachOriginName}
+        </if>
+        )
+    </insert>
+
+    <select id="getQualityAttachOriginFileName" resultType="String">
+        select AttachOriginName
+        from quality_checktablerecordattachinfo
+        where AttachFilePath=#{0}
+    </select>
+
+    <delete id="deleteAttachOriginFileName">
+        delete from quality_checktablerecordattachinfo
+        where AttachFilePath=#{0}
+    </delete>
+
+</mapper>

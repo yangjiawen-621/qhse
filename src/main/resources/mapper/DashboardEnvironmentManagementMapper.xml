@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--tobing-->
+<!--大屏Mapper-->
+<mapper namespace="com.wlhse.dao.DashboardEnvironmentManagementDao">
+    <resultMap id="dashboardEnvironmentManagementMap" type="com.wlhse.entity.DashboardEnvironmentManagement">
+
+    </resultMap>
+
+    <!--查-->
+    <select id="queryDashboardEnvironmentManagement" resultMap="dashboardEnvironmentManagementMap">
+        SELECT * FROM dashboard_environment_management
+    </select>
+
+    <!--统计：companyCode-->
+    <select id="countDashboardEnvironmentManagement" resultType="java.lang.Integer">
+        SELECT COUNT(CompanyCode) FROM dashboard_environment_management
+    </select>
+
+    <!--插入-->
+    <insert id="insertDashboardEnvironmentManagement" parameterType="com.wlhse.entity.DashboardEnvironmentManagement">
+        INSERT INTO dashboard_environment_management(
+        companyCode,
+        companyName,
+        sewageVolume,
+        sewageTransfer,
+        water,
+        electricity,
+        gas,
+        gasoline,
+        diesel,
+        updateTime
+        )
+        VALUES (
+        #{companyCode},
+        #{companyName},
+        #{sewageVolume},
+        #{sewageTransfer},
+        #{water},
+        #{electricity},
+        #{gas},
+        #{gasoline},
+        #{diesel},
+        #{updateTime}
+        )
+    </insert>
+
+    <!--更新-->
+    <update id="updateDashboardEnvironmentManagement" parameterType="com.wlhse.entity.DashboardEnvironmentManagement">
+        UPDATE dashboard_environment_management SET
+        sewageVolume=#{sewageVolume},
+        sewageTransfer=#{sewageTransfer},
+        water=#{water},
+        electricity=#{electricity},
+        gas=#{gas},
+        gasoline=#{gasoline},
+        diesel=#{diesel},
+        updateTime=#{updateTime}
+    </update>
+    <!--==========================月度==========================-->
+    <resultMap id="DEM" type="com.wlhse.entity.DashboardEnvironmentManagementDto">
+    </resultMap>
+    <!--查：月度-->
+    <select id="queryMonthDEM" resultMap="DEM">
+        SELECT
+        SUM(water) AS waterMonth,
+        SUM(electricity) AS electricityMonth,
+        SUM(gas) AS gasMonth,
+        SUM(sewageVolume) AS sewageVolumeMonth,
+        SUM(sewageTransfer) AS sewageTransferMonth,
+        SUM(gasoline) AS gasolineMonth,
+        SUM(diesel) AS dieselMonth
+        FROM dashboard_environment_management
+        WHERE updateTime BETWEEN #{minDate} AND #{maxDate}
+        <if test="companyCode!=null and companyCode!=''">
+            AND companyCode=#{companyCode}
+        </if>
+    </select>
+    <!--==========================年度==========================-->
+    <!--查：年度-->
+    <select id="queryYearDEM" resultMap="DEM">
+        SELECT
+        SUM(water) AS waterYear,
+        SUM(electricity) AS electricityYear,
+        SUM(gas) AS gasYear,
+        SUM(sewageVolume) AS sewageVolumeYear,
+        SUM(sewageTransfer) AS sewageTransferYear,
+        SUM(gasoline) AS gasolineYear,
+        SUM(diesel) AS dieselYear
+        FROM dashboard_environment_management
+        WHERE updateTime BETWEEN #{minDate} AND #{maxDate}
+        <if test="companyCode!=null and companyCode!=''">
+            AND companyCode=#{companyCode}
+        </if>
+    </select>
+    <!--==========================季度==========================-->
+    <!--查：季度-->
+    <select id="queryQuarterDEM" resultMap="DEM">
+        SELECT
+        SUM(sewageTransfer) AS sewageTransferQuarter,
+        SUM(sewageVolume) AS sewageVolumeQuarter
+        FROM dashboard_environment_management
+        WHERE updateTime BETWEEN #{minDate} AND #{maxDate}
+        <if test="companyCode!=null and companyCode!=''">
+            AND companyCode=#{companyCode}
+        </if>
+    </select>
+</mapper>

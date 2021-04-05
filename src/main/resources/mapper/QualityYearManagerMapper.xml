@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.QualityYearManagerDao">
+
+    <select id="queryAll" parameterType="com.wlhse.dto.QualityYearManagerDto"
+            resultType="com.wlhse.dto.QualityYearManagerDtoWithEmployeeId">
+        select * from quality_companyyearmanagersyselementtable
+        <where>
+            <if test="companyName != null and companyName  != ''">
+                AND companyName=#{companyName}
+            </if>
+            <if test="year != null and year  != ''">
+                AND year=#{year}
+            </if>
+            AND IssuedID=#{employeeId}
+        </where>
+    </select>
+
+    <delete id="deleteAll">
+      delete from quality_CompanyYearManagerSysElementTable where  Quality_CompanyYearManagerSysElementTable_ID=#{id}
+  </delete>
+
+
+    <insert id="addCompanyYearManager" parameterType="com.wlhse.dto.inDto.CompanyYearManagerDto">
+        insert into Quality_CompanyYearManagerSysElementTable
+        (
+        <trim suffixOverrides=",">
+            <if test="companyName != null and companyName != ''">
+                CompanyName,
+            </if>
+            <if test="companyCode != null and companyCode != ''">
+                CompanyCode,
+            </if>
+            <if test="year != null and year != ''">
+                `Year`,
+            </if>
+            <if test="elementTableName != null and elementTableName != ''">
+                ElementTableName,
+            </if>
+            <if test="status!=null and status!=''">
+                Status,
+            </if>
+            IssuedID
+        </trim>
+        )
+        values
+        (
+        <trim suffixOverrides=",">
+            <if test="companyName != null and companyName != ''">
+                #{companyName},
+            </if>
+            <if test="companyCode != null and companyCode != ''">
+                #{companyCode},
+            </if>
+            <if test="year != null and year != ''">
+                #{year},
+            </if>
+            <if test="elementTableName != null and elementTableName != ''">
+                #{elementTableName},
+            </if>
+            <if test="status!=null and status!=''">
+                #{status},
+            </if>
+            #{employeeId}
+        </trim>
+        )
+    </insert>
+
+    <select id="queryYearElement" resultType="com.wlhse.dto.inDto.QualityYearElementsDto">
+        select t1.Quality_CompanyYearManagerSysElement_ID as qualityCompanyYearManagerSysElementID,
+        t1.Quality_CompanyYearManagerSysElementTable_ID as qualityCompanyYearManagerSysElementTableID,
+        t1.Code,
+        t1.Name,
+        t1.Content,
+        t1.AuditMode,
+        t1.InitialScore,
+        t1.Formula,
+        t1.TotalCount,
+        t1.Status,
+        t1.CompanyCode as companyCode,
+        t1.CompanyName as companyName,
+        t1.Year as `year`,
+        t1.fileCheckStatus as fileCheckStatus,
+        t1.CheckStatus as checkStatus
+        from Quality_CompanyYearManagerSysElement as t1
+        join Quality_CompanyYearManagerSysElementTable as t2
+        on  t1.Quality_CompanyYearManagerSysElementTable_ID=t2.Quality_CompanyYearManagerSysElementTable_ID
+        <where>
+            <if test="companyCode !=null and companyCode!=''">
+                AND t1.CompanyCode=#{companyCode}
+            </if>
+            <if test="year !=null and year!=''">
+                AND t1.Year=#{year}
+            </if>
+            AND t1.ConfigStatus="启用"
+        </where>
+    </select>
+
+
+    <select id="querySchedule" resultType="java.lang.Integer" parameterType="java.lang.String">
+        select count(*) from quality_companyyearmanagersyselement
+        <where>
+            <if test="code!=null and code !='' ">
+                AND  `Code` like CONCAT(#{code},"%")
+            </if>
+            and (status is not null or status!="")
+            and `year`=#{param3}
+            and companyCode=#{param2}
+        </where>
+    </select>
+
+    <select id="querySchdules" resultType="java.lang.Integer" parameterType="java.lang.String">
+        select count(*) from quality_companyyearmanagersyselement
+        <where>
+            <if test="code!=null and code !='' ">
+                AND  `Code` like CONCAT(#{code},"%")
+            </if>
+            and `year`=#{param3}
+            and companyCode=#{param2}
+            and (status="未提供" or status="不通过")
+        </where>
+    </select>
+</mapper>

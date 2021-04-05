@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.RoleModuleDao">
+    <resultMap id="ListSYSRoleModulePojo" type="com.wlhse.entity.RoleModulePojo">
+        <id column="SYS_RoleModule_ID" property="id"/>
+        <result column="ModuleCode" property="moduleCode"/>
+        <result column="RoleCode" property="roleCode"/>
+    </resultMap>
+    <delete id="deleteSYSRoleModuleByRoleCode">
+        delete from SYS_RoleModule where RoleCode=#{0}
+    </delete>
+    <select id="queryByRoleCode" resultMap="ListSYSRoleModulePojo" >
+        select * from SYS_RoleModule where RoleCode=#{0}
+    </select>
+
+    <!-- 批量插入planContent -->
+    <insert id="addRoleModule" parameterType="com.wlhse.dto.inDto.RoleModuleInDto">
+        insert into SYS_RoleModule(
+        ModuleCode, RoleCode)
+        values
+        <foreach collection="list" item="item" separator=",">
+            ( #{item.moduleCode},#{item.roleCode}
+            )
+        </foreach>
+    </insert>
+
+    <select id="queryByUserName" resultType="com.wlhse.dto.outDto.RoleModuleOutDto" >
+        select
+        ur.RoleCode as roleCode,
+        r.ModuleCode as moduleCode,
+        m.`Name` as label,
+        if(m.URL='',m.URL,concat(#{url},m.URL)) as uRL,
+        if(m.Img='',m.Img,concat(#{url},m.Img)) as img
+        from
+        sys_user_role as ur
+        LEFT JOIN sys_rolemodule as r
+        on ur.RoleCode=r.RoleCode
+        LEFT JOIN sys_module as m
+        on m.ModuleCode=r.ModuleCode
+        WHERE ur.UName=#{uName}
+    </select>
+</mapper>

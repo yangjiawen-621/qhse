@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wlhse.dao.ProblemDescriptionDao">
+    <insert id="addProblemDescription" parameterType="com.wlhse.dto.ProblemDescriptionDto">
+        insert into qhse_auditproblemrecord
+        (QHSE_FileAudit_ID,QHSE_FileAuditRecord_ID,ProblemDescription,Code,CompanyCode,Additor,CompanyName,Status,itemName,auditTime,problemSource)
+        values
+        (#{qHSE_FileAudit_ID},#{qHSE_FileAuditRecord_ID},#{problemDescription},#{code},#{companyCode},
+        #{auditor},#{companyName},#{status},#{itemName},#{auditTime},#{problemSource})
+    </insert>
+
+    <delete id="deleteProblemDescription">
+        delete from qhse_auditproblemrecord
+        where QHSE_AuditProblemRecord_ID = #{id}
+    </delete>
+
+    <sql id="value1">
+        <trim prefix="set" suffixOverrides=",">
+            <if test="situation != null and situation  != ''">
+                Situation=#{situation},
+            </if>
+            <if test="status != null and status  != ''">
+                status=#{status},
+            </if>
+            <if test="passReason != null and passReason  != ''">
+                passReason=#{passReason},
+            </if>
+            <if test="refuseReason != null and refuseReason  != ''">
+                refuseReason=#{refuseReason},
+            </if>
+            <if test="file1 != null and file1  != ''">
+                file1=#{file1},
+            </if>
+            <if test="file2 != null and file2  != ''">
+                file2=#{file2},
+            </if>
+        </trim>
+    </sql>
+
+    <update id="updateProblemDescription" parameterType="com.wlhse.dto.ProblemDescriptionDto">
+        update qhse_auditproblemrecord
+        <include refid="value1"/>
+        where QHSE_AuditProblemRecord_ID = #{qHSE_AuditProblemRecord_ID}
+    </update>
+
+    <select id="queryProblemDescription" resultType="com.wlhse.dto.ProblemDescriptionDto">
+        select t1.QHSE_AuditProblemRecord_ID, t1.QHSE_FileAudit_ID, t1.QHSE_FileAuditRecord_ID,
+        t1.Code, t1.ProblemDescription, t1.CompanyCode, t1.Additor as auditor, t1.CompanyName,
+        t1.Status, t1.Situation,t1.itemName,t1.auditTime,t1.problemSource,t1.passReason, t1.refuseReason, t1.file1, t1.file2
+        from qhse_auditproblemrecord as t1
+        <where>
+            <if test="startDate != null and startDate  != ''">
+                AND t1.AuditTime>=#{startDate}
+            </if>
+            <if test="endDate != null and endDate  != ''">
+                AND #{endDate}>=t1.AuditTime
+            </if>
+            <if test="auditor != null and auditor  != ''">
+                AND t1.Additor=#{auditor}
+            </if>
+            <if test="companyCode != null and companyCode  != ''">
+                AND t1.CompanyCode=#{companyCode}
+            </if>
+            <if test="itemName != null and itemName  != ''">
+                AND t1.itemName=#{itemName}
+            </if>
+            <if test="auditTime != null and auditTime  != ''">
+                AND t1.auditTime=#{auditTime}
+            </if>
+        </where>
+
+
+        <!--        select t1.QHSE_AuditProblemRecord_ID, t1.QHSE_FileAudit_ID, t1.QHSE_FileAuditRecord_ID,-->
+        <!--        t1.Code, t1.ProblemDescription, t1.CompanyCode, t1.Additor as auditor, t1.CompanyName,-->
+        <!--        t1.Status, t1.Situation,t1.itemName,t1.auditTime,t1.problemSource-->
+        <!--        from qhse_auditproblemrecord as t1-->
+        <!--        left join qhse_fileauditrecord as t2-->
+        <!--        on t1.QHSE_FileAuditRecord_ID = t2.QHSE_FileAudit_RecordID-->
+        <!--        <where>-->
+        <!--            <if test="startDate != null and startDate  != ''">-->
+        <!--                AND t2.AuditTime>=#{startDate}-->
+        <!--            </if>-->
+        <!--            <if test="endDate != null and endDate  != ''">-->
+        <!--                AND #{endDate}>=t2.AuditTime-->
+        <!--            </if>-->
+        <!--            <if test="auditor != null and auditor  != ''">-->
+        <!--                AND t1.Additor=#{auditor}-->
+        <!--            </if>-->
+        <!--            <if test="companyCode != null and companyCode  != ''">-->
+        <!--                AND t1.CompanyCode=#{companyCode}-->
+        <!--            </if>-->
+        <!--            <if test="itemName != null and itemName  != ''">-->
+        <!--                AND t1.itemName=#{itemName}-->
+        <!--            </if>-->
+        <!--            <if test="auditTime != null and auditTime  != ''">-->
+        <!--                AND t1.auditTime=#{auditTime}-->
+        <!--            </if>-->
+        <!--        </where>-->
+    </select>
+
+
+</mapper>

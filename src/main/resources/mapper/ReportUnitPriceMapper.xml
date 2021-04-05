@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.ReportUnitPriceDao">
+
+    <insert id="addUnitPrice" parameterType="com.wlhse.entity.ReportUnitPricePojo">
+        insert into report_unit_price
+        <trim prefix="set" suffixOverrides=",">
+            ReportType = #{reportType},
+            UnitPrice = #{unitPrice},
+            AuditorProportion = #{auditorProportion},
+            ApproverProportion = #{approverProportion},
+            CostYear = #{costYear}
+        </trim>
+    </insert>
+
+    <select id="getUnitPriceCount" resultType="int">
+        select COUNT(*) from report_unit_price where CostYear = #{costYear} and ReportType = #{reportType}
+    </select>
+
+    <select id="getUnitPriceByContiton" resultType="com.wlhse.entity.ReportUnitPricePojo">
+        select
+        unitPriceID,
+        reportType,
+        unitPrice,
+        auditorProportion,
+        approverProportion,
+        costYear
+        from report_unit_price
+        <where>
+            <if test="costYear != null and costYear !=''">
+                CostYear =#{costYear}
+            </if>
+        </where>
+    </select>
+
+    <select id="getUnitPriceById" resultType="com.wlhse.entity.ReportUnitPricePojo">
+        select
+        unitPriceID,
+        reportType,
+        unitPrice,
+        auditorProportion,
+        approverProportion,
+        costYear
+        from report_unit_price
+        <where>
+            UnitPriceID=#{unitPriceID}
+        </where>
+    </select>
+
+    <update id="updateUnitPrice" parameterType="com.wlhse.entity.ReportUnitPricePojo">
+        update report_unit_price
+        <set>
+            <if test="reportType != null and reportType != ''">
+                ReportType=#{reportType},
+            </if>
+            <if test="unitPrice != null and unitPrice != ''">
+                UnitPrice=#{unitPrice},
+            </if>
+            <if test="auditorProportion != null and auditorProportion != ''">
+                AuditorProportion=#{auditorProportion},
+            </if>
+            <if test="approverProportion != null and approverProportion != ''">
+                ApproverProportion=#{approverProportion},
+            </if>
+            <if test="costYear != null and costYear != ''">
+                CostYear=#{costYear},
+            </if>
+        </set>
+        <where>
+            UnitPriceID=#{unitPriceID}
+        </where>
+    </update>
+
+    <delete id="deleteUnitPriceById">
+        delete from report_unit_price where UnitPriceID=#{unitPriceID}
+    </delete>
+</mapper>

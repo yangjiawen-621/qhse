@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.QHSETaskDao">
+
+    <insert id="insertNewTask">
+        insert into qhse_task
+        (CompanyCode,CompanyName,TaskName,IssuedID,IssuedName,IssuedDate,ReceiveID,ReceiveName,ReceiveDate,PlanDate,
+        TrueDate,Table_ID,Status)
+        values (
+        #{companyCode},#{companyName},#{taskName},#{issuedID},#{issuedName},now(),#{receiveID},#{receiveName},#{receiveDate},
+        #{planDate},#{trueDate},#{tableID},'未接收'
+        )
+    </insert>
+
+    <select id="getAllTaskByEmployeeId" resultType="com.wlhse.dto.outDto.TaskOutDto">
+        select QHSE_Task_ID as qHSETaskID,
+        CompanyName as companyName,
+        TaskName as taskName,
+        IssuedName as issuedName,
+        IssuedDate as issuedDate,
+        ReceiveDate as receiveDate,
+        PlanDate as planDate,
+        TrueDate as trueDate
+        from qhse_task
+        where ReceiveID=#{0}
+     </select>
+
+    <update id="updateTaskStatusByTableId">
+        update qhse_task
+        set Status=#{status}
+        <if test= "status=='任务完成'">
+            ,TrueDate=now()
+        </if>
+        where Table_ID=#{tableId}
+    </update>
+
+    <update id="receiveTask">
+        update qhse_task
+        set Status='录入证据中',ReceiveDate=now()
+        where QHSE_Task_ID=#{0}
+    </update>
+
+    <select id="getOrderedTask" resultType="com.wlhse.dto.TaskDto">
+        select QHSE_Task_ID as  qHSETaskID,
+        CompanyCode as companyCode,
+        CompanyName as companyName,
+        TaskName,IssuedID,IssuedName,IssuedDate,ReceiveID,ReceiveName,ReceiveDate,
+        PlanDate,TrueDate,Table_ID as tableID,Status
+        from qhse_task
+        where IssuedID=#{0}
+    </select>
+
+    <update id="updateCheckStatus" >
+        update qhse_task
+        set ChecKStatus=#{1}
+        where Table_ID=#{0}
+    </update>
+
+    <delete id="deleteTask">
+        delete from
+        qhse_task
+        where Table_ID=#{0}
+    </delete>
+</mapper>

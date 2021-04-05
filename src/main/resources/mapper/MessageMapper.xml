@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.MessageDao">
+
+    <insert id="insertMessage">
+        insert into message
+        (senderId,receiverId,tittle,body,`source`,`time`,status,readTime,deleted)
+        values
+        (#{senderId},#{receiverId},#{tittle},#{body},#{source},now(),#{status},#{readTime},0)
+    </insert>
+
+
+    <update id="updateMessage">
+        update message
+        <set>
+            <if test="status !=null and status !=''">
+                status=#{status},
+                readTime=now()
+            </if>
+            <if test="deleted !=null and deleted !=''">
+                deleted=#{deleted}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <select id="getMessageReceiveList" resultType="com.wlhse.entity.Message">
+        select * from message
+        where receiverId=#{0}
+        order by id desc
+    </select>
+
+    <select id="getMessageSendList" resultType="com.wlhse.entity.Message">
+        select * from message
+        where senderId=#{0}
+    </select>
+
+    <select id="getReceiveMessageNum" resultType="int">
+        select count(*)
+        from message
+        where receiverId=#{0}
+        and status="未读"
+    </select>
+
+    <select id="getMessageDetail" resultType="com.wlhse.entity.Message">
+        select * from
+        message
+        where id=#{0}
+    </select>
+
+    <select id="getReceiver" resultType="com.wlhse.dto.outDto.UserIdOutDto">
+        select distinct  t1.SYS_USER_ID as id,
+        t2.Name as name
+        from sys_user t1,
+        employee t2,
+        sys_rolemodule t3,
+        sys_user_role t4
+        where t1.EmployeeID=t2.EmployeeID
+        and t2.CompanyCode=#{0}
+        and t1.UName=t4.UName
+        and t4.RoleCode in (
+            select RoleCode from sys_rolemodule
+            where sys_rolemodule.ModuleCode=#{1}
+        )
+    </select>
+</mapper>

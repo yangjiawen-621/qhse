@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.RegulationDao">
+    <sql id="key">
+        <trim suffixOverrides=",">
+            <if test="id!= null and id!= ''">ID,</if>
+            <if test="typeCode!= null and typeCode!= ''">TypeCode,</if>
+            <if test="typeName!= null and typeName!= ''">TypeName,</if>
+            <if test="regName!= null and regName!= ''">RegName,</if>
+            <if test="regNameCode!= null and regNameCode!= ''">RegNameCode,</if>
+            <if test="documentSymbol!= null and documentSymbol!= ''">DocumentSymbol,</if>
+            <if test="publishComCode!= null and publishComCode!= ''">PublishComCode,PublishComName,</if>
+            <if test="beginDate != null and beginDate != ''">BeginDate,</if>
+            <if test="uploadDate!= null and uploadDate!= ''">UploadDate,</if>
+        </trim>
+    </sql>
+    <sql id="value">
+        <trim suffixOverrides=",">
+            <if test="id!= null and id!= ''">#{id},</if>
+            <if test="typeCode!= null and typeCode!= ''">#{typeCode},</if>
+            <if test="typeName!= null and typeName!= ''">#{typeName},</if>
+            <if test="regName!= null and regName!= ''">#{regName},</if>
+            <if test="regNameCode!= null and regNameCode!= ''">#{regNameCode},</if>
+            <if test="documentSymbol!= null and documentSymbol!= ''">#{documentSymbol},</if>
+            <if test="publishComCode!= null and publishComCode!= ''">#{publishComCode},
+                (select `Name` from sys_company where CompanyCode=#{publishComCode}),
+            </if>
+            <if test="beginDate != null and beginDate != ''">#{beginDate},</if>
+            <if test="uploadDate!= null and uploadDate!= ''">#{uploadDate},</if>
+        </trim>
+    </sql>
+    <insert id="addRegulationPojo">
+        insert into regulation(<include refid="key"/>) values(<include refid="value"/>)
+    </insert>
+    <select id="getRegulationPojoByCondition" resultType="com.wlhse.entity.RegulationPojo">
+        select id,typeCode,typeName,RegName,
+        if(regNameCode='',regNameCode,concat(#{url},regNameCode)) as regNameCode,
+        documentSymbol,publishComCode,publishComName,beginDate,uploadDate
+        from regulation
+        <where>
+            <if test="typeCode!= null and typeCode!= ''">and typeCode=#{typeCode}</if>
+            <if test="regName!= null and regName!= ''">and RegName like '%${regName}%'</if>
+            <if test="publishComCode!= null and publishComCode!= ''">and publishComCode=#{publishComCode}</if>
+            <if test="beginDate1!= null and beginDate1!= ''">and beginDate between #{beginDate1} and #{beginDate2}</if>
+        </where>
+        order by uploadDate desc
+    </select>
+    <select id="getTotalRegulationPojoByCondition" resultType="java.lang.Integer">
+        select count(*) from regulation
+        <where>
+            <if test="typeCode!= null and typeCode!= ''">and typeCode=#{typeCode}</if>
+            <if test="regName!= null and regName!= ''">and RegName like '%${regName}%'</if>
+            <if test="publishComCode!= null and publishComCode!= ''">and publishComCode=#{publishComCode}</if>
+            <if test="beginDate1!= null and beginDate1!= ''">and beginDate between #{beginDate1} and #{beginDate2}</if>
+        </where>
+    </select>
+    <select id="getRegulationPojoById" resultType="com.wlhse.entity.RegulationPojo">
+        select id,typeCode,typeName,RegName,
+        if(regNameCode='',regNameCode,concat(#{url},regNameCode)) as regNameCode,
+        documentSymbol,publishComCode,publishComName,beginDate,uploadDate
+        from regulation
+        <where>
+            ID=#{id}
+        </where>
+    </select>
+    <update id="updateRegulationPojo">
+        update regulation set
+        <trim suffixOverrides=",">
+            <if test="typeCode!= null and typeCode!= ''">TypeCode=#{typeCode},</if>
+            <if test="typeName!= null and typeName!= ''">TypeName=#{typeName},</if>
+            <if test="regName!= null and regName!= ''">RegName=#{regName},</if>
+            <if test="documentSymbol!= null and documentSymbol!= ''">DocumentSymbol=#{documentSymbol},</if>
+            <if test="publishComCode!= null and publishComCode!= ''">
+                PublishComCode=#{publishComCode},
+                PublishComName=(select name from sys_company where companyCode=#{publishComCode}),
+            </if>
+            <if test="regNameCode!= null and regNameCode!= ''">RegNameCode=#{regNameCode},</if>
+            <if test="beginDate!= null and beginDate!= ''">BeginDate=#{beginDate},</if>
+            <if test="uploadDate!= null and uploadDate!= ''">UploadDate=#{uploadDate},</if>
+        </trim>
+        where ID=#{id}
+    </update>
+    <delete id="deleteRegulation">
+        delete from regulation where ID=#{id}
+    </delete>
+    <!--模糊查询文件名-->
+    <select id="queryRegulationNameAndCode" resultMap="map3">
+        select regName,regNameCode from regulation
+        <if test="regName != null and regName != ''">
+            <bind name="_regName" value="'%'+regName+'%'"/>
+            where regName like #{_regName}
+        </if>
+    </select>
+
+    <resultMap id="map3" type="com.wlhse.entity.RegulationPojo">
+        <result property="regName" column="regName"/>
+        <result property="regNameCode" column="regNameCode"/>
+    </resultMap>
+</mapper>

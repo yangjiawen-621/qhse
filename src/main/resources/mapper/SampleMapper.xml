@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.SampleDao">
+    <sql id="key">
+        <trim suffixOverrides=",">
+            <if test="reportID!=null and reportID!=''">
+                ReportID,
+            </if>
+            <if test="sampleName!=null and sampleName!=''">
+                SampleName,
+            </if>
+            <if test="sampleNO!=null and sampleNO!=''">
+                SampleNO,
+            </if>
+            <if test="sampleModel!=null and sampleModel!=''">
+                SampleModel,
+            </if>
+            <if test="sampleCode!=null and sampleCode!=''">
+                SampleCode,
+            </if>
+            <if test="entrustCompany!=null and entrustCompany!=''">
+                EntrustCompany,
+            </if>
+            <if test="productCompany!=null and productCompany!=''">
+                ProductCompany,
+            </if>
+            <if test="customerCompany!=null and customerCompany!=''">
+                CustomerCompany,
+            </if>
+            <if test="arriveDate!=null and arriveDate!=''">
+                ArriveDate,
+            </if>
+            <if test="checkDate!=null and checkDate!=''">
+                CheckDate,
+            </if>
+            <if test="checkAddress!=null and checkAddress!=''">
+                CheckAddress,
+            </if>
+            <if test="checkProject!=null and checkProject!=''">
+                CheckProject,
+            </if>
+            <if test="checkGuist!=null and checkGuist!=''">
+                CheckGist,
+            </if>
+            <if test="checkResult!=null and checkResult!=''">
+                CheckResult,
+            </if>
+            <if test="sampleCheckPersonName!=null and sampleCheckPersonName!=''">
+                SampleCheckPersonName,
+            </if>
+        </trim>
+    </sql>
+    <sql id="value">
+        <trim suffixOverrides=",">
+            <if test="reportID!=null and reportID!=''">
+                #{reportID},
+            </if>
+            <if test="sampleName!=null and sampleName!=''">
+                #{sampleName},
+            </if>
+            <if test="sampleNO!=null and sampleNO!=''">
+                #{sampleNO},
+            </if>
+            <if test="sampleModel!=null and sampleModel!=''">
+                #{sampleModel},
+            </if>
+            <if test="sampleCode!=null and sampleCode!=''">
+                #{sampleCode},
+            </if>
+            <if test="entrustCompany!=null and entrustCompany!=''">
+                #{entrustCompany},
+            </if>
+            <if test="productCompany!=null and productCompany!=''">
+                #{productCompany},
+            </if>
+            <if test="customerCompany!=null and customerCompany!=''">
+                #{customerCompany},
+            </if>
+            <if test="arriveDate!=null and arriveDate!=''">
+                #{arriveDate},
+            </if>
+            <if test="checkDate!=null and checkDate!=''">
+                #{checkDate},
+            </if>
+            <if test="checkAddress!=null and checkAddress!=''">
+                #{checkAddress},
+            </if>
+            <if test="checkProject!=null and checkProject!=''">
+                #{checkProject},
+            </if>
+            <if test="checkGuist!=null and checkGuist!=''">
+                #{checkGuist},
+            </if>
+            <if test="checkResult!=null and checkResult!=''">
+                #{checkResult},
+            </if>
+            <if test="sampleCheckPersonName!=null and sampleCheckPersonName!=''">
+                #{sampleCheckPersonName},
+            </if>
+        </trim>
+    </sql>
+    <insert id="addSample" parameterType="com.wlhse.dto.SampleDto">
+        insert into report_sample(<include refid="key"></include>)
+        values(<include refid="value"></include>)
+    </insert>
+    <resultMap id="sampleMap" type="com.wlhse.entity.SamplePojo">
+        <id property="sampleID" column="SampleID"></id>
+        <result property="sampleName" column="SampleName"></result>
+        <result property="sampleNO" column="SampleNO"></result>
+        <result property="sampleModel" column="SampleModel"></result>
+        <result property="sampleCode" column="SampleCode"></result>
+        <result property="entrustCompany" column="EntrustCompany"></result>
+        <result property="productCompany" column="ProductCompany"></result>
+        <result property="customerCompany" column="CustomerCompany"></result>
+        <result property="arriveDate" column="ArriveDate"></result>
+        <result property="checkDate" column="CheckDate"></result>
+        <result property="checkAddress" column="CheckAddress"></result>
+        <result property="checkProject" column="CheckProject"></result>
+        <result property="checkGist" column="CheckGist"></result>
+        <result property="checkResult" column="CheckResult"></result>
+        <result property="sampleCheckPersonName" column="SampleCheckPersonName"></result>
+    </resultMap>
+    <select id="querrySampleByReportID" parameterType="java.lang.Integer" resultMap="sampleMap">
+        select * from report_sample where reportID=#{id}
+    </select>
+
+    <delete id="deleteSample" parameterType="java.lang.Integer">
+        delete from report_sample where ReportID=#{id}
+    </delete>
+
+    <insert id="excelUploadSamples" parameterType="java.util.List">
+        insert into report_sample(ReportID,SampleName,SampleNO,SampleModel,SampleCode,EntrustCompany,ProductCompany,CustomerCompany,
+        ArriveDate,CheckDate,CheckAddress,CheckProject,CheckGist,CheckResult,SampleCheckPersonName)
+        values
+        <foreach collection="list" item="item" separator=",">
+            ((select ReportID from report where ReportCode=#{item.reportCode}),
+            #{item.sampleName},#{item.sampleNO},#{item.sampleModel},#{item.sampleCode},#{item.entrustCompany},#{item.productCompany}
+            ,#{item.customerCompany},#{item.arriveDate},#{item.checkDate},#{item.checkAddress},#{item.checkProject},#{item.checkGuist}
+            ,#{item.checkResult},#{item.sampleCheckPersonName})
+        </foreach>
+    </insert>
+</mapper>

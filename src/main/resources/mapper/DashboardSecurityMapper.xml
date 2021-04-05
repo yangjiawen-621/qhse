@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--tobing-->
+<!--大屏Mapper-->
+<mapper namespace="com.wlhse.dao.DashboardSecurityDao">
+
+    <resultMap id="dashboardSecurityList" type="com.wlhse.entity.DashboardSecurityPojo">
+
+    </resultMap>
+    <!--查：【安全管理】数据-->
+    <select id="queryDashboardSecurity" resultMap="dashboardSecurityList">
+        <if test="companyCode!=null and companyCode!=''">
+            SELECT companyCode,
+            companyName,
+            quarterDangerIndex,
+            actualFinishDanger,
+            actualFinishDanger/quarterDangerIndex AS finishDangerRate,
+            quarterRegulationIndex, actualFinishRegulation,
+            actualFinishRegulation/quarterRegulationIndex AS finishRegulationRate,
+            quarterEventIndex,
+            actualFinishEvent,
+            actualFinishEvent/quarterEventIndex AS eventFinishRate,
+            updateTime
+            FROM dashboard_sercurity_management WHERE CompanyCode = #{companyCode};
+        </if>
+        <if test="companyCode ==null or companyCode==''">
+            SELECT
+            SUM(quarterDangerIndex) AS quarterDangerIndex,
+            SUM(actualFinishDanger) AS actualFinishDanger,
+            SUM(actualFinishDanger)/SUM(quarterDangerIndex) AS finishDangerRate,
+            SUM(quarterRegulationIndex) AS quarterRegulationIndex,
+            SUM(actualFinishRegulation) AS actualFinishRegulation,
+            SUM(actualFinishRegulation)/SUM(quarterRegulationIndex) AS finishRegulationRate,
+            SUM(quarterEventIndex) AS quarterEventIndex,
+            SUM(actualFinishEvent) AS actualFinishEvent,
+            SUM(actualFinishEvent)/SUM(quarterEventIndex) AS eventFinishRate,
+            MAX(updateTime) AS updateTime
+            FROM dashboard_sercurity_management
+        </if>
+    </select>
+
+    <!--统计：companyCode-->
+    <select id="countDashboardSecurity" resultType="java.lang.Integer">
+        SELECT COUNT(CompanyCode) FROM dashboard_sercurity_management
+    </select>
+
+    <!--插入：【安全管理数据】-->
+    <insert id="insertDashboardSecurity" parameterType="com.wlhse.entity.DashboardSecurityPojo">
+        INSERT INTO dashboard_sercurity_management(
+        companyCode,companyName,
+        quarterEventIndex,
+        quarterDangerIndex,
+        quarterRegulationIndex,
+        actualFinishEvent,
+        actualFinishDanger,
+        actualFinishRegulation,
+        finishDangerRate,
+        finishRegulationRate,
+        eventFinishRate,
+        updateTime
+        )
+        VALUES (
+        #{companyCode},
+        #{companyName},
+        #{quarterEventIndex},
+        #{quarterDangerIndex},
+        #{quarterRegulationIndex},
+        #{actualFinishEvent},
+        #{actualFinishDanger},
+        #{actualFinishRegulation},
+        #{finishDangerRate},
+        #{finishRegulationRate},
+        #{eventFinishRate},
+        #{updateTime}
+        )
+    </insert>
+
+    <!--更新：【安全管理数据】-->
+    <update id="updateDashboardSecurity" parameterType="com.wlhse.entity.DashboardSecurityPojo">
+        UPDATE dashboard_sercurity_management SET
+        quarterEventIndex=#{quarterEventIndex},
+        quarterDangerIndex=#{quarterDangerIndex},
+        quarterRegulationIndex=#{quarterRegulationIndex},
+        actualFinishEvent=#{actualFinishEvent},
+        actualFinishDanger=#{actualFinishDanger},
+        actualFinishRegulation=#{actualFinishRegulation},
+        <if test="finishDangerRate!=null">
+            finishDangerRate=#{finishDangerRate},
+        </if>
+        <if test="finishRegulationRate">
+            finishRegulationRate=#{finishRegulationRate},
+        </if>
+        <if test="eventFinishRate">
+            eventFinishRate=#{eventFinishRate},
+        </if>
+        updateTime=#{updateTime}
+        where companyCode = #{companyCode}
+    </update>
+</mapper>

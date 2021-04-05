@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.SafetyProblemImportDao">
+
+    <insert id="addNewProblem" parameterType="com.wlhse.dto.outDto.NewSafetyProblemDto">
+        insert into safety_problem
+        <trim prefix="set" suffixOverrides=",">
+            Status=#{status},
+            CompanyCode=#{companyCode},
+            CompanyName=(select `Name` from sys_company where CompanyCode=#{companyCode}),
+            ParentCompanyName=(select `Name` from sys_company where CompanyCode=SUBSTR(#{companyCode},1,4) and
+            LENGTH(CompanyCode)=4),
+            CheckDate=#{checkDate},
+            Address=#{address},
+            CheckItemName=#{checkItemName},
+            CheckItemCode=#{checkItemCode},
+            CheckListItemCode=#{checkListItemCode},
+            CheckListItemName=#{checkListItemName},
+            ProblemDescription=#{problemDescription},
+            CheckStaffID=#{checkStaffID},
+            CheckStaffName=(select `Name` from employee where EmployeeID=#{checkStaffID}),
+            CheckCategory=#{checkCategory},
+            ProblemCategory=#{problemCategory},
+            CheckType=#{checkType},
+            <if test="checkAttach1!=null and checkAttach1!=''">
+                CheckAttach1=#{checkAttach1},
+            </if>
+            <if test="checkAttach2!=null and checkAttach2!=''">
+                CheckAttach2=#{checkAttach2},
+            </if>
+            <if test="checkAttach3!=null and checkAttach3!=''">
+                CheckAttach3=#{checkAttach3},
+            </if>
+            <if test="checkAttach4!=null and checkAttach4!=''">
+                CheckAttach4=#{checkAttach4},
+            </if>
+            <if test="checkVideo!=null and checkVideo!=''">
+                CheckVideo=#{checkVideo}
+            </if>
+
+        </trim>
+    </insert>
+
+    <!--<select id="getHashCount" resultType="int">-->
+        <!--select COUNT(*) from safety_problem where `Hash`=#{hash}-->
+    <!--</select>-->
+
+    <!--<sql id = "safety_problem_key">-->
+        <!--Problem_ID as problemID,-->
+        <!--status,-->
+        <!--companyCode,-->
+        <!--companyName,-->
+        <!--parentCompanyName,-->
+        <!--checkDate,-->
+        <!--address,-->
+        <!--checkItemCode,-->
+        <!--checkItemName1,-->
+        <!--checkItemName2,-->
+        <!--checkItemName3,-->
+        <!--descriptionDetail,-->
+        <!--isRectOntime,-->
+        <!--limtRectDate,-->
+        <!--if(checkAttach1='',checkAttach1,concat(#{url},checkAttach1)) as checkAttach1,-->
+        <!--if(checkAttach2='',checkAttach2,concat(#{url},checkAttach2)) as checkAttach2,-->
+        <!--if(checkAttach3='',checkAttach3,concat(#{url},checkAttach3)) as checkAttach3,-->
+        <!--if(checkAttach4='',checkAttach4,concat(#{url},checkAttach4)) as checkAttach4,-->
+        <!--if(checkVideo='',checkVideo,concat(#{url},checkVideo)) as checkVideo,-->
+        <!--checkPersonID,-->
+        <!--checkPersonName,-->
+        <!--isRules,-->
+        <!--isTrain,-->
+        <!--isCheck-->
+    <!--</sql>-->
+
+    <!--<select id="getProblemImportDtoByContiton" resultType="com.wlhse.dto.outDto.SafetyProblemImportDto">-->
+        <!--select-->
+        <!--<include refid="safety_problem_key"/>-->
+        <!--from safety_problem-->
+        <!--<where>-->
+            <!--<if test="checkPersonID != null">-->
+                <!--AND CheckPersonID =#{checkPersonID}-->
+            <!--</if>-->
+            <!--<if test="companyName!=null and companyName != ''">-->
+                <!--AND CompanyName=#{companyName}-->
+            <!--</if>-->
+            <!--<if test="companyCode!=null and companyCode != ''">-->
+                <!--AND substring(companyCode,1,length(#{companyCode}))=#{companyCode}-->
+            <!--</if>-->
+            <!--<if test="checkDate1 != null and checkDate1 != '' ">-->
+                <!--AND CheckDate between #{checkDate1} and #{checkDate2}-->
+            <!--</if>-->
+            <!--<if test="isRules!=null and isRules != ''">-->
+                <!--AND IsRules=#{isRules}-->
+            <!--</if>-->
+            <!--<if test="isTrain!=null and isTrain != ''">-->
+                <!--AND IsTrain=#{isTrain}-->
+            <!--</if>-->
+            <!--<if test="isCheck!=null and isCheck != ''">-->
+                <!--AND IsCheck=#{isCheck}-->
+            <!--</if>-->
+            <!--<if test="status!=null and status != ''">-->
+                <!--AND Status=#{status}-->
+            <!--</if>-->
+        <!--</where>-->
+        <!--order by CheckDate desc-->
+    <!--</select>-->
+
+    <!--<select id="getProblemImportDtoCount" parameterType="com.wlhse.dto.outDto.SafetyProblemImportDto" resultType="int">-->
+        <!--select count(*)-->
+        <!--from safety_problem-->
+        <!--<where>-->
+            <!--<if test="checkPersonID != null">-->
+                <!--AND CheckPersonID =#{checkPersonID}-->
+            <!--</if>-->
+            <!--<if test="companyName!=null and companyName != ''">-->
+                <!--AND CompanyName=#{companyName}-->
+            <!--</if>-->
+            <!--<if test="companyCode!=null and companyCode != ''">-->
+                <!--AND substring(companyCode,1,length(#{companyCode}))=#{companyCode}-->
+            <!--</if>-->
+            <!--<if test="checkDate1 != null and checkDate1 != '' ">-->
+                <!--AND CheckDate between #{checkDate1} and #{checkDate2}-->
+            <!--</if>-->
+            <!--<if test="isRules!=null and isRules != ''">-->
+                <!--AND IsRules=#{isRules}-->
+            <!--</if>-->
+            <!--<if test="isTrain!=null and isTrain != ''">-->
+                <!--AND IsTrain=#{isTrain}-->
+            <!--</if>-->
+            <!--<if test="isCheck!=null and isCheck != ''">-->
+                <!--AND IsCheck=#{isCheck}-->
+            <!--</if>-->
+            <!--<if test="status!=null and status != ''">-->
+                <!--AND Status=#{status}-->
+            <!--</if>-->
+        <!--</where>-->
+    <!--</select>-->
+
+    <!--<select id="getSafetyProblemImportDtoById" resultType="com.wlhse.dto.outDto.SafetyProblemImportDto">-->
+        <!--select-->
+        <!--<include refid="safety_problem_key"/>-->
+        <!--from safety_problem-->
+        <!--<where>-->
+            <!--Problem_ID=#{problemID}-->
+        <!--</where>-->
+    <!--</select>-->
+
+    <!--<update id="updateProblemImportDto" parameterType="com.wlhse.dto.outDto.SafetyProblemImportDto">-->
+        <!--update safety_problem-->
+        <!--<set>-->
+            <!--<if test="companyCode != null and companyCode != ''">-->
+                <!--companyCode=#{companyCode},-->
+                <!--companyName=(select name from sys_company where CompanyCode=#{companyCode}),-->
+                <!--parentCompanyName=(select name from sys_company where CompanyCode=substr(#{companyCode},1,4) and-->
+                <!--LENGTH(CompanyCode)=4),-->
+            <!--</if>-->
+            <!--<if test="checkDate != null and checkDate != ''">-->
+                <!--checkDate=#{checkDate},-->
+            <!--</if>-->
+            <!--<if test="address != null and address != ''">-->
+                <!--address=#{address},-->
+            <!--</if>-->
+            <!--<if test="checkItemCode != null and checkItemCode != ''">-->
+                <!--checkItemCode=#{checkItemCode},-->
+                <!--CheckItemName1=(select CheckItemName from checkitem where CheckItemCode=SUBSTR(#{checkItemCode},1,4) and-->
+                <!--length(checkItemCode)=4),-->
+                <!--CheckItemName2=(select CheckItemName from checkitem where CheckItemCode=SUBSTR(#{checkItemCode},1,8) and-->
+                <!--length(checkItemCode)=8),-->
+                <!--CheckItemName3=(select CheckItemName from checkitem where CheckItemCode=#{checkItemCode}),-->
+            <!--</if>-->
+            <!--<if test="descriptionDetail != null and descriptionDetail != ''">-->
+                <!--descriptionDetail=#{descriptionDetail},-->
+            <!--</if>-->
+            <!--<if test="isRectOntime != null and isRectOntime != ''">-->
+                <!--isRectOntime=#{isRectOntime},-->
+            <!--</if>-->
+            <!--<if test="limtRectDate != null and limtRectDate != ''">-->
+                <!--limtRectDate=#{limtRectDate},-->
+            <!--</if>-->
+            <!--<if test="checkAttach1 != null and checkAttach1 != ''">-->
+                <!--checkAttach1=#{checkAttach1},-->
+            <!--</if>-->
+            <!--<if test="checkAttach2 != null and checkAttach2 != ''">-->
+                <!--checkAttach2=#{checkAttach2},-->
+            <!--</if>-->
+            <!--<if test="checkAttach3 != null and checkAttach3 != ''">-->
+                <!--checkAttach3=#{checkAttach3},-->
+            <!--</if>-->
+            <!--<if test="checkAttach4 != null and checkAttach4 != ''">-->
+                <!--checkAttach4=#{checkAttach4},-->
+            <!--</if>-->
+            <!--<if test="checkPersonID != null and checkPersonID != ''">-->
+                <!--checkPersonID=#{checkPersonID},-->
+                <!--CheckPersonName=(select `Name` from employee where EmployeeID=#{checkPersonID}),-->
+            <!--</if>-->
+            <!--<if test="status  != null and status  != ''">-->
+                <!--status =#{status},-->
+            <!--</if>-->
+            <!--<if test="checkVideo != null and checkVideo != ''">-->
+                <!--CheckVideo = #{checkVideo},-->
+            <!--</if>-->
+            <!--<if test="isRules != null and isRules != ''">-->
+                <!--IsRules =#{isRules},-->
+            <!--</if>-->
+            <!--<if test="isCheck != null and isCheck != ''">-->
+                <!--IsCheck =#{isCheck},-->
+            <!--</if>-->
+            <!--<if test="isTrain != null and isTrain != ''">-->
+                <!--IsTrain =#{isTrain},-->
+            <!--</if>-->
+        <!--</set>-->
+        <!--<where>-->
+            <!--Problem_ID = #{problemID}-->
+        <!--</where>-->
+    <!--</update>-->
+
+    <!--<delete id="deleteProblem">-->
+        <!--delete from safety_problem where Problem_ID=#{id}-->
+    <!--</delete>-->
+
+</mapper>

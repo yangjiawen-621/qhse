@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.ReportDao">
+
+    <resultMap id="reportMap" type="com.wlhse.entity.ReportPojo">
+        <id property="reportID" column="ReportID"></id>
+        <result property="companyName" column="CompanyName"></result>
+        <result property="reportCode" column="ReportCode"></result>
+        <result property="reportType" column="ReportType"></result>
+        <result property="reportPlanDate" column="ReportPlanDate"></result>
+        <result property="reportCheckPersonName" column="ReportCheckPersonName"></result>
+        <result property="auditorNames" column="AuditorName"></result>
+        <result property="auditorDate" column="AuditorDate"></result>
+        <result property="approverNames" column="ApproverName"></result>
+        <result property="approverDate" column="ApproverDate"></result>
+        <result property="fileDate" column="FileDate"></result>
+        <result property="senderName" column="SenderName"></result>
+        <result property="sendDate" column="SendDate"></result>
+        <result property="reportCount" column="ReportCount"></result>
+        <result property="seal1" column="Seal1"></result>
+        <result property="seal2" column="Seal2"></result>
+        <result property="seal3" column="Seal3"></result>
+        <result property="seal4" column="Seal4"></result>
+        <result property="seal5" column="Seal5"></result>
+        <result property="seal6" column="Seal6"></result>
+        <result property="note" column="Note"></result>
+        <result property="sealPersonName" column="SealPersonName"></result>
+        <result property="authName" column="AuthName"></result>
+        <result property="sealDate" column="SealDate"></result>
+        <collection property="sampleList" ofType="com.wlhse.entity.SamplePojo" column="ReportID" select="com.wlhse.dao.SampleDao.querrySampleByReportID">
+        </collection>
+    </resultMap>
+
+    <!--新增报告-->
+    <insert id="addReport" parameterType="com.wlhse.dto.ReportDto">
+        insert into report (CompanyCode,CompanyName,ReportCode,ReportType,
+        ReportCheckPersonID,ReportCheckPersonName,ReportPlanDate)
+        values(#{companyCode},
+        (select Name from sys_company where CompanyCode=#{companyCode}),
+        #{reportCode},
+        #{reportType},
+        #{reportCheckPersonID},
+        (select Name from employee where EmployeeID=#{reportCheckPersonID}),
+        #{reportPlanDate})
+    </insert>
+
+    <!--  查询报告  -->
+    <select id="querryReportByReportCode" parameterType="com.wlhse.dto.ReportDto" resultType="java.lang.Integer">
+        select count(*) from report where ReportCode=#{reportCode}
+    </select>
+    <!--  查询报告  -->
+    <select id="ByReportCodeGetID" parameterType="com.wlhse.dto.ReportDto" resultType="java.lang.Integer">
+        select ReportID from report where ReportCode=#{reportCode}
+    </select>
+    <!--  根据时间、单位、公司类型查询报告(已完成，未完成和所有)  -->
+    <select id="reportList" parameterType="com.wlhse.dto.ReportDto" resultMap="reportMap">
+        select * from report
+        <trim prefix="where" prefixOverrides="and" suffixOverrides=",">
+            <if test="companyCode!='' and companyCode!=null ">
+                and substring(CompanyCode,1,length(#{companyCode}))=#{companyCode}
+            </if>
+            <if test="reportType!='' and reportType!=null ">
+                and ReportType=(select Name from datadict where DictCode=#{reportType})
+            </if>
+            <if test="beginTime!='' and beginTime!=null ">
+                and ReportPlanDate>#{beginTime} and #{endTime}>ReportPlanDate
+            </if>
+            <if test="state==1">
+                and SealDate is not null
+            </if>
+            <if test="state==2">
+                and SealDate is null
+            </if>
+            <if test="personID!='' and personID!=null">
+                And SUBSTR(report.CompanyCode,1,LENGTH(
+                (select CompanyCode from employee where EmployeeID=#{personID})))
+                =(select CompanyCode from employee where EmployeeID=#{personID})
+            </if>
+        </trim>
+        ORDER BY ReportPlanDate desc
+    </select>
+
+    <select id="incompeletReport" parameterType="java.lang.String" resultType="com.wlhse.entity.ReportPojo">
+        select ReportID,CompanyName,ReportCode,ReportType,
+        ReportCheckPersonName,ReportCheckPersonID,ReportPlanDate from report
+        where SealDate is null and substring(CompanyCode,1,length(#{code}))=#{code}
+    </select>
+
+    <!--  根据时间、单位、公司类型查询报告数量(已完成，未完成和所有)  -->
+    <select id="countReportList" parameterType="com.wlhse.dto.ReportDto" resultType="java.lang.Integer">
+        select count(*) from report
+        <trim prefix="where" prefixOverrides="and" suffixOverrides=",">
+            <if test="companyCode!='' and companyCode!=null ">
+                and substring(CompanyCode,1,length(#{companyCode}))=#{companyCode}
+            </if>
+            <if test="reportType!='' and reportType!=null ">
+                and ReportType=(select Name from datadict where DictCode=#{reportType})
+            </if>
+            <if test="beginTime!='' and beginTime!=null ">
+                and ReportPlanDate>#{beginTime} and #{endTime}>ReportPlanDate
+            </if>
+            <if test="state==1">
+                and SealDate is not null
+            </if>
+            <if test="state==2">
+                and SealDate is null
+            </if>
+            <if test="personID!='' and personID!=null">
+                and SUBSTR(report.CompanyCode,1,LENGTH(
+                (select CompanyCode from employee where EmployeeID=#{personID})))
+                =(select CompanyCode from employee where EmployeeID=#{personID})
+            </if>
+        </trim>
+    </select>
+
+    <!--  删除报告  -->
+    <delete id="deleteReport" parameterType="java.lang.Integer">
+        delete from report where ReportID=#{id}
+    </delete>
+    <!--  判断  -->
+    <!--  更改报告  -->
+    <update id="updateReport" parameterType="com.wlhse.dto.ReportDto">
+        update report
+        <trim prefix="set" suffixOverrides=",">
+            <if test="companyCode!=null and companyCode!=''">
+                CompanyCode=#{companyCode},
+                CompanyName=(select Name from sys_company where CompanyCode=#{companyCode}),
+            </if>
+            <if test="reportCode!=null and reportCode!=''">
+                ReportCode=#{reportCode},
+            </if>
+            <if test="reportType!=null and reportType!=''">
+                ReportType=#{reportType},
+            </if>
+            <if test="reportCheckPersonID!=null and reportCheckPersonID!=''">
+                ReportCheckPersonID=#{reportCheckPersonID},
+                ReportCheckPersonName=(select Name from employee where EmployeeID=#{reportCheckPersonID}),
+            </if>
+            <if test="reportPlanDate!=null and reportPlanDate!=''">
+                ReportPlanDate=#{reportPlanDate},
+            </if>
+        </trim>
+        where ReportID=#{reportID}
+    </update>
+    <!--  完成报告  -->
+    <update id="compeletReport" parameterType="com.wlhse.dto.ReportDto">
+        update report
+        <trim prefix="set" suffixOverrides=",">
+            <if test="auditorIDs!=null and auditorIDs!=''">
+                AuditorID=#{auditorIDs},
+            </if>
+            <if test="auditorNames!=null and auditorNames!=''">
+                AuditorName=#{auditorNames},
+            </if>
+            <if test="auditorDate!=null and auditorDate!=''">
+                AuditorDate=#{auditorDate},
+            </if>
+            <if test="approverIDs!=null and approverIDs!=''">
+                ApproverID=#{approverIDs},
+            </if>
+            <if test="approverNames!=null and approverNames!=''">
+                ApproverName=#{approverNames},
+            </if>
+            <if test="approverDate!=null and approverDate!=''">
+                ApproverDate=#{approverDate},
+            </if>
+            <if test="fileDate!=null and fileDate!=''">
+                FileDate=#{fileDate},
+            </if>
+            <if test="senderID!=null and senderID!=''">
+                SenderID=#{senderID},
+                SenderName=(select Name from employee where EmployeeID=#{senderID}),
+            </if>
+            <if test="sendDate!=null and sendDate!=''">
+                SendDate=#{sendDate},
+            </if>
+            <if test="reportCount!=null and reportCount!=''">
+                ReportCount=#{reportCount},
+            </if>
+            <if test="seal2!=null and seal2!=''">
+                Seal2=#{seal2},
+            </if>
+            <if test="seal3!=null and seal3!=''">
+                Seal3=#{seal3},
+            </if>
+            <if test="seal4!=null and seal4!=''">
+                Seal4=#{seal4},
+            </if>
+            <if test="seal5!=null and seal5!=''">
+                Seal5=#{seal5},
+            </if>
+            <if test="seal6!=null and seal6!=''">
+                Seal6=#{seal6},
+            </if>
+            <if test="seal1!=null and seal1!=''">
+                Seal1=#{seal1},
+            </if>
+            <if test="note!=null and note!=''">
+                Note=#{note},
+            </if>
+            <if test="sealPersonID!=null and sealPersonID!=''">
+                SealPersonID=#{sealPersonID},
+                SealPersonName=(select Name from employee where EmployeeID=#{sealPersonID}),
+            </if>
+            <if test="authID!=null and authID!=''">
+                AuthID=#{authID},
+                AuthName=(select Name from employee where EmployeeID=#{authID}),
+            </if>
+            <if test="sealDate!=null and sealDate!=''">
+                SealDate=#{sealDate}
+            </if>
+        </trim>
+        where ReportID=#{reportID}
+    </update>
+
+    <!--  查询报告及样品  -->
+    <select id="querryCompleteReport" parameterType="java.lang.Integer" resultMap="reportMap">
+        select * from report where ReportID=#{id}
+    </select>
+
+    <!--  统计该公司和下属公司报告完成数目  -->
+    <select id="countCompleteReport" parameterType="com.wlhse.dto.ReportDto"  resultType="java.lang.Integer">
+        select count(*) from report
+        <trim prefix="where" prefixOverrides="and">
+            <if test="companyCode!=null and companyCode!=''">
+                and SUBSTR(report.CompanyCode,1,LENGTH(#{companyCode}))=#{companyCode}
+            </if>
+            <if test="reportType!=null and reportType!=''">
+                and ReportType=(select Name from datadict where DictCode=#{reportType})
+            </if>
+            <if test="beginTime!='' and beginTime!=null ">
+                and ReportPlanDate>#{beginTime} and #{endTime}>ReportPlanDate
+            </if>
+            and SealDate is not null
+        </trim>
+    </select>
+    <!--  统计该公司和下属公司报告未完成数目  -->
+    <select id="countIncompleteReport" parameterType="com.wlhse.dto.ReportDto" resultType="java.lang.Integer">
+        select count(*) from report
+        <trim prefix="where" prefixOverrides="and">
+            <if test="companyCode!=null and companyCode!=''">
+                and SUBSTR(report.CompanyCode,1,LENGTH(#{companyCode}))=#{companyCode}
+            </if>
+            <if test="reportType!=null and reportType!=''">
+                and ReportType=(select Name from datadict where DictCode=#{reportType})
+            </if>
+            <if test="beginTime!='' and beginTime!=null ">
+                and ReportPlanDate>#{beginTime} and #{endTime}>ReportPlanDate
+            </if>
+            and SealDate is null
+        </trim>
+    </select>
+
+    <select id="querryReportCode" parameterType="java.lang.String" resultType="java.lang.String">
+        select ReportCode from report where ReportCode like #{reportCode};
+    </select>
+
+    <insert id="excelUploadReports" parameterType="java.util.List">
+        insert into report (CompanyCode,CompanyName,ReportCode,ReportType,ReportPlanDate,
+        ReportCheckPersonID,ReportCheckPersonName,AuditorID,AuditorName,AuditorDate,ApproverID,
+        ApproverName,ApproverDate,FileDate,SenderID,SenderName,SendDate,ReportCount,Seal1,Seal2,
+        Seal3,Seal4,Seal5,Seal6,Note,SealPersonID,SealPersonName,AuthID,AuthName,sealDate)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.companyCode},
+            <choose>
+                <when test="item.companyName!=null and item.companyName!=''">
+                    #{item.companyName},
+                </when>
+                <otherwise>
+                    (select Name from sys_company where CompanyCode=#{item.companyCode}),
+                </otherwise>
+            </choose>
+            #{item.reportCode},#{item.reportType},#{item.reportPlanDate},
+            #{item.reportCheckPersonID},
+            <choose>
+                <when test="item.reportCheckPersonName!=null and item.reportCheckPersonName!=''">
+                    #{item.reportCheckPersonName},
+                </when>
+                <otherwise>
+                    (select Name from employee where EmployeeID=#{item.reportCheckPersonID}),
+                </otherwise>
+            </choose>
+            #{item.auditorIDs},#{item.auditorNames},#{item.auditorDate},#{item.approverIDs},#{item.approverNames},#{item.approverDate},#{item.fileDate},#{item.senderID},
+            <choose>
+                <when test="item.senderName!=null and item.senderName!=''">
+                    #{item.senderName},
+                </when>
+                <otherwise>
+                    (select Name from employee where EmployeeID=#{item.senderID}),
+                </otherwise>
+            </choose>
+            #{item.sendDate},#{item.reportCount},#{item.seal1},#{item.seal2},#{item.seal3},#{item.seal4},#{item.seal5},
+            #{item.seal6},#{item.note},#{item.sealPersonID},
+            <choose>
+                <when test="item.sealPersonName!=null and item.sealPersonName!=''">
+                    #{item.sealPersonName},
+                </when>
+                <otherwise>
+                    (select Name from employee where EmployeeID=#{item.sealPersonID}),
+                </otherwise>
+            </choose>
+            #{item.authID},
+            <choose>
+                <when test="item.authName!=null and item.authName!=''">
+                    #{item.authName},
+                </when>
+                <otherwise>
+                    (select Name from employee where EmployeeID=#{item.authID}),
+                </otherwise>
+            </choose>
+            #{item.sealDate})
+        </foreach>
+    </insert>
+
+</mapper>

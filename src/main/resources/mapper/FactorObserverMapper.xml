@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wlhse.dao.FactorObserverDao">
+    <select id="getAll" resultType="com.wlhse.dto.FactorObserverDto">
+        select * from factorobserver
+    </select>
+
+    <select id="getFactorObserverCode" resultType="java.lang.String">
+        select FactorObserverCode
+        from factor
+        where factorCode = #{factorCode}
+    </select>
+
+    <select id="getFactorObserver" resultType="com.wlhse.dto.FactorObserverDto">
+        select *
+        from factorobserver
+        where FactorObserverCode2 = #{factorObserverCode2}
+    </select>
+
+</mapper>

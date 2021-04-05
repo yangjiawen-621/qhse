@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.MonitorPlanDao">
+    <insert id="createNewMonitorPlan" useGeneratedKeys="true" keyProperty="monitorPlanID" keyColumn="MonitorPlanID">
+        insert into monitorplan
+        (StartDate,EndDate,PlanName,PlanPersonID,PlanPersonName,CompanyCode,createTime,status)
+        values (
+        #{startDate},#{endDate},#{planName},#{planPersonID},#{planPersonName},#{companyCode}
+        ,now(),'执行中')
+    </insert>
+
+    <select id="getMonitorPlanByPlanCompanyCode" resultType="com.wlhse.dto.MonitorPlan">
+        select * from
+        monitorplan
+        where CompanyCode=#{0}
+        order by MonitorPlanID desc
+    </select>
+
+    <delete id="deletePlan">
+        delete from
+        monitorplan
+        where MonitorPlanID=#{0}
+    </delete>
+
+    <select id="getBeginAndEndDate" resultType="com.wlhse.dto.MonitorPlan">
+        select StartDate as startDate,
+        EndDate as  endDate
+        from monitorplan
+        where MonitorPlanID=#{0}
+    </select>
+
+
+
+
+    <select id="getDeviceUseDate" resultType="String">
+        select SumDate
+        from meschecksumdata
+        where CompanyName=#{0}
+        order by SumDate ASC
+    </select>
+
+    <update id="endMonitorPlan">
+        update monitorplan set status="完成"
+        where status="执行中"
+    </update>
+</mapper>

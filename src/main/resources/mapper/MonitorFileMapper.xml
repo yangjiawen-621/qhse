@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.MonitorFileDao">
+    <insert id="insertNewFile">
+        insert into monitorfile
+        (filePath,originName)
+        values (#{0},#{1})
+    </insert>
+
+    <select id="getOriginName" resultType="String">
+        select originName from monitorfile
+        where filePath=#{filePath}
+    </select>
+</mapper>

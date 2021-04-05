@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="log.other.level" value="INFO"/> <!-- 其他日志级别 -->
+    <property name="log.base" value="C:/safety/logs"/>
+    <property name="log.moduleName" value="safety_log"/>  <!-- 模块名称， 影响日志配置名，日志文件名 -->
+    <property name="log.max.size" value="100MB"/> <!-- 日志文件大小 -->
+
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${log.base}/${log.moduleName}.log
+        </File><!-- 设置日志不超过${log.max.size}时的保存路径，注意如果 是web项目会保存到Tomcat的bin目录 下 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log.base}/archive/${log.moduleName}_all_%d{yyyy-MM-dd}.%i.log.zip</FileNamePattern>
+            <maxHistory>30</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${log.max.size}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread]%logger{56}.%method:%L -%msg%n</pattern>
+        </layout>
+    </appender>
+
+    <logger name="com.wlhse">
+        <level value="INFO"/>
+        <appender-ref ref="file"/>
+    </logger>
+</configuration>

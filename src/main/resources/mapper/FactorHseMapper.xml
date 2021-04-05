@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wlhse.dao.FactorHseDao">
+    <select id="getAll" resultType="com.wlhse.dto.FactorHseDto">
+        select * from factorhse
+
+    </select>
+
+    <select id="getFactorHseCode" resultType="java.lang.String">
+        select FactorHseCode
+        from factor
+        where factorCode = #{factorCode}
+    </select>
+
+    <select id="getFactorHse" resultType="com.wlhse.dto.FactorHseDto">
+        select *
+        from factorhse
+        where FactorHseCode2 = #{factorHseCode2}
+    </select>
+
+</mapper>

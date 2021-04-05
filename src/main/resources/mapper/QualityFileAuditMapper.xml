@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wlhse.dao.QualityFileAuditDao">
+    <select id="queryTotal" resultType="java.lang.Integer">
+        select count(*)
+        from quality_fileaudit
+        <where>
+            <if test="companyName != null and companyName  != ''">
+                AND companyName=#{companyName}
+            </if>
+            <if test="year != null and year  != ''">
+                AND year=#{year}
+            </if>
+        </where>
+    </select>
+
+    <resultMap id="fileAuditMap" type="com.wlhse.dto.QualityFileAuditDto">
+        <id property="fileAuditId" column="Quality_FileAudit_ID"/>
+        <result property="tableId" column="Quality_CompanyYearManagerSysElementTable_ID"/>
+        <result property="auditName" column="AuditName"/>
+        <result property="auditType" column="AuditType"/>
+        <result property="additor" column="additor"/>
+        <result property="auditTime" column="auditTime"/>
+        <result property="companyCode" column="CompanyCode"/>
+        <result property="companyName" column="CompanyName"/>
+        <result property="year" column="Year"/>
+    </resultMap>
+
+    <select id="queryExistFile" resultMap="fileAuditMap">
+        select *
+        from quality_fileaudit
+        <where>
+            <if test="companyName != null and companyName  != ''">
+                AND companyName=#{companyName}
+            </if>
+            <if test="year != null and year  != ''">
+                AND year=#{year}
+            </if>
+        </where>
+        order by year desc
+    </select>
+
+    <sql id="key">
+        <trim suffixOverrides=",">
+            <if test="fileAuditId != null and fileAuditId  != ''">
+                Quality_FileAudit_ID,
+            </if>
+            <if test="tableId != null and tableId     != ''">
+                Quality_CompanyYearManagerSysElementTable_ID,
+            </if>
+            <if test="auditName != null and auditName  != ''">
+                auditName,
+            </if>
+            <if test="auditType != null and auditType  != ''">
+                auditType,
+            </if>
+            <if test="additor != null and additor  != ''">
+                additor,
+            </if>
+            <if test="auditTime != null and auditTime  != ''">
+                auditTime,
+            </if>
+            <if test="companyCode != null and companyCode  != ''">
+                companyCode,companyName,
+            </if>
+            <if test="year != null and year  != ''">
+                year,
+            </if>
+        </trim>
+    </sql>
+
+    <sql id="value1">
+        <trim suffixOverrides=",">
+            <if test="fileAuditId != null and fileAuditId  != ''">
+                #{fileAuditId},
+            </if>
+            <if test="tableId != null and tableId  != ''">
+                #{tableId},
+            </if>
+            <if test="auditName != null and auditName  != ''">
+                #{auditName},
+            </if>
+            <if test="auditType != null and auditType  != ''">
+                #{auditType},
+            </if>
+            <if test="additor != null and additor  != ''">
+                #{additor},
+            </if>
+            <if test="auditTime != null and auditTime  != ''">
+                #{auditTime},
+            </if>
+            <if test="companyCode != null and companyCode  != ''">
+                #{companyCode},(select name from sys_company where CompanyCode=#{companyCode}),
+            </if>
+            <if test="year != null and year  != ''">
+                #{year},
+            </if>
+
+        </trim>
+    </sql>
+
+    <insert id="addFileAudit" parameterType="com.wlhse.dto.QualityFileAuditDto">
+        insert into quality_fileaudit
+        (<include refid="key"/>)
+        values
+        (<include refid="value1"/>)
+
+
+    </insert>
+
+    <delete id="deleteFileAudit">
+        delete from quality_fileaudit
+        where Quality_FileAudit_ID = #{id}
+    </delete>
+
+
+    <sql id="key1">
+        <trim suffixOverrides=",">
+            <if test="fileAuditId != null and fileAuditId  != ''">
+                Quality_FileAudit_ID,
+            </if>
+            <if test="code != null and code  != ''">
+                Code,
+            </if>
+            <if test="codeScore != null and codeScore  != ''">
+                CodeScore,
+            </if>
+            <if test="pass != null and pass  != ''">
+                Pass,
+            </if>
+            <if test="additor!=null and additor!=''">
+                Additor,
+            </if>
+            <if test="auditTime!=null and auditTime!=''">
+                AuditTime,
+            </if>
+        </trim>
+    </sql>
+
+    <sql id="value2">
+        <trim suffixOverrides=",">
+            <if test="fileAuditId != null and fileAuditId  != ''">
+                #{fileAuditId},
+            </if>
+            <if test="code != null and code  != ''">
+                #{code},
+            </if>
+            <if test="codeScore != null and codeScore  != ''">
+                #{codeScore},
+            </if>
+            <if test="pass != null and pass  != ''">
+                #{pass},
+            </if>
+            <if test="additor!=null and additor!=''">
+                #{additor},
+            </if>
+            <if test="auditTime!=null and auditTime!=''">
+                #{auditTime},
+            </if>
+        </trim>
+    </sql>
+
+    <insert id="addFileAuditRecord" parameterType="com.wlhse.dto.QualityFileAuditRecordDto">
+        insert into quality_fileauditrecord
+        (<include refid="key1"/>)
+        values
+        (<include refid="value2"/>)
+    </insert>
+
+    <select id="queryRecordId" resultType="com.wlhse.dto.QualityFileAuditRecordDto">
+        select Quality_FileAudit_RecordID as qualityFileAuditRecordID
+        from quality_fileauditrecord
+        <where>
+            <if test="fileAuditId != null and fileAuditId  != ''">
+                AND Quality_FileAudit_ID=#{fileAuditId}
+            </if>
+            <if test="code != null and code  != ''">
+                AND Code=#{code}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteFileAuditRecord">
+        delete from quality_fileauditrecord
+        where Quality_FileAudit_ID = #{id1}
+    </delete>
+
+    <update id="updateStatus" parameterType="com.wlhse.dto.QualityFileAuditRecordDto">
+        update quality_fileauditrecord
+        <trim prefix="set" suffixOverrides=",">
+            <if test="pass != null and pass != ''">
+                Pass=#{pass},
+            </if>
+        </trim>
+        <where>
+            Quality_FileAudit_ID = #{fileAuditId}
+        </where>
+    </update>
+
+    <update id="updateScore" parameterType="com.wlhse.dto.QualityFileAuditRecordDto">
+        update quality_fileauditrecord
+        <trim prefix="set" suffixOverrides=",">
+            <if test="codeScore != null and codeScore != ''">
+                CodeScore=#{codeScore},
+            </if>
+        </trim>
+        where Code=#{code}
+    </update>
+
+    <select id="getScore" resultType="com.wlhse.dto.QualityFileAuditRecordDto">
+        select codeScore from quality_fileauditrecord
+        <where>
+            <if test="code != null and code  != ''">
+                AND Code=#{code}
+            </if>
+        </where>
+    </select>
+
+    <select id="getStatus" resultType="com.wlhse.dto.QualityFileAuditRecordDto">
+        select codeScore,Pass from quality_fileauditrecord
+        <where>
+            <if test="fileAuditId != null and fileAuditId  != ''">
+                AND Quality_FileAudit_ID=#{fileAuditId}
+            </if>
+            <if test="code != null and code  != ''">
+                AND Code=#{code}
+            </if>
+        </where>
+    </select>
+
+    <!--tobing-->
+    <update id="updateCheckStatus" parameterType="com.wlhse.dto.inDto.QualityYearElementsDto">
+        update quality_companyyearmanagersyselement
+        <trim prefix="set" suffixOverrides=",">
+            <if test="fileCheckStatus != null and fileCheckStatus != ''">
+                fileCheckStatus=#{fileCheckStatus},
+            </if>
+        </trim>
+        where Code=#{code} and
+        Quality_CompanyYearManagerSysElementTable_ID=#{qualityCompanyYearManagerSysElementTableID}
+    </update>
+
+    <select id="getAllFileAudit" resultMap="fileAuditMap">
+        select *
+        from quality_fileaudit
+        order by year desc
+    </select>
+
+    <!--不录入文件审核-->
+    <update id="noPassReasonFileAudit" parameterType="com.wlhse.dto.QualityFileAuditRecordDto">
+        UPDATE quality_fileauditrecord
+        SET nopassReason= #{noPassReason}
+        WHERE  Quality_FileAudit_ID = #{fileAuditId}  AND CODE = #{code}
+    </update>
+
+
+</mapper>

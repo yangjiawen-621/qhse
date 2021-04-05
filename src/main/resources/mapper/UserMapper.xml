@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.UserDao">
+
+    <sql id="key">
+        <trim suffixOverrides=",">
+            <if test="employeeID != null and employeeID != ''">
+                employeeID,
+            </if>
+            <if test="uName != null and uName != ''">
+                uName,
+            </if>
+            <if test="pwd != null and pwd != ''">
+                pwd,
+            </if>
+            <if test="status != null and status != ''">
+                status,
+            </if>
+            <if test="description != null and description != ''">
+                description,
+            </if>
+        </trim>
+    </sql>
+
+    <sql id="value">
+        <trim suffixOverrides=",">
+            <if test="employeeID != null and employeeID != ''">
+                #{employeeID},
+            </if>
+            <if test="uName != null and uName != ''">
+                #{uName},
+            </if>
+            <if test="pwd != null and pwd != ''">
+                #{pwd},
+            </if>
+            <if test="status != null and status != ''">
+                #{status},
+            </if>
+            <if test="description != null and description != ''">
+                #{description},
+            </if>
+        </trim>
+    </sql>
+
+    <insert id="addUser" parameterType="com.wlhse.entity.UserPojo">
+        insert into sys_user
+        (<include refid="key"/>)
+        values
+        (<include refid="value"/>)
+    </insert>
+
+    <delete id="deleteUser" parameterType="com.wlhse.entity.UserPojo">
+        delete from sys_user
+        where sys_user_id = #{sysUserID}
+    </delete>
+
+    <update id="updateUser" parameterType="com.wlhse.entity.UserPojo">
+        update sys_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="employeeID != null and employeeID != ''">
+                employeeID = #{employeeID},
+            </if>
+            <if test="uName != null and uName != ''">
+                uName = #{uName},
+            </if>
+            <if test="pwd != null and pwd != ''">
+                pwd = #{pwd},
+            </if>
+            <if test="status != null and status != ''">
+                status = #{status},
+            </if>
+            <if test="description != null and description != ''">
+                description = #{description},
+            </if>
+        </trim>
+        where sys_user_id = #{sysUserID}
+    </update>
+
+    <select id="getUserPojo" resultType="com.wlhse.dto.outDto.UserOutDto">
+        select UName as username,
+        SYS_USER_ID as userId,
+        Status as status,
+        EmployeeID as employeeId,
+        OpenId as openId
+        from sys_user
+        <where>
+            UName = #{0}
+            and Pwd= #{1}
+        </where>
+    </select>
+
+    <select id="getUserByName" resultType="com.wlhse.entity.UserPojo">
+        select SYS_USER_ID as sysUserID,
+        EmployeeID as employeeID,
+        UName as uName,
+        Pwd as pwd,
+        Status as status,
+        Description as description
+        from sys_user
+        <where>
+            UName = #{0}
+        </where>
+    </select>
+
+    <select id="getByEmployeeId" resultType="com.wlhse.entity.UserPojo">
+        select SYS_USER_ID as sysUserID,
+        EmployeeID as employeeID,
+        UName as uName,
+        Pwd as pwd,
+        Status as status,
+        Description as description
+        from sys_user
+        <where>
+            EmployeeID = #{0}
+        </where>
+    </select>
+
+    <select id="countUsername" resultType="int">
+        select count(*) from sys_user
+        <where>
+            UName = #{0}
+        </where>
+    </select>
+    <select id="countEmployee" resultType="int">
+        select count(*) from sys_user
+        <where>
+            EmployeeID = #{0}
+        </where>
+    </select>
+    <select id="countUserName" resultType="int">
+        select count(*) from sys_user
+        <where>
+            UName=#{userName}
+        </where>
+    </select>
+
+    <select id="getUserAuthMinCode" resultType="java.lang.String">
+        select distinct left (ModuleCode,4)
+        from sys_rolemodule
+        where RoleCode=(
+        SELECT RoleCode FROM sys_user_role
+        where UNAME=
+        (
+            select UName
+            from sys_user where SYS_USER_ID=#{0}
+        )
+        )
+    </select>
+
+    <update id="bindWechat">
+        update sys_user set OpenId=#{1}
+        where SYS_USER_ID=#{0}
+    </update>
+</mapper>

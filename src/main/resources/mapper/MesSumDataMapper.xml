@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.MesSumDataDao">
+    <insert id="batchInsertNewSumData">
+        insert into meschecksumdata
+        (SumDate,CompanyCode,CompanyName,WorkNum,DayReportNum,RecordDeviceNum,PowerOnNum,BackNum,
+        CoverageRate,UseRate,AvaiRate,OutStockNum)
+        values
+        <foreach collection="list" item="detail" separator=",">
+            (
+            #{detail.sumDate},#{detail.companyCode},#{detail.companyName},
+            #{detail.workNum},#{detail.dayReportNum},#{detail.recordDeviceNum},#{detail.powerOnNum},
+            #{detail.backNum},#{detail.coverageRate},#{detail.useRate},#{detail.availableRate},#{detail.outStockNum}
+            )
+        </foreach>
+
+    </insert>
+
+    <select id="getAllSumDate" resultType="String">
+        select SumDate from messumdate
+    </select>
+
+    <select id="getSumDataByDate" resultType="com.wlhse.entity.MesSumData">
+        select * from meschecksumdata
+        where SumDate=#{0}
+    </select>
+
+    <delete id="deleteSumData">
+        delete from
+        meschecksumdata
+        where MesCheckSumDataID=#{0}
+    </delete>
+
+    <delete id="deleteByDate">
+        delete from meschecksumdata
+        where Sumdate=#{0}
+    </delete>
+
+    <update id="updateMesData">
+        update meschecksumdata
+        set WorkNum=#{workNum},
+        DayReportNum=#{dayReportNum},
+        RecordDeviceNum=#{recordDeviceNum},
+        PowerOnNum=#{powerOnNum},
+        BackNum=#{backNum},
+        CoverageRate=#{coverageRate},
+        AvaiRate=#{availableRate},
+        UseRate=#{useRate}
+        where MesCheckSumDataID=#{mesCheckSumDataID}
+    </update>
+
+    <select id="getMesDataById" resultType="com.wlhse.entity.MesSumData">
+        select *
+        from meschecksumdata
+        where MesCheckSumDataID=#{0}
+    </select>
+
+    <select id="getSumDataInTimePeriod" resultType="com.wlhse.entity.MesSumData">
+        select *
+        from meschecksumdata
+        where SumDate between #{0} and #{1}
+    </select>
+
+    <select id="getPlanDeviceNum" resultType="int">
+        select count(*) from
+        monitorplandetail
+        where CompanyName=#{0}
+    </select>
+
+    <select id="getUseRate" resultType="Double">
+            SELECT
+                UseRate
+            FROM
+                meschecksumdata
+            WHERE
+                CompanyName = #{0}
+            ORDER  BY SumDate ASC
+    </select>
+
+    <select id="getCoverageRate" resultType="Double">
+            SELECT
+                CoverageRate
+            FROM
+                meschecksumdata
+            WHERE
+                CompanyName = #{0}
+            ORDER  BY SumDate ASC
+    </select>
+
+    <select id="getAvaiRate" resultType="Double">
+            SELECT
+                AvaiRate
+            FROM
+                meschecksumdata
+            WHERE
+                CompanyName = #{0}
+            ORDER  BY SumDate ASC
+    </select>
+</mapper>

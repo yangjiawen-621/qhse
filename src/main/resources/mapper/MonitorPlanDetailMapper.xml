@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.MonitorPlanDetailDao">
+
+    <insert id="batchInsertNewRecord">
+        insert into monitorplandetail
+        (MonitorPlanID,`No`,DeviceNo,MyNo,ProjectName,Charger,Tel,CompanyName,ItemCategory,ProjectProgress)
+        values
+        <foreach collection="list" item="detail" separator=",">
+            (
+                #{detail.monitorPlanID},#{detail.no},#{detail.deviceNo},
+                #{detail.myNo},#{detail.projectName},#{detail.charger},#{detail.tel},
+                #{detail.companyName},#{detail.itemCategory},#{detail.projectProgress}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="batchInsertNewRecordFromRemote">
+        insert into monitorplandetail
+        (MonitorPlanID,DeviceNo,ProjectName,Charger,Tel,CompanyName,ProjectProgress)
+        values
+        <foreach collection="list" item="detail" separator=",">
+            (
+             #{detail.monitorPlanId},#{detail.RECORD_NUMBER},#{detail.PROJECT_NAME},#{detail.PRINCIPAL},#{detail.PHONE},#{detail.DPT_NAME}
+             ,#{detail.WORK_PLAN}
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateDetail">
+        update monitorplandetail
+        set `No`=#{no},
+        DeviceNo=#{deviceNo},
+        MyNo=#{myNo},
+        ProjectName=#{projectName},
+        Charger=#{charger},
+        Tel=#{tel},
+        CompanyName=#{companyName},
+        ItemCategory=#{itemCategory}
+        where MonitorPlanDetailID=#{monitorPlanDetailID}
+    </update>
+
+    <delete id="deletePlanDetail">
+        delete from
+        monitorplandetail
+        where MonitorPlanDetailID=#{0}
+    </delete>
+
+    <select id="getDetailByPlanId" resultType="com.wlhse.dto.MonitorPlanDetail">
+        select *
+        from monitorplandetail
+        where MonitorPlanID=#{0}
+        and `Status` is null
+     </select>
+
+    <insert id="createNewPlanDetail">
+        insert into
+        monitorplandetail
+        (MonitorPlanID,`No`,DeviceNo,MyNo,ProjectName,Charger,Tel,CompanyName,ProjectProgress,ItemCategory)
+        values (
+        #{monitorPlanID},#{no},#{deviceNo},#{myNo},#{projectName},#{charger},#{tel},#{companyName},#{projectProgress},#{itemCategory}
+        )
+    </insert>
+
+
+    <update id="endDetail">
+        update monitorplandetail
+        set `status`='结束'
+        where MonitorPlanDetailID=#{0}
+    </update>
+
+    <select id="getMesDataByDate" resultType="com.wlhse.entity.MesSumData">
+        select CompanyName as companyName,
+
+    </select>
+
+    <select id="getDetailIdByDate" resultType="Integer">
+        select distinct (MonitorPlanDetailID)
+        from monitorinputcheckrecord
+        where LEFT(InputDate,10) like #{0}
+    </select>
+</mapper>

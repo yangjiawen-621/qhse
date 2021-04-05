@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wlhse.dao.QHSEEventDao">
+    <sql id="key">
+        <trim suffixOverrides=",">
+            <if test="eventID != null and eventID  != ''">
+                eventID,
+            </if>
+            <if test="companyCode != null and companyCode  != ''">
+                companyCode,companyName,
+            </if>
+            <if test="address != null and address  != ''">
+                address,
+            </if>
+            <if test="occurentTime != null and occurentTime  != ''">
+                occurentTime,
+            </if>
+            <if test="briefDescription != null and briefDescription  != ''">
+                briefDescription,
+            </if>
+            <if test="emergencyHandle != null and emergencyHandle  != ''">
+                emergencyHandle,
+            </if>
+            <if test="fileID != null and fileID  != ''">
+                fileID,
+            </if>
+
+        </trim>
+    </sql>
+
+    <sql id="value">
+        <trim suffixOverrides=",">
+            <if test="eventID != null and eventID  != ''">
+                #{eventID},
+            </if>
+            <if test="companyCode != null and companyCode  != ''">
+                #{companyCode},(select name from sys_company where CompanyCode=#{companyCode}),
+            </if>
+            <if test="address != null and address  != ''">
+                #{address},
+            </if>
+            <if test="occurentTime != null and occurentTime  != ''">
+                #{occurentTime},
+            </if>
+            <if test="briefDescription != null and briefDescription  != ''">
+                #{briefDescription},
+            </if>
+            <if test="emergencyHandle != null and emergencyHandle  != ''">
+                #{emergencyHandle},
+            </if>
+            <if test="fileID != null and fileID  != ''">
+                #{fileID},
+            </if>
+
+        </trim>
+    </sql>
+
+    <insert id="addEvent">
+        insert into qhse_event
+        (<include refid="key"/>)
+        values
+        (<include refid="value"/>)
+    </insert>
+
+    <delete id="deleteEvent">
+        delete from qhse_event
+        where EventID = #{id}
+    </delete>
+
+    <sql id="value2">
+        <trim prefix="set" suffixOverrides=",">
+            <if test="eventID != null and eventID  != ''">
+                eventID=#{eventID},
+            </if>
+            <if test="companyCode != null and companyCode  != ''">
+                companyCode=#{companyCode},companyName=(select name from sys_company where CompanyCode=#{companyCode}),
+            </if>
+            <if test="address != null and address  != ''">
+                address=#{address},
+            </if>
+            <if test="occurentTime != null and occurentTime  != ''">
+                occurentTime=#{occurentTime},
+            </if>
+            <if test="briefDescription != null and briefDescription  != ''">
+                briefDescription=#{briefDescription},
+            </if>
+            <if test="emergencyHandle != null and emergencyHandle  != ''">
+                emergencyHandle=#{emergencyHandle},
+            </if>
+            <if test="fileID != null and fileID  != ''">
+                fileID=#{fileID},
+            </if>
+
+        </trim>
+    </sql>
+
+    <update id="updateEvent">
+        update qhse_event
+        <include refid="value2"/>
+        where EventID = #{eventID}
+    </update>
+
+    <select id="queryTotal" resultType="java.lang.Integer">
+        select count(*)
+        from qhse_event
+        <where>
+            <if test="eventID != null and eventID  != ''">
+                AND eventID=#{eventID}
+            </if>
+            <if test="companyCode != null and companyCode  != ''">
+                AND companyCode=#{companyCode}
+            </if>
+            <if test="companyName != null and companyName  != ''">
+                AND companyName=#{companyName}
+            </if>
+            <if test="address != null and address  != ''">
+                AND address LIKE CONCAT('%',#{address},'%')
+            </if>
+            <if test="startDate != null and startDate  != ''">
+                AND occurentTime >= #{startDate}
+            </if>
+            <if test="startDate != null and startDate  != ''">
+                AND #{endDate} >= occurentTime
+            </if>
+            <if test="briefDescription != null and briefDescription  != ''">
+                AND briefDescription=#{briefDescription}
+            </if>
+            <if test="emergencyHandle != null and emergencyHandle != ''">
+                AND emergencyHandle=#{emergencyHandle}
+            </if>
+            <if test="fileID != null and fileID  != ''">
+                AND fileID=#{fileID}
+            </if>
+        </where>
+    </select>
+
+    <resultMap id="qhseEventMap" type="com.wlhse.dto.QHSEEventDto">
+        <id property="eventID" column="EventID"/>
+        <result property="companyCode" column="accidentRecordName"/>
+        <result property="companyName" column="companyName"/>
+        <result property="address" column="address"/>
+        <result property="occurentTime" column="occurentTime"/>
+        <result property="briefDescription" column="briefDescription"/>
+        <result property="emergencyHandle" column="emergencyHandle"/>
+        <result property="fileID" column="fileID"/>
+    </resultMap>
+
+    <select id="queryEvent" parameterType="com.wlhse.dto.QHSEEventDto"
+            resultMap="qhseEventMap">
+        select *
+        from qhse_event
+        <where>
+            <if test="eventID != null and eventID  != ''">
+                AND eventID=#{eventID}
+            </if>
+            <if test="companyCode != null and companyCode  != ''">
+                AND companyCode=#{companyCode}
+            </if>
+            <if test="companyName != null and companyName  != ''">
+                AND companyName=#{companyName}
+            </if>
+            <if test="address != null and address  != ''">
+                AND address LIKE CONCAT(CONCAT('%',#{address},'%'))
+            </if>
+            <if test="briefDescription != null and briefDescription  != ''">
+                AND briefDescription=#{briefDescription}
+            </if>
+            <if test="emergencyHandle != null and emergencyHandle != ''">
+                AND emergencyHandle=#{emergencyHandle}
+            </if>
+            <if test="fileID != null and fileID  != ''">
+                AND fileID=#{fileID}
+            </if>
+            <if test="startDate != null and startDate  != ''">
+                AND occurentTime >= #{startDate}
+            </if>
+            <if test="startDate != null and startDate  != ''">
+                AND #{endDate} >= occurentTime
+            </if>
+        </where>
+        order by occurentTime desc
+    </select>
+
+    <select id="queryEventById" parameterType="com.wlhse.dto.QHSEEventDto"
+            resultMap="qhseEventMap">
+        select *
+        from qhse_event where eventID=#{id}
+    </select>
+
+</mapper>

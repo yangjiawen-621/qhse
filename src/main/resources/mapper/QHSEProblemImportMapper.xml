@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.QHSEProblemImportDao">
+
+    <insert id="addNewProblem" parameterType="com.wlhse.dto.outDto.QHSEProblemImportDto">
+        insert into qhse_problem
+        <trim prefix="set" suffixOverrides=",">
+            RecordCode=#{recordCode},
+            CheckClassCode=#{checkClassCode},
+            CheckClass=(select `Name` from datadict where DictCode=#{checkClassCode}),
+            CheckPersonID=#{checkPersonID},
+            CheckPersonName=(select `Name` from employee where EmployeeID=#{checkPersonID}),
+            CompanyCode=#{companyCode},
+            CompanyName=(select `Name` from sys_company where CompanyCode=#{companyCode}),
+            CheckItemCode=#{checkItemCode},
+            CheckItemName=(select `Name` from datadict where DictCode=#{checkItemCode}),
+            ProfessionCode=#{professionCode},
+            Profession=(select `Name` from datadict where DictCode=#{professionCode}),
+            Address=#{address},
+            OperatePersonID=#{operatePersonID},
+            OperatePersonName=(select `Name` from employee where EmployeeID=#{operatePersonID}),
+            OperatePersonClassCode=#{operatePersonClassCode},
+            OperatePersonClass=(select `Name` from datadict where DictCode=#{operatePersonClassCode}),
+            CheckDate=#{checkDate},
+            ResponsePersonID=#{responsePersonID},
+            ResponsePersonName=(select `Name` from employee where EmployeeID=#{responsePersonID}),
+            IsConformRuleCode=#{isConformRuleCode},
+            IsConformRuleName=(select `RegName` from regulation where RegNameCode=#{isConformRuleCode}),
+            IsConformRuleRankCode=#{isConformRuleRankCode},
+            IsConformRuleRank=(select `Name` from datadict where DictCode=#{isConformRuleRankCode}),
+            BreakRuleRankCode=#{breakRuleRankCode},
+            BreakRuleRank=(select `Name` from datadict where DictCode=#{breakRuleRankCode}),
+            BreakRuleItemCode=#{breakRuleItemCode},
+            BreakRuleItem=(select `Name` from datadict where DictCode=#{breakRuleItemCode}),
+            Penalty=#{penalty},
+            LostScore=#{lostScore},
+            IsConformRuleClassCode=#{isConformRuleClassCode},
+            IsConformRuleClass=(select `Name` from datadict where DictCode=#{isConformRuleClassCode}),
+            IsConformDescription=#{isConformDescription},
+            ProblemKeyCode=#{problemKeyCode},
+            ProblemKey=(select `Name` from datadict where DictCode=#{problemKeyCode}),
+            <if test="checkAttach1!=null">
+                CheckAttach1=#{checkAttach1},
+            </if>
+            <if test="checkAttach2!=null">
+                CheckAttach2=#{checkAttach2},
+            </if>
+            <if test="checkAttach3!=null">
+                CheckAttach3=#{checkAttach3},
+            </if>
+            <if test="checkAttach4!=null">
+                CheckAttach4=#{checkAttach4},
+            </if>
+            ProblemLevelCode=#{problemLevelCode},
+            ProblemLevel=#{problemLevel},
+            ResponseDepartmentCode=#{responseDepartmentCode},
+            ResponseDepartment=(select `Name` from sys_company where CompanyCode=#{responseDepartmentCode}),
+            LimtRectDate=#{limtRectDate},
+            Remarks=#{remarks},
+            Hash=#{hash}
+        </trim>
+    </insert>
+
+    <select id="getHashCount" resultType="int">
+        select COUNT(*) from qhse_problem where `Hash`=#{hash}
+    </select>
+
+    <sql id = "qhse_problem_key">
+        Problem_ID as problemID,
+        recordCode,
+        checkClassCode,
+        checkClass,
+        checkPersonID,
+        checkPersonName,
+        companyCode,
+        companyName,
+        checkItemCode,
+        checkItemName,
+        professionCode,
+        profession,
+        address,
+        operatePersonID,
+        operatePersonName,
+        operatePersonClassCode,
+        operatePersonClass,
+        checkDate,
+        responsePersonID,
+        responsePersonName,
+        if(isConformRuleCode='',isConformRuleCode,concat(#{url},isConformRuleCode)) as isConformRuleCode,
+        isConformRuleName,
+        isConformRuleRankCode,
+        isConformRuleRank,
+        breakRuleRankCode,
+        breakRuleRank,
+        breakRuleItemCode,
+        breakRuleItem,
+        penalty,
+        lostScore,
+        isConformRuleClassCode,
+        isConformRuleClass,
+        isConformDescription,
+        problemKeyCode,
+        problemKey,
+        if(checkAttach1='',checkAttach1,concat(#{url},checkAttach1)) as checkAttach1,
+        if(checkAttach2='',checkAttach2,concat(#{url},checkAttach2)) as checkAttach2,
+        if(checkAttach3='',checkAttach3,concat(#{url},checkAttach3)) as checkAttach3,
+        if(checkAttach4='',checkAttach4,concat(#{url},checkAttach4)) as checkAttach4,
+        problemLevelCode,
+        problemLevel,
+        responseDepartmentCode,
+        responseDepartment,
+        limtRectDate,
+        remarks
+    </sql>
+
+    <select id="getProblemImportDtoByContiton" resultType="com.wlhse.dto.outDto.QHSEProblemImportDto">
+        select
+        <include refid="qhse_problem_key"/>
+        from qhse_problem
+        <where>
+            <if test="checkClassCode != null">
+                AND CheckClassCode =#{checkClassCode}
+            </if>
+            <if test="checkPersonID != null">
+                AND CheckPersonID =#{checkPersonID}
+            </if>
+            <if test="companyCode!=null and companyCode != ''">
+                AND substring(companyCode,1,length(#{companyCode}))=#{companyCode}
+            </if>
+            <if test="checkDate1 != null and checkDate1 != '' ">
+                AND CheckDate between #{checkDate1} and #{checkDate2}
+            </if>
+        </where>
+        order by CheckDate desc
+    </select>
+
+    <select id="getProblemImportDtoCount" parameterType="com.wlhse.dto.outDto.QHSEProblemImportDto" resultType="int">
+        select count(*)
+        from qhse_problem
+        <where>
+            <if test="checkClassCode != null">
+                AND CheckClassCode =#{checkClassCode}
+            </if>
+            <if test="checkPersonID != null">
+                AND CheckPersonID =#{checkPersonID}
+            </if>
+            <if test="companyCode!=null and companyCode != ''">
+                AND substring(companyCode,1,length(#{companyCode}))=#{companyCode}
+            </if>
+            <if test="checkDate1 != null and checkDate1 != '' ">
+                AND CheckDate between #{checkDate1} and #{checkDate2}
+            </if>
+        </where>
+    </select>
+
+    <select id="getProblemImportDtoById" resultType="com.wlhse.dto.outDto.QHSEProblemImportDto">
+        select
+        <include refid="qhse_problem_key"/>
+        from qhse_problem
+        <where>
+            Problem_ID=#{problemID}
+        </where>
+    </select>
+
+    <update id="updateProblemImportDto" parameterType="com.wlhse.dto.outDto.QHSEProblemImportDto">
+        update qhse_problem
+        <set>
+            <if test="recordCode != null and recordCode != ''">
+                RecordCode=#{recordCode},
+            </if>
+            <if test="checkClassCode != null and checkClassCode != ''">
+                CheckClassCode=#{checkClassCode},
+                CheckClass=(select `Name` from datadict where DictCode=#{checkClassCode}),
+            </if>
+            <if test="checkPersonID != null and checkPersonID != ''">
+                CheckPersonID=#{checkPersonID},
+                CheckPersonName=(select `Name` from employee where EmployeeID=#{checkPersonID}),
+            </if>
+            <if test="companyCode != null and companyCode != ''">
+                CompanyCode=#{companyCode},
+                CompanyName=(select `Name` from sys_company where CompanyCode=#{companyCode}),
+            </if>
+            <if test="checkItemCode != null and checkItemCode != ''">
+                CheckItemCode=#{checkItemCode},
+                CheckItemName=(select `Name` from datadict where DictCode=#{checkItemCode}),
+            </if>
+            <if test="professionCode != null and professionCode != ''">
+                ProfessionCode=#{professionCode},
+                Profession=(select `Name` from datadict where DictCode=#{professionCode}),
+            </if>
+            <if test="address != null and address != ''">
+                Address=#{address},
+            </if>
+            <if test="operatePersonID != null and operatePersonID != ''">
+                OperatePersonID=#{operatePersonID},
+                OperatePersonName=(select `Name` from employee where EmployeeID=#{operatePersonID}),
+            </if>
+            <if test="operatePersonClassCode != null and operatePersonClassCode != ''">
+                OperatePersonClassCode=#{operatePersonClassCode},
+                OperatePersonClass=(select `Name` from datadict where DictCode=#{operatePersonClassCode}),
+            </if>
+            <if test="checkDate != null and checkDate != ''">
+                CheckDate=#{checkDate},
+            </if>
+            <if test="responsePersonID != null and responsePersonID != ''">
+                ResponsePersonID=#{responsePersonID},
+                ResponsePersonName=(select `Name` from employee where EmployeeID=#{responsePersonID}),
+            </if>
+            <if test="isConformRuleCode != null and isConformRuleCode != ''">
+                IsConformRuleCode=#{isConformRuleCode},
+                IsConformRuleName=(select `RegName` from regulation where RegNameCode=#{isConformRuleCode}),
+            </if>
+            <if test="isConformRuleRankCode != null and isConformRuleRankCode != ''">
+                IsConformRuleRankCode=#{isConformRuleRankCode},
+                IsConformRuleRank=(select `Name` from datadict where DictCode=#{isConformRuleRankCode}),
+            </if>
+            <if test="breakRuleRankCode != null and breakRuleRankCode != ''">
+                BreakRuleRankCode=#{breakRuleRankCode},
+                BreakRuleRank=(select `Name` from datadict where DictCode=#{breakRuleRankCode}),
+            </if>
+            <if test="breakRuleItemCode != null and breakRuleItemCode != ''">
+                BreakRuleItemCode=#{breakRuleItemCode},
+                BreakRuleItem=(select `Name` from datadict where DictCode=#{breakRuleItemCode}),
+            </if>
+            <if test="penalty != null and penalty != ''">
+                Penalty=#{penalty},
+            </if>
+            <if test="lostScore != null and lostScore != ''">
+                LostScore=#{lostScore},
+            </if>
+            <if test="isConformRuleClassCode != null and isConformRuleClassCode != ''">
+                IsConformRuleClassCode=#{isConformRuleClassCode},
+                IsConformRuleClass=(select `Name` from datadict where DictCode=#{isConformRuleClassCode}),
+            </if>
+            <if test="isConformDescription != null and isConformDescription != ''">
+                IsConformDescription=#{isConformDescription},
+            </if>
+            <if test="problemKeyCode != null and problemKeyCode != ''">
+                ProblemKeyCode=#{problemKeyCode},
+                ProblemKey=(select `Name` from datadict where DictCode=#{problemKeyCode}),
+            </if>
+            <if test="checkAttach1 != null and checkAttach1 != ''">
+                checkAttach1=#{checkAttach1},
+            </if>
+            <if test="checkAttach2 != null and checkAttach2 != ''">
+                checkAttach2=#{checkAttach2},
+            </if>
+            <if test="checkAttach3 != null and checkAttach3 != ''">
+                checkAttach3=#{checkAttach3},
+            </if>
+            <if test="checkAttach4 != null and checkAttach4 != ''">
+                checkAttach4=#{checkAttach4},
+            </if>
+            <if test="problemLevelCode != null and problemLevelCode != ''">
+                ProblemLevelCode=#{problemLevelCode},
+            </if>
+            <if test="problemLevel != null and problemLevel != ''">
+                ProblemLevel=#{problemLevel},
+            </if>
+            <if test="responseDepartmentCode != null and responseDepartmentCode != ''">
+                ResponseDepartmentCode=#{responseDepartmentCode},
+                ResponseDepartment=(select `Name` from sys_company where CompanyCode=#{responseDepartmentCode}),
+            </if>
+            <if test="limtRectDate != null and limtRectDate != ''">
+                LimtRectDate=#{limtRectDate},
+            </if>
+            <if test="remarks != null and remarks != ''">
+                Remarks=#{remarks}
+            </if>
+        </set>
+        <where>
+            Problem_ID = #{problemID}
+        </where>
+    </update>
+
+    <delete id="deleteProblem">
+        delete from qhse_problem where Problem_ID=#{id}
+    </delete>
+</mapper>

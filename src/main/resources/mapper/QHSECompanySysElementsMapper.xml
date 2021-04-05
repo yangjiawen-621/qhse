@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.QHSECompanySysElementsDao">
+    <sql id="querryQHSEItem">
+        ID,Code,Name,Content,RecordFile,RecordManagement,Basis,AuditMode,InitialScore,Formula,ProblemDescription,ActualScore,
+        ExistProblems,TotalCount,CompletedCount,Rank,concat(#{photoesurl},PictureFile) PictureFile,concat(#{videosurl},VideoFile) VideoFile
+    </sql>
+
+    <insert id="addQHSEReport" parameterType="com.wlhse.dto.QHSEQualityFillDto">
+        insert into qhse_companysyselements(CompanyCode,CompanyName,Year,Code,Name,
+        Content,RecordFile,Basis,AuditMode,InitialScore,Formula,ProblemDescription,ActualScore,CompletedCount,TotalCount)
+        select #{companyCode} CompanyCode,(select Name from sys_company where CompanyCode=#{companyCode})
+        CompanyName,#{year} Year,Code,Name,Content,RecordFile,Basis,AuditMode,InitialScore,
+        Formula,ProblemDescription,0 ActualScore,0 CompletedCount,TotalCount from qhse_managesyselements where Status='启用'
+    </insert>
+    <select id="querryReport" parameterType="com.wlhse.dto.QHSEQualityFillDto" resultType="java.lang.Integer">
+        select count(*) from qhse_companysyselements
+        <trim prefix="where" prefixOverrides="and">
+            <if test="companyCode!=null and companyCode!=''">
+                and CompanyCode=#{companyCode}
+            </if>
+            <if test="year!=null and year!=''">
+                and Year=#{year}
+            </if>
+        </trim>
+    </select>
+
+    <select id="querryQHSEReportElements" parameterType="com.wlhse.dto.QHSEQualityFillDto" resultType="com.wlhse.entity.QHSECompanySysElementsPojo">
+        select <include refid="querryQHSEItem"></include> from qhse_companysyselements
+        <trim prefix="where" prefixOverrides="and">
+<!--            <choose>-->
+<!--                <when test="code!=null and code!=''">-->
+<!--                    and SUBSTRING(Code,1,length(#{code}))=#{code}-->
+<!--                    and length(#{code})+2=length(Code)-->
+<!--                </when>-->
+<!--                <otherwise>-->
+<!--                    and length(Code)=2-->
+<!--                </otherwise>-->
+<!--            </choose>-->
+            <if test="companyCode!=null and companyCode!=''">
+                and CompanyCode=#{companyCode}
+            </if>
+            <if test="year!=null and year!=''">
+                and Year=#{year}
+            </if>
+        </trim>
+    </select>
+
+    <select id="querryActualScoreByID" parameterType="java.lang.Integer" resultType="com.wlhse.entity.QHSECompanySysElementsPojo">
+        select ActualScore,CompletedCount,Year,CompanyCode,Code from qhse_companysyselements where ID = #{id}
+    </select>
+
+    <update id="updateQHSEReportElements" parameterType="com.wlhse.dto.QHSEQualityFillDto">
+        update qhse_companysyselements
+        <trim prefix="set" suffixOverrides=",">
+            <if test="actualScore != null and actualScore != ''">
+                ActualScore = #{actualScore},
+            </if>
+            <if test="rank != null and rank != ''">
+                Rank = #{rank},
+            </if>
+            <if test="existProblems != null and existProblems != ''">
+                ExistProblems = #{existProblems},
+            </if>
+            <if test="pictureFile != null and pictureFile != ''">
+                PictureFile = #{pictureFile},
+            </if>
+            <if test="videoFile != null and videoFile != ''">
+                VideoFile = #{videoFile},
+            </if>
+        </trim>
+        ,CompletedCount = 1
+        where ID = #{id}
+    </update>
+
+<!--    <select id="querryParentNode" parameterType="com.wlhse.dto.QHSEQualityFillDto" resultType="java.lang.String">-->
+<!--        SELECT Code from qhse_companysyselements-->
+<!--        <trim prefix="where" prefixOverrides="and">-->
+<!--            <if test="parentNodeCode!=null and parentNodeCode!=''">-->
+<!--                <foreach collection="list" open="and (" item="parentCode" separator="or" close=")">-->
+<!--                    SUBSTR(#{parentCode},1,LENGTH(#{parentCode})-2)=Code-->
+<!--                </foreach>-->
+<!--            </if>-->
+<!--            <if test="year!=null and year!=''">-->
+<!--                and Year=#{year}-->
+<!--            </if>-->
+<!--            <if test="companyCode!=null and companyCode!=''">-->
+<!--                and CompanyCode=#{companyCode}-->
+<!--            </if>-->
+<!--        </trim>-->
+<!--    </select>-->
+
+    <update id="updateParentNodes" parameterType="com.wlhse.dto.QHSEQualityFillDto">
+        update qhse_companysyselements
+        <trim prefix="set" prefixOverrides=",">
+            <if test="diertaScore!=null">
+                ,ActualScore=ActualScore+#{diertaScore}
+            </if>
+            <if test="flag!=false">
+                ,CompletedCount=CompletedCount+1
+            </if>
+        </trim>
+        <trim prefix="where" prefixOverrides="and">
+            <if test="parentNodeCode!=null and parentNodeCode.size>0">
+                <foreach collection="parentNodeCode" open="and (" item="parentCode" separator="or" close=")">
+                    Code=#{parentCode}
+                </foreach>
+            </if>
+            <if test="year!=null and year!=''">
+                and Year=#{year}
+            </if>
+            <if test="companyCode!=null and companyCode!=''">
+                and CompanyCode=#{companyCode}
+            </if>
+        </trim>
+    </update>
+</mapper>

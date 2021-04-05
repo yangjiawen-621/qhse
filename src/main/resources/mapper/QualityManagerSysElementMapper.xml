@@ -1,0 +1,718 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wlhse.dao.QualityManagerSysElementDao">
+
+
+    <select id="querryLastQHSEChildCode" resultType="java.lang.String">
+        select Code from quality_managersyselement where Code like concat(#{code},"__") order by Code desc limit 1
+    </select>
+
+
+    <select id="querryQHSEReportElements1" resultType="com.wlhse.entity.QHSECompanySysElementsPojo">
+        select * from quality_managersyselement
+    </select>
+
+    <select id="querryStatus" resultType="java.lang.String" parameterType="java.lang.String">
+        select Status from quality_managersyselement where Code = #{code}
+    </select>
+    <select id="querryScore" resultType="java.lang.Integer" parameterType="java.lang.String">
+        select InitialScore from quality_managersyselement where Code = #{code}
+    </select>
+
+    <update id="addTotalCount" >
+        update quality_managersyselement set TotalCount=TotalCount+#{count} where Code = #{code}
+    </update>
+    <update id="addInitialScore">
+        update quality_managersyselement set InitialScore=InitialScore+#{score} where Code = #{code}
+    </update>
+
+    <update id="setOff">
+        update quality_managersyselement set Status=#{status} where Code like concat(#{code},'%')
+    </update>
+    <update id="setOn">
+        update quality_managersyselement set Status=#{status} where Code=#{code}
+    </update>
+    <select id="getScore" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select InitialScore from quality_managersyselement where Code = #{code}
+    </select>
+    <update id="subSoreCount">
+        update quality_managersyselement set InitialScore=InitialScore-#{score} where code = #{code};
+        update quality_managersyselement set TotalCount=TotalCount-1 where Code=#{code};
+    </update>
+    <select id="sumScore" resultType="java.lang.Integer">
+        select  IFNULL(sum(InitialScore),0) from quality_managersyselement where Code like concat(#{code},'%') and length(Code)=#{max_len}
+    </select>
+    <select id="sumCount" resultType="java.lang.Integer">
+        select count(*) from quality_managersyselement where Code like concat(#{code},'%') and length(Code)=#{max_len}
+    </select>
+
+    <update id="updateScoreCount">
+        update quality_managersyselement set InitialScore=InitialScore-#{score},TotalCount=TotalCount-#{count} where Code =#{code}
+    </update>
+    <update id="toZero">
+        update quality_managersyselement set InitialScore=0,TotalCount=0 where Code like concat(#{code},'%') and length(Code)&lt;#{max_len}
+    </update>
+    <update id="addScoreCount">
+        update quality_managersyselement set InitialScore=InitialScore+#{score},TotalCount=TotalCount+1 where Code=#{code}
+    </update>
+
+    <select id="queryQhseElements" resultType="com.wlhse.entity.QualityElementsPojo">
+        select Quality_ManagerSysElement_ID as qhseManagerSysElementID,
+        Code,
+        Name,
+        Content,
+        AuditMode,
+        InitialScore,
+        Formula,
+        TotalCount,
+        Status,
+        ScoreShows
+        from quality_managersyselement
+        where Status='启用'
+    </select>
+
+    <select id="queryQhseYearElements" parameterType="com.wlhse.dto.inDto.YearElementsDto" resultType="com.wlhse.dto.inDto.YearElementsDto">
+        select t1.QHSE_CompanyYearManagerSysElement_ID as qhseCompanyYearManagerSysElementID,
+        t1.QHSE_CompanyYearManagerSysElementTable_ID as qhseCompanyYearManagerSysElementTableID,
+        t1.Code,
+        t1.Name,
+        t1.Content,
+        t1.AuditMode,
+        t1.InitialScore,
+        t1.Formula,
+        t1.TotalCount,
+        t1.Status,
+        t1.CompanyCode as companyCode,
+        t1.CompanyName as companyName,
+        t1.Year as `year`,
+        t1.fileCheckStatus as fileCheckStatus
+        from QHSE_CompanyYearManagerSysElement as t1
+        <where>
+            <if test="companyCode !=null and companyCode!=''">
+                AND t1.CompanyCode=#{companyCode}
+            </if>
+            <if test="year !=null and year!=''">
+                AND t1.Year=#{year}
+            </if>
+            AND t1.ConfigStatus="启用"
+        </where>
+    </select>
+
+    <select id="queryQhseAllElements" resultType="com.wlhse.entity.QualityElementsPojo">
+        select Quality_ManagerSysElement_ID as qhseManagerSysElementID,
+        Code,
+        Name,
+        Content,
+        AuditMode,
+        InitialScore,
+        Formula,
+        TotalCount,
+        Status,
+        scoreShows
+        from quality_managersyselement
+    </select>
+
+    <select id="queryQhseChildElements" resultType="com.wlhse.entity.QualityElementsPojo">
+        select Quality_ManagerSysElement_ID as qhseManagerSysElementID,
+        Code,
+        Name,
+        Content,
+        AuditMode,
+        InitialScore,
+        Formula,
+        TotalCount,
+        Status,
+        scoreShows
+        from quality_managersyselement
+        where Status='启用'
+        and length (code) &lt;= '6'
+    </select>
+
+    <update id="updateElement" parameterType="com.wlhse.entity.QualityElementsPojo">
+        update quality_managersyselement
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null and name!=''">
+                Name=#{name},
+            </if>
+            <if test="content!=null and content!=''">
+                Content=#{content},
+            </if>
+            <if test="auditMode!=null and auditMode!=''">
+                AuditMode=#{auditMode},
+            </if>
+            <if test="initialScore!=null and initialScore!=''">
+                InitialScore=#{initialScore},
+            </if>
+            <if test="formula!=null and formula!=''">
+                Formula=#{formula},
+            </if>
+            <if test="scoreShows != null and scoreShows != ''">
+                ScoreShows#{scoreShows}
+            </if>
+        </trim>
+        where Code=#{code}
+    </update>
+
+    <select id="querryLastQHSEChildCode2" resultType="java.lang.String">
+        select Code from quality_managersyselement where Code like concat(#{code},"___") order by Code desc limit 1
+    </select>
+
+    <insert id="addQHSEElement" parameterType="com.wlhse.entity.QualityElementsPojo">
+        insert into quality_managersyselement
+        (
+        <trim suffixOverrides=",">
+            <if test="code != null and code != ''">
+                Code,
+            </if>
+            <if test="name != null and name != ''">
+                Name,
+            </if>
+            <if test="content != null and content != ''">
+                Content,
+            </if>
+            <if test="auditMode != null and auditMode != ''">
+                AuditMode,
+            </if>
+            InitialScore,
+            <if test="formula != null and formula != ''">
+                Formula,
+            </if>
+            TotalCount,
+            <if test="status != null and status != ''">
+                Status,
+            </if>
+            <if test="scoreShows != null and scoreShows != ''">
+                ScoreShows
+            </if>
+        </trim>
+        )
+        values
+        (
+        <trim suffixOverrides=",">
+            <if test="code != null and code != ''">
+                #{code},
+            </if>
+            <if test="name != null and name != ''">
+                #{name},
+            </if>
+            <if test="content != null and content != ''">
+                #{content},
+            </if>
+            <if test="auditMode != null and auditMode != ''">
+                #{auditMode},
+            </if>
+            #{initialScore},
+            <if test="formula != null and formula != ''">
+                #{formula},
+            </if>
+            #{totalCount},
+            <if test="status != null and status != ''">
+                #{status},
+            </if>
+            <if test="scoreShows != null and scoreShows != ''">
+                #{scoreShows}
+            </if>
+        </trim>
+        )
+    </insert>
+
+    <insert id="addExcelQHSEElement" parameterType="com.wlhse.dto.inDto.QualityManagerSysElementInDto">
+        insert into quality_managersyselement
+        (
+        <trim suffixOverrides=",">
+            <if test="code != null and code != ''">
+                Code,
+            </if>
+            <if test="name != null and name != ''">
+                Name,
+            </if>
+            <if test="content != null and content != ''">
+                Content,
+            </if>
+            <if test="auditMode != null and auditMode != ''">
+                AuditMode,
+            </if>
+            InitialScore,
+            <if test="formula != null and formula != ''">
+                Formula,
+            </if>
+            TotalCount,
+            <if test="status != null and status != ''">
+                Status,
+            </if>
+            <if test="scoreShows != null and scoreShows != ''">
+                ScoreShows
+            </if>
+        </trim>
+        )
+        values
+        (
+        <trim suffixOverrides=",">
+            <if test="code != null and code != ''">
+                #{code},
+            </if>
+            <if test="name != null and name != ''">
+                #{name},
+            </if>
+            <if test="content != null and content != ''">
+                #{content},
+            </if>
+            <if test="auditMode != null and auditMode != ''">
+                #{auditMode},
+            </if>
+            #{initialScore},
+            <if test="formula != null and formula != ''">
+                #{formula},
+            </if>
+            #{totalCount},
+            <if test="status != null and status != ''">
+                #{status},
+            </if>
+            <if test="scoreShows != null and scoreShows != ''">
+                #{scoreShows}
+            </if>
+        </trim>
+        )
+    </insert>
+
+    <insert id="addExcelQHSEElemenForInerPople" parameterType="com.wlhse.dto.outDto.QualityManagerSysElementOutDto">
+        insert into quality_managersyselement
+        (
+        <trim suffixOverrides=",">
+            <if test="code != null and code != ''">
+                Code,
+            </if>
+            <if test="name != null and name != ''">
+                Name,
+            </if>
+            <if test="content != null and content != ''">
+                Content,
+            </if>
+            <if test="auditMode != null and auditMode != ''">
+                AuditMode,
+            </if>
+            InitialScore,
+            <if test="formula != null and formula != ''">
+                Formula,
+            </if>
+            TotalCount,
+            <if test="status != null and status != ''">
+                Status,
+            </if>
+            <if test="scoreShows != null and scoreShows != ''">
+                ScoreShows
+            </if>
+        </trim>
+        )
+        values
+        (
+        <trim suffixOverrides=",">
+            <if test="code != null and code != ''">
+                #{code},
+            </if>
+            <if test="name != null and name != ''">
+                #{name},
+            </if>
+            <if test="content != null and content != ''">
+                #{content},
+            </if>
+            <if test="auditMode != null and auditMode != ''">
+                #{auditMode},
+            </if>
+            #{initialScore},
+            <if test="formula != null and formula != ''">
+                #{formula},
+            </if>
+            #{totalCount},
+            <if test="status != null and status != ''">
+                #{status},
+            </if>
+            <if test="scoreShows != null and scoreShows != ''">
+                #{scoreShows}
+            </if>
+        </trim>
+        )
+    </insert>
+
+    <update id="updateExcelElement" parameterType="com.wlhse.dto.inDto.QualityManagerSysElementInDto">
+        update quality_managersyselement
+        set Name=#{name},Content=#{content},AuditMode=#{auditMode},InitialScore=#{initialScore},
+        TotalCount=#{totalCount},Formula=#{formula},Status=#{status},ScoreShows=#{scoreShows}
+        where Code=#{code}
+    </update>
+
+
+    <select id="queryElementsByCode" resultType="com.wlhse.dto.inDto.QualityYearElementsDto">
+        select
+        Code as code,
+        name as name,
+        Content as content,
+        auditMode as auditMode,
+        initialScore as initialScore,
+        formula as formula,
+        totalCount as totalCount
+        from Quality_ManagerSysElement
+        where code like concat(#{c},'%')
+        and status='启用'
+    </select>
+
+    <select id="findMaxLen" resultType="integer">
+        select Max(LENGTH(code)) FROM Quality_ManagerSysElement
+    </select>
+
+    <select id="queryByTableID" resultType="com.wlhse.dto.inDto.YearElementsDto">
+        select
+        QHSE_CompanyYearManagerSysElement_ID as qhseCompanyYearManagerSysElementID,
+        QHSE_CompanyYearManagerSysElementTable_ID as qhseCompanyYearManagerSysElementTableID,
+        code as code,
+        name as name
+        from QHSE_CompanyYearManagerSysElement
+        where QHSE_CompanyYearManagerSysElementTable_ID=#{id}
+    </select>
+
+    <delete id="deleteByTableID">
+        delete from QHSE_CompanyYearManagerSysElement
+        where QHSE_CompanyYearManagerSysElementTable_ID=#{id}
+    </delete>
+
+    <insert id="addYearElement" parameterType="com.wlhse.dto.inDto.QualityYearElementsDto">
+        insert into Quality_CompanyYearManagerSysElement
+        (
+        <trim suffixOverrides=",">
+            Quality_CompanyYearManagerSysElementTable_ID,
+            <if test="code != null and code != ''">
+                Code,
+            </if>
+            <if test="name != null and name != ''">
+                `name`,
+            </if>
+            <if test="content != null and content != ''">
+                content,
+            </if>
+            <if test="auditMode != null and auditMode != ''">
+                auditMode,
+            </if>
+            initialScore,
+            <if test="formula != null and formula != ''">
+                formula,
+            </if>
+            totalCount,
+            <if test="status != null and status != ''">
+                status,
+            </if>
+            <if test="companyCode != null and companyCode != ''">
+                companyCode,
+            </if>
+            <if test="companyName != null and companyName != ''">
+                companyName,
+            </if>
+            <if test="year != null and year != ''">
+                year,
+            </if>
+            <if test="fileCheckStatus != null and fileCheckStatus != ''">
+                fileCheckStatus,
+            </if>
+            <if test="configStatus != null and configStatus != ''">
+                configStatus,
+            </if>
+        </trim>
+        )
+        values
+        (
+        <trim suffixOverrides=",">
+            #{qualityCompanyYearManagerSysElementTableID},
+            <if test="code != null and code != ''">
+                #{code},
+            </if>
+            <if test="name != null and name != ''">
+                #{name},
+            </if>
+            <if test="content != null and content != ''">
+                #{content},
+            </if>
+            <if test="auditMode != null and auditMode != ''">
+                #{auditMode},
+            </if>
+            #{initialScore},
+            <if test="formula != null and formula != ''">
+                #{formula},
+            </if>
+            #{totalCount},
+            <if test="status != null and status != ''">
+                #{status},
+            </if>
+            <if test="companyCode != null and companyCode != ''">
+                #{companyCode},
+            </if>
+            <if test="companyName != null and companyName != ''">
+                #{companyName},
+            </if>
+            <if test="year != null and year != ''">
+                #{year},
+            </if>
+            <if test="fileCheckStatus != null and fileCheckStatus != ''">
+                #{fileCheckStatus},
+            </if>
+            <if test="configStatus != null and configStatus != ''">
+                #{configStatus},
+            </if>
+        </trim>
+        )
+    </insert>
+
+    <!--<insert id="addYearElement" parameterType="com.wlhse.dto.inDto.YearElementsDto">-->
+        <!--insert into QHSE_CompanyYearManagerSysElement(QHSE_CompanyYearManagerSysElementTable_ID,Code,-->
+        <!--name,content,basis,auditMode,initialScore,formula,problemDescription,totalCount,status,-->
+        <!--companyCode,companyName,year,)-->
+        <!--values(#{code},#{name},#{content},#{basis},#{auditMode},#{initialScore},#{formula},#{problemDescription},#{totalCount},#{status},#{companyCode},-->
+        <!--#{companyName},#{year})-->
+    <!--</insert>-->
+
+    <delete id="deleteAllDescription">
+        delete from quality_managersyselementproblemdescription
+    </delete>
+
+
+    <insert id="addProblemDescription" >
+        insert into quality_managersyselementproblemdescription
+        (
+        <trim suffixOverrides=",">
+            <if test="code != null and code != ''">
+                Code,
+            </if>
+
+            <if test="description != null and description != ''">
+                Description,
+            </if>
+        </trim>
+        )
+        values
+        (
+        <trim suffixOverrides=",">
+            <if test="code != null and code != ''">
+                #{code},
+            </if>
+            <if test="description != null and description != ''">
+                #{description},
+            </if>
+        </trim>
+        )
+    </insert>
+
+    <select id="querryDescriptionBycode" resultType="com.wlhse.dto.QualityManagerSysElementProDesDto">
+        select Quality_ManagerSysElementProblemDescription_ID as qHSE_ManagerSysElementProblemDescription_ID,
+        Code,Description from quality_managersyselementproblemdescription where Code=#{code}
+    </select>
+
+    <select id="queryAllDescription" resultType="com.wlhse.dto.QualityManagerSysElementProDesDto">
+        select Quality_ManagerSysElementProblemDescription_ID as qHSE_ManagerSysElementProblemDescription_ID,
+        Code,
+        Description from quality_managersyselementproblemdescription order by Code
+    </select>
+
+    <delete id="deleteDescriptionById">
+        delete from quality_managersyselementproblemdescription
+        where Quality_ManagerSysElementProblemDescription_ID=#{id}
+    </delete>
+
+    <update id="updateDescriptionById" parameterType="com.wlhse.dto.QualityManagerSysElementProDesDto">
+        update quality_managersyselementproblemdescription
+        set Description=#{description}
+        where Quality_ManagerSysElementProblemDescription_ID=#{qHSE_ManagerSysElementProblemDescription_ID}
+    </update>
+
+    <select id="selectCodeAndConfigStatusByTableId" resultType="com.wlhse.dto.outDto.ElementAndConfigStatusDto">
+        select Code as elementCode,
+        ConfigStatus as configStatus
+        from quality_companyyearmanagersyselement
+        where Quality_CompanyYearManagerSysElementTable_ID=#{tableId}
+    </select>
+
+    <select id="queryElementByCode" resultType="com.wlhse.dto.inDto.YearElementsDto">
+        select
+        Code as code,
+        name as name,
+        Content as content,
+        auditMode as auditMode,
+        initialScore as initialScore,
+        formula as formula,
+        totalCount as totalCount
+        from quality_managersyselement
+        where code=#{code}
+        and status='启用'
+    </select>
+
+    <update id="updateConfigStatus">
+        update  quality_companyyearmanagersyselement
+        set ConfigStatus=#{2}
+        where Quality_CompanyYearManagerSysElementTable_ID=#{1}
+        and Code=#{0}
+    </update>
+
+    <select id="getElementById" resultType="com.wlhse.entity.QualityElementsPojo">
+        select * from quality_managersyselement
+        where Quality_ManagerSysElement_ID=#{id}
+    </select>
+
+    <select id="getElementByCode" resultType="com.wlhse.entity.QualityElementsPojo">
+        select * from quality_managersyselement
+        where Code=#{code}
+    </select>
+
+
+    <select id="queryAllCode" resultType="java.lang.String">
+        select Code from quality_managersyselement
+    </select>
+
+    <select id="getCheckedElementNumber" resultType="Integer">
+        select count (*)
+        from qhse_companyyearmanagersyselement
+        where `Status` ='备案待查'
+        and QHSE_CompanyYearManagerSysElementTable_ID=#{0}
+    </select>
+
+    <select id="getAllLeafNodeNumber" resultType="Integer">
+        select count(*)
+        from qhse_companyyearmanagersyselement
+        where Status is not null
+        and QHSE_CompanyYearManagerSysElementTable_ID=#{0}
+        and ConfigStatus='启用'
+    </select>
+    <select id="querySchedule" resultType="java.lang.Integer" parameterType="java.lang.String">
+        select count(*) from qhse_companyyearmanagersyselement
+         <where>
+            <if test="code!=null and code !='' ">
+              AND  `Code` like CONCAT(#{code},"%")
+            </if>
+                and (status is not null or status!="")
+                and `year`=#{param3}
+                and companyCode=#{param2}
+         </where>
+    </select>
+    <select id="querySchdules" resultType="java.lang.Integer" parameterType="java.lang.String">
+         select count(*) from qhse_companyyearmanagersyselement
+         <where>
+             <if test="code!=null and code !='' ">
+                 AND  `Code` like CONCAT(#{code},"%")
+             </if>
+                 and `year`=#{param3}
+                 and companyCode=#{param2}
+                 and (status="未提供" or status="不通过")
+         </where>
+    </select>
+
+    <select id="queryYearElement" parameterType="com.wlhse.dto.inDto.YearElementsDto" resultType="com.wlhse.dto.inDto.YearElementsDto">
+        select t1.QHSE_CompanyYearManagerSysElement_ID as qhseCompanyYearManagerSysElementID,
+        t1.QHSE_CompanyYearManagerSysElementTable_ID as qhseCompanyYearManagerSysElementTableID,
+        t1.Code,
+        t1.Name,
+        t1.Content,
+        t1.AuditMode,
+        t1.InitialScore,
+        t1.Formula,
+        t1.TotalCount,
+        t1.Status,
+        t1.CompanyCode as companyCode,
+        t1.CompanyName as companyName,
+        t1.Year as `year`,
+        t1.fileCheckStatus as fileCheckStatus
+        from QHSE_CompanyYearManagerSysElement as t1
+        join QHSE_CompanyYearManagerSysElementTable as t2
+        on  t1.QHSE_CompanyYearManagerSysElementTable_ID=t2.QHSE_CompanyYearManagerSysElementTable_ID
+        <where>
+            <if test="companyCode !=null and companyCode!=''">
+                AND t1.CompanyCode=#{companyCode}
+            </if>
+            <if test="year !=null and year!=''">
+                AND t1.Year=#{year}
+            </if>
+            AND t1.ConfigStatus="启用"
+        </where>
+    </select>
+
+    <delete id="deleteReviewTerms">
+        delete from quality_managersyselereviewterms
+    </delete>
+
+
+    <insert id="addReviewTerms" >
+        insert into quality_managersyselereviewterms
+        (
+        <trim suffixOverrides=",">
+            <if test="code != null and code != ''">
+                Code,
+            </if>
+            <if test="basis != null and basis != ''">
+                Basis,
+            </if>
+            <if test="terms != null and terms != ''">
+                Terms,
+            </if>
+            <if test="content != null and content != ''">
+                Content
+            </if>
+        </trim>
+        )
+        values
+        (
+        <trim suffixOverrides=",">
+            <if test="code != null and code != ''">
+                #{code},
+            </if>
+            <if test="basis != null and basis != ''">
+                #{basis},
+            </if>
+            <if test="terms != null and terms != ''">
+                #{terms},
+            </if>
+            <if test="content != null and content != ''">
+                #{content}
+            </if>
+        </trim>
+        )
+    </insert>
+
+    <select id="queryReviewTermsByCode" resultType="com.wlhse.dto.QualityManagerSysEleReviewTermsDto">
+        select Quality_ManagerSysEleReviewTerms_ID as quality_ManagerSysEleReviewTerms_ID,
+        Code as code,
+        Basis as basis,
+        Terms as terms,
+        Content as content
+        from quality_managersyselereviewterms  where Code=#{code}
+    </select>
+
+    <select id="queryAllReviewTerms" resultType="com.wlhse.dto.QualityManagerSysEleReviewTermsDto">
+        select Quality_ManagerSysEleReviewTerms_ID as quality_ManagerSysEleReviewTerms_ID,
+        Code as code,
+        Basis as basis,
+        Terms as terms,
+        Content as content
+        from quality_managersyselereviewterms order by Code
+    </select>
+
+    <delete id="deleteReviewTermsById">
+        delete from quality_managersyselereviewterms
+        where Quality_ManagerSysEleReviewTerms_ID=#{id}
+    </delete>
+
+    <update id="updateReviewTermsById" parameterType="com.wlhse.dto.QualityManagerSysEleReviewTermsDto">
+        update quality_managersyselereviewterms
+        set Basis=#{basis},Terms=#{terms},Content=#{content}
+        where Quality_ManagerSysEleReviewTerms_ID=#{quality_ManagerSysEleReviewTerms_ID}
+    </update>
+    <insert id="batchInsertRecord">
+        insert into quality_managersyselereviewterms
+        (Code,Basis,Terms,Content)
+        values
+        <foreach collection="list" item="detail" separator=",">
+            (
+            #{detail.code},#{detail.basis},#{detail.terms},
+            #{detail.content}
+            )
+        </foreach>
+    </insert>
+
+
+</mapper>
+

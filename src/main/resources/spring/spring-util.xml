@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+    <context:component-scan base-package="com.wlhse.util.**"/>
+    <context:component-scan base-package="com.wlhse.dto.getDto"/>
+    <context:component-scan base-package="com.wlhse.dto.outDto"/>
+    <context:component-scan base-package="com.wlhse.entity"/>
+    <context:component-scan base-package="com.wlhse.dto"/>
+    <context:component-scan base-package="com.wlhse.cache"/>
+    <context:component-scan base-package="com.wlhse.listener"/>
+    <context:component-scan base-package="com.wlhse.websocket"/>
+    <!-- 此处注册package -->
+
+
+    <!-- 引入配置文件 -->
+    <bean id="configProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list>
+                <value>classpath:datadict.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="configPropertyConfigurer"
+          class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">
+        <property name="order" value="2"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="properties" ref="configProperties"/>
+    </bean>
+
+    <!--配置全局变量-->
+    <bean id="properties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="singleton" value="true"/>
+        <property name="properties">
+            <props>
+                <prop key="RESOURCES_URL">${RESOURCES_URL}</prop>
+                <prop key="PASS_WORD_MIN_LENGTH">${PASS_WORD_MIN_LENGTH}</prop>
+                <prop key="PASS_WORD_MAX_LENGTH">${PASS_WORD_MAX_LENGTH}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <!-- 核心线程数 -->
+        <property name="corePoolSize" value="2"/>
+        <!-- 最大线程数 -->
+        <property name="maxPoolSize" value="5"/>
+        <!-- 队列最大长度 -->
+        <property name="queueCapacity" value="10"/>
+        <!-- 线程池维护线程所允许的空闲时间，默认为60s -->
+        <property name="keepAliveSeconds" value="200"/>
+    </bean>
+</beans>

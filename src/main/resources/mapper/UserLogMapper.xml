@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.UserLogDao">
+    <resultMap id="UserLogInDto" type="com.wlhse.entity.UserLogPojo">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="loginTime" column="login_time"/>
+    </resultMap>
+    <select id="getAllUserLogPojo" resultMap="UserLogInDto">
+        select * from user_log
+    </select>
+
+    <select id="getUserLogPojoCount" resultType="java.lang.Integer">
+        select count(*) from user_log
+        <where>
+            user_id=#{userId}
+            <if test="startDate != null and startDate != '' ">
+                AND login_time between #{startDate} and #{endDate}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteUserLogPojo" parameterType="int">
+        delete from user_log
+        where id=#{id}
+    </delete>
+
+    <insert id="insertUserLogPojo" parameterType="com.wlhse.entity.UserLogPojo">
+        insert into user_log (user_id, login_time)
+        VALUES( #{userId},#{loginTime})
+    </insert>
+
+    <select id="getAllUserLogPojoCount" resultType="int">
+        select count(*) from user_log
+    </select>
+</mapper>

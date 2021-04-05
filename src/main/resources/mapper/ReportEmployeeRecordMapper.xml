@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.ReportEmployeeRecordDao">
+<!--    <insert id="addRecord" parameterType="com.wlhse.dto.ReportEmployeeRecordDto">-->
+<!--        insert into report_employee_record (ReportCode,ReportType,CompanyCode,CompanyName,EmployeeRole,EmployeeID,-->
+<!--        EmployeeName,EmployeeCategory,SealDate) values-->
+<!--        ((select ReportCode from report where ReportID=#{reportId}),-->
+<!--        (select ReportType from report where ReportID=#{reportId}),(select CompanyCode from report where ReportID=#{reportId}),-->
+<!--        (select CompanyName from report where ReportID=#{reportId}),#{status},#{employeeId},-->
+<!--        (select Name from employee where EmployeeID=#{employeeId}),-->
+<!--        (select Category from employee where EmployeeID=#{employeeId}),#{sealDate})-->
+<!--    </insert>-->
+
+    <insert id="addRecords" parameterType="java.util.List">
+        insert into report_employee_record (ReportCode,ReportType,CompanyCode,CompanyName,EmployeeRole,EmployeeID,
+        EmployeeName,EmployeeCategory,SealDate) values
+        <foreach collection="list" item="item" separator=",">
+            ((select ReportCode from report where ReportID=#{item.reportId}),
+            (select ReportType from report where ReportID=#{item.reportId}),(select CompanyCode from report where ReportID=#{item.reportId}),
+            (select CompanyName from report where ReportID=#{item.reportId}),#{item.status},#{item.employeeId},
+            (select Name from employee where EmployeeID=#{item.employeeId}),
+            (select Category from employee where EmployeeID=#{item.employeeId}),#{item.sealDate})
+        </foreach>
+
+    </insert>
+
+    <delete id="delectRecords" parameterType="java.lang.String">
+        delete from report_employee_record where ReportCode=#{code}
+    </delete>
+
+    <insert id="excelAddRecords" parameterType="java.util.List">
+        insert into report_employee_record (ReportCode,ReportType,CompanyCode,CompanyName,EmployeeRole,EmployeeID,
+        EmployeeName,EmployeeCategory,SealDate) values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.reportCode},
+            (select ReportType from report where ReportCode=#{item.reportCode}),
+            (select CompanyCode from report where ReportCode=#{item.reportCode}),
+            (select CompanyName from report where ReportCode=#{item.reportCode}),#{item.status},#{item.employeeId},
+            (select Name from employee where EmployeeID=#{item.employeeId}),
+            (select Category from employee where EmployeeID=#{item.employeeId}),
+            (select SealDate from report where ReportCode=#{item.reportCode}))
+        </foreach>
+
+    </insert>
+</mapper>

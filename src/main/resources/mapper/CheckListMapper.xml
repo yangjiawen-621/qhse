@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlhse.dao.CheckListDao">
+
+    <insert id="addCheckList" parameterType="com.wlhse.dto.CheckListDto" useGeneratedKeys="true" keyProperty="checkListID">
+        insert into checklist
+        (
+        <trim suffixOverrides=",">
+            <if test="checkListName != null and checkListName != ''">
+                CheckListName,
+            </if>
+            <if test="checkListCode != null and checkListCode != ''">
+                checkListCode,
+            </if>
+            <if test="attribute != null and attribute != ''">
+                attribute,
+            </if>
+            <if test="parentName != null and parentName != ''">
+                parentName,
+            </if>
+            <if test="isChildNode != null and isChildNode != ''">
+                isChildNode,
+            </if>
+            <if test="status != null and status != ''">
+                status,
+            </if>
+        </trim>
+        )
+        values
+        (
+        <trim suffixOverrides=",">
+            <if test="checkListName != null and checkListName != ''">
+                #{checkListName},
+            </if>
+            <if test="checkListCode != null and checkListCode != ''">
+                #{checkListCode},
+            </if>
+            <if test="attribute != null and attribute != ''">
+                #{attribute},
+            </if>
+            <if test="parentName != null and parentName != ''">
+                #{parentName},
+            </if>
+            <if test="isChildNode != null and isChildNode != ''">
+                #{isChildNode},
+            </if>
+            <if test="status != null and status != ''">
+                #{status},
+            </if>
+        </trim>
+        )
+    </insert>
+
+    <select id="checkListIsExist" parameterType="com.wlhse.dto.CheckListDto" resultType="java.lang.String">
+        select CheckListID from checklist
+        <trim prefix="where" suffixOverrides="and">
+            <if test="checkListName != null and checkListName != ''">
+                CheckListName=#{checkListName} and
+            </if>
+            <if test="checkListCode != null and checkListCode != ''">
+                CheckListCode=#{checkListCode} and
+            </if>
+            <if test="attribute != null and attribute != ''">
+                Attribute=#{attribute} and
+            </if>
+            <if test="parentName != null and parentName != ''">
+                ParentName=#{parentName} and
+            </if>
+            <if test="isChildNode != null and isChildNode != ''">
+                IsChildNode=#{isChildNode} and
+            </if>
+            <if test="status != null and status != ''">
+                Status=#{status} ,
+            </if>
+        </trim>
+    </select>
+
+    <select id="getTreeDto" resultType="com.wlhse.dto.CheckListDto">
+        select * from CheckList
+        where status="启用"
+    </select>
+
+    <select id="getAllTreeDto" resultType="com.wlhse.dto.CheckListDto">
+        select * from CheckList
+    </select>
+
+    <select id="getMaxLen" resultType="int">
+        select MAX(LENGTH (checkListCode)) from CheckList
+    </select>
+
+    <select id="getCheckListOne" resultType="com.wlhse.dto.CheckListDto">
+        select * from CheckList
+        where CheckListCode=#{code}
+        and status="启用"
+    </select>
+
+    <select id="getCurrentChildNodes" resultType="string">
+        select CheckListCode from CheckList
+        where length(CheckListCode)=length(#{code})+4 and CheckListCode like concat(#{code},'%')
+    </select>
+
+    <update id="updateIsChild">
+        update CheckList
+        <set>
+            IsChildNode=#{status}
+        </set>
+        where CheckListCode=#{code}
+    </update>
+
+    <select id="getAllTableNode" resultType="string">
+        select CheckListCode from CheckList
+        where length(CheckListCode)=4
+    </select>
+
+    <select id="getById" resultType="com.wlhse.dto.CheckListDto">
+        select * from CheckList
+        where CheckListID=#{id}
+    </select>
+
+   <update id="updateAllChildStatus">
+       update CheckList
+       <set>
+           status="停用"
+       </set>
+       where CheckListCode like concat(#{code},"%")
+   </update>
+
+    <select id="getCurrentAllChild" resultType="com.wlhse.dto.CheckListDto">
+        select * from checkList
+        where checkListCode like concat(#{code},"%")
+    </select>
+
+    <update id="updateCheckList" parameterType="com.wlhse.dto.CheckListDto">
+        update checkList
+        <set>
+            <if test="checkListName != null and checkListName  != ''">
+                checkListName=#{checkListName},
+            </if>
+            <if test="status != null and status  != ''">
+                status=#{status},
+            </if>
+            <if test="parentName != null and parentName  != ''">
+                parentName=#{parentName},
+            </if>
+        </set>
+        where CheckListID=#{checkListID}
+    </update>
+
+    <update id="updateStatus" >
+        update CheckList
+        <set>
+            Status=#{status}
+        </set>
+        where CheckListCode=#{code}
+    </update>
+
+    <select id="querryAllCheckListCode" resultType="java.lang.String">
+        SELECT CheckListCode FROM CheckList
+    </select>
+
+    <update id="updateCheckListByCode" parameterType="com.wlhse.dto.CheckListDto">
+        update checkList
+        <set>
+            <if test="checkListName != null and checkListName  != ''">
+                checkListName=#{checkListName},
+            </if>
+            <if test="attribute != null and attribute != ''">
+                Attribute=#{attribute},
+            </if>
+            <if test="status != null and status  != ''">
+                status=#{status},
+            </if>
+            <if test="parentName != null and parentName  != ''">
+                parentName=#{parentName},
+            </if>
+            <if test="isChildNode != null and isChildNode != ''">
+                IsChildNode=#{isChildNode},
+            </if>
+        </set>
+        where CheckListCode=#{checkListCode}
+    </update>
+
+</mapper>
